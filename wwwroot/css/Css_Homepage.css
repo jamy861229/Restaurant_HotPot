@@ -1,0 +1,19 @@
+﻿body {
+    
+}
+.imgstyle1 {
+    width: 100%;
+    height: 100%;
+}
+
+
+/* 置中（第一個寬，第二個高）*/
+.wmiddle {
+    display: flex;
+    justify-content: center;
+}
+
+.hmiddle {
+    display: flex;
+    align-items: center;
+}
