@@ -1,0 +1,92 @@
+﻿@*https://localhost:7210/CustomerFeedback/Create_CustomerFeedback*@
+@model Restaurant.Models.CustomerFeedbackView
+@{
+    ViewData["Title"] = "聯絡我們";
+}
+
+<form asp-action="Create_CustomerFeedback" method="post" class="p-4 border rounded bg-light needs-validation" style="max-width: 500px; margin: auto;" novalidate>
+    <div>
+        @Html.DisplayNameFor(model => model.Feedback_Name)
+        @Html.EditorFor(model => model.Feedback_Name, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Feedback_Name, "", new { @class = "text-danger" })
+    </div>
+    <br />
+    <div class="d-flex align-items-center">
+        <div class="me-3">
+            @Html.DisplayNameFor(model => model.Feedback_Gender)
+        </div>
+        <div class="form-check me-3">
+            @Html.RadioButtonFor(model => model.Feedback_Gender, "Male", new { @class = "form-check-input", id = "male" })
+            <label for="male" class="form-check-label">先生</label>
+        </div>
+        <div class="form-check me-3">
+            @Html.RadioButtonFor(model => model.Feedback_Gender, "Female", new { @class = "form-check-input", id = "female" })
+            <label for="female" class="form-check-label">女士</label>
+        </div>
+
+        <div class="form-check me-3">
+            @Html.RadioButtonFor(model => model.Feedback_Gender, "Prefer not to say", new { @class = "form-check-input", id = "other" })
+            <label for="other" class="form-check-label">不方便透漏</label>
+        </div>
+    </div>
+        @Html.ValidationMessageFor(model => model.Feedback_Gender, "", new { @class = "text-danger" })
+   <br />
+    <div>
+        @Html.DisplayNameFor(model => model.Feedback_DateTime)
+        <div class="input-group date" id="datetimepicker" data-target-input="nearest">
+            @Html.TextBoxFor(model => model.Feedback_DateTime, new { @class = "form-control datetimepicker-input", data_target = "#datetimepicker" })
+            <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+            </div>
+        </div>
+        @Html.ValidationMessageFor(model => model.Feedback_DateTime, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.DisplayNameFor(model => model.Feedback_DiningLocationId)
+        @Html.DropDownListFor(model => model.Feedback_DiningLocationId, ViewBag.Feedback_DiningLocationId as IEnumerable<SelectListItem>, "請選擇分店", new { @class = "form-control" })
+    </div>
+    <div>
+        @Html.DisplayNameFor(model => model.Feedback_MenuId)
+        @Html.DropDownListFor(model => model.Feedback_MenuId, ViewBag.Feedback_MenuId as IEnumerable<SelectListItem>, "請選擇用餐品項", new { @class = "form-control" })
+    </div>
+    <div>
+        @Html.DisplayNameFor(model => model.Feedback_Phone)
+        @Html.EditorFor(model => model.Feedback_Phone, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Feedback_Phone, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.DisplayNameFor(model => model.Feedback_Email)
+        @Html.EditorFor(model => model.Feedback_Email, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Feedback_Email, "", new { @class = "text-danger" })
+    </div>
+    <div>
+        @Html.DisplayNameFor(model => model.Feedback_Content)
+        @Html.TextAreaFor(model => model.Feedback_Content, new { @class = "form-control", rows = "3" })
+        @Html.ValidationMessageFor(model => model.Feedback_Content, "", new { @class = "text-danger" })
+    </div>
+    <br />
+    <div class="text-center">
+        <input type="submit" value="提交" class="btn btn-primary" />
+    </div>
+</form>
+<script>
+    $(function () {
+        $('#datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm',  // 設定時間格式
+            stepping: 30,  // 設定 30 分鐘間隔
+            defaultDate: moment(), // 預設當前時間
+            icons: {
+                time: 'fa fa-clock',
+                date: 'fa fa-calendar',
+                up: 'fa fa-arrow-up',
+                down: 'fa fa-arrow-down',
+                previous: 'fa fa-chevron-left',
+                next: 'fa fa-chevron-right',
+                today: 'fa fa-check',
+                clear: 'fa fa-trash',
+                close: 'fa fa-times'
+            }
+        });
+    });
+</script>
+

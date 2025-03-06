@@ -1,0 +1,273 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<link rel="stylesheet" href="~/css/Css_Homepage.css" asp-append-version="true" />
+<!--<script src="~/js/Responsive_Homepage.js"></script> -->
+
+<!-- 整體
+    備忘：Responsive_Homepage.js會使其在變漢堡選單（小於950？）時將卡片做響應式調整，vscode成功過的內容在這裡出bug了，目前嘗試微調中成功再上傳。
+    已連資料庫，還未設計日期排序功能。目前確定使用@ViewBag.Demo[s].Carousel_ImageUrl可以叫出圖片位址。
+    最新消息的卡片部分可能之後會做成class做對應點開效果。圖片目前都暫時用萬客的，之後會改。
+    -->
+
+<div id="carouselExampleCaptions" class="carousel slide " data-bs-ride="carousel"  >
+    <div class="carousel-indicators">
+        <button type="button" style="width:13px; height:13px; border-radius:100%; margin-left:3%" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" style="width:13px; height:13px; border-radius:100%; margin-left:3%" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" style="width:13px; height:13px; border-radius:100%; margin-left:3%" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="~/images/Homepage_Banner_1.png" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <img src="~/images/Homepage_Banner_2.png" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <img src="~/images/Homepage_Banner_3.png" class="d-block w-100" alt="...">
+        </div>
+    </div>
+
+</div>
+
+
+<div class="myfont ms-5 me-5" id="NewsTAG" >
+    <div >
+        <p style="font-size: 22pt; margin-top: 150px; margin-bottom:5%; letter-spacing:0.4em;"><b>最新消息</b></p>
+    </div>
+    <div style="background-color:beige;" >
+        
+
+
+
+
+
+        <div class="row row-cols-1 row-cols-md-2 g-4  ms-4  me-4" id="NewsCardList">
+            <div class="col pt-4 pb-4 ">
+                <div class="card" style="max-width: 650px;" data-bs-toggle="modal" data-bs-target="#NewsALL1" id="NewsCard">
+                        <div class="row">
+                            <div class="col-md-5">
+                            <img class="imgstyle1" src="~/images/Homepage_news_1.jpg" alt="...">
+                            </div>
+                            <div class="col-md-7">
+                            <div class="card-body card-text">
+                                <h5 class="card-title">壽星獨享優惠</h5>
+                                    <p><small class="text-muted">02/14/2025</small></p>
+                                <p>凡當月壽星至萬客什鍋用餐即可兌換好禮6選1，需出示證件給門市同仁，使用詳情依門市而定。</p>
+                                    <p>（文案暫取自萬客官方，如有疑慮再做修改） </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+
+            <div class="co pt-4 pb-4">
+                <div class="card " style="max-width: 650px;" data-bs-toggle="modal" data-bs-target="#NewsALL2" id="NewsCard">
+                        <div class="row">
+                            <div class="col-md-5">
+                            <img class="imgstyle1" src="~/images/Homepage_news_2.png" alt="...">
+                            </div>
+                            <div class="col-md-7">
+                            <div class="card-body card-text">
+                                <h5 class="card-title">麻油炸蛋推薦菜色</h5>
+                                    <p ><small class="text-muted">02/14/2025</small></p>
+                                <p>麻油炸蛋炸到黃金透亮又帶點麻油清香，焦香四溢，口齒留香。萬客首創 獨家吃法。
+                                </p>
+                                    <p>（文案暫取自萬客官方，如有疑慮再做修改）</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+             
+            </div>
+
+
+
+
+            <div class="col pt-4 pb-4">
+                <div class="card" style="max-width: 650px;" data-bs-toggle="modal" data-bs-target="#NewsALL3" id="NewsCard">
+                        <div class="row">
+                            <div class="col-md-5">
+                            <img class="imgstyle1" src="~/images/Homepage_news_5.jpg" alt="...">
+                            </div>
+                            <div class="col-md-7">
+                            <div class="card-body card-text">
+                                    <h5 class="card-title">新會員獨家好禮</h5>
+                                    <p><small class="text-muted">02/14/2025</small></p>
+                                    <p>
+                                        首次加入萬客會員，可獲得新會員入會禮券，憑券可兌換好禮6選1，使用詳情依券面說明。 </p>
+                                    <p>
+                                        （文案暫取自萬客官方，如有疑慮再做修改）</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+        
+
+
+            <div class="col pt-4 pb-4">
+                <div class="card" style="max-width: 650px;" data-bs-toggle="modal" data-bs-target="#NewsALL4" id="NewsCard">
+                        <div class="row">
+                            <div class="col-md-5">
+                            <img class="imgstyle1" src="~/images/Homepage_news_4.png" alt="...">
+                            </div>
+                            <div class="col-md-7">
+                            <div class="card-body card-text">
+                                    <h5 class="card-title">情人節戀戀什刻</h5>
+                                    <p ><small class="text-muted">02/14/2025</small></p>
+                                    <p> 戀戀銀絲卷會員嚐鮮價特惠中。外酥內軟甜蜜加倍，沾點煉乳幸福翻倍，萬客與您共度情人節。</p>
+                                    <p>（文案暫取自萬客官方，如有疑慮再做修改） </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+
+
+
+            <!-- 測試彈窗 -->
+
+            <div class="modal fade" id="NewsALL1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">壽星獨享優惠</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="wmiddle">
+                                <img style="width:50%" src="~/images/Homepage_news_1.jpg" alt="...">
+                            </div>
+                            <p class="wmiddle">
+
+                                <br />
+                                凡當月壽星至萬客什鍋用餐即可兌換好禮6選1：<br />
+                                <br />
+                                ◼高麗菜<br />
+                                ◼雪紋梅花豬<br />
+                                ◼滑嫩巴沙魚<br />
+                                ◼鮮脆水蓮菜<br />
+                                ◼雲朵白糖粿<br />
+                                ◼古早味炸年糕<br />
+                                <br />
+                                *出示證件給門市同仁<br />                                                                     .
+                            </p>
+                            <div class="wmiddle">
+                                <button type="button" class="btn btn-secondary" style="width:150px" data-bs-dismiss="modal" aria-label="Close">關閉</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="NewsALL2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">麻油炸蛋推薦菜色</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="wmiddle">
+                                <img style="width:50%" src="~/images/Homepage_news_2.png" alt="...">
+                            </div>
+                            <p class="wmiddle">
+
+                                <br />
+                                ｜麻油炸蛋｜<br />
+                                炸到黃金透亮又帶點麻油清香，焦香四溢，口齒留香<br />
+                                <br />
+                                ◼【萬客首創 獨家吃法】<br />
+                                搭配獨家特調胡椒鹽，可直接食用香酥鹹香<br />
+                                浸入沸騰的火鍋湯頭中3-5秒，在熱湯中輕輕吸附湯頭的鮮美<br />
+                                <br />
+                                “用心烹調的態度 勾起味蕾的美食生活”<br />                                                                     .
+                            </p>
+                            <div class="wmiddle">
+                                <button type="button" class="btn btn-secondary" style="width:150px" data-bs-dismiss="modal" aria-label="Close">關閉</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="NewsALL3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">新會員獨家好禮</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="wmiddle">
+                                <img style="width:50%" src="~/images/Homepage_news_5.jpg" alt="...">
+                            </div>
+                            <p class="wmiddle">
+
+                                <br />
+                                首次加入萬客會員，可獲得新會員入會禮券（翌日使用），<br />
+                                憑券可兌換好禮6選1:<br />
+                                <br />
+                                ＊雪紋梅花豬<br />
+                                ＊極上板腱牛<br />
+                                ＊滑嫩巴沙魚<br />
+                                ＊手工花枝漿<br />
+                                ＊雲朵白糖粿<br />
+                                ＊古早味炸年糕<br />
+                                <br />
+                                *使用詳情依券面說明<br />                                                                     .
+                            </p>
+                            <div class="wmiddle">
+                                <button type="button" class="btn btn-secondary" style="width:150px" data-bs-dismiss="modal" aria-label="Close">關閉</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="NewsALL4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">情人節戀戀什刻</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="wmiddle">
+                            <img style="width:50%" src="~/images/Homepage_news_4.png" alt="...">
+                        </div>
+                        <p class="wmiddle">
+
+                            <br />
+                            ——꙳⟢戀戀銀絲卷⟣꙳ ——<br />
+                            會員嚐鮮加購$ 18 元<br />
+                            <br />
+                            ❝外酥內軟 甜蜜加倍
+
+                            <br />
+                            沾點煉乳 幸福翻倍❞<br />
+                        
+                            <br />
+                            萬客與您共度情人節<br />                                                                     .
+                        </p>
+                        <div class="wmiddle">
+                            <button type="button" class="btn btn-secondary" style="width:150px" data-bs-dismiss="modal" aria-label="Close">關閉</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div style ="height: 100px;"></div>
