@@ -1,0 +1,94 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "菜單品鑑";
+}
+
+@* 內容區域 *@
+<div class="col-md-9 mt-5"></div>
+@* 創建div元素，設置class為 text-center，將內容置中對齊 *@
+<div class="text-center">
+    @* 創建h1標題元素，設置class為 display-4，設置標題文本 *@
+	<h2 class="display-4">精選附食 — 讓味蕾大滿足</h2>
+    <h4>無論是經典還是創新，精選的美味附食絕對讓您一試成主顧！。</h4>
+</div>
+
+<p></p>
+
+@* 巢狀導覽列 *@
+<div class="container mt-5">
+    <div class="row">
+        <nav id="navbar-example3" class="nsty navbar navbar-light bg-light flex-column align-items-stretch p-3 h-30 col-md-2 col-lg-2 d-none d-md-block position-fixed top-md-20 start-md-20 bottom-md-20 me-md-20 top-lg-10 start-lg-10 bottom-lg-10 me-lg-10 collapse">
+            <a class="navbar-brand text-dark" href="#">精選附食</a>
+            <nav class="nav nav-pills flex-column">
+                <a class="nav-link text-dark" href="#item1">飯飯系列</a>
+                <nav class="nav nav-pills flex-column">
+                    <a class="nav-link ms-3 my-1 text-dark" href="#A1">經典雞滷飯</a>
+                    <a class="nav-link ms-3 my-1 text-dark" href="#A2">蝦滷飯</a>
+                    <a class="nav-link ms-3 my-1 text-dark" href="#A3">銷魂舒肥雞肉飯</a>
+                </nav>
+                <a class="nav-link text-dark" href="#item2">麵麵系列</a>
+                <nav class="nav nav-pills flex-column">
+                    <a class="nav-link ms-3 my-1 text-dark" href="#B1">香辣肉燥拌麵</a>
+                </nav>
+            </nav>
+        </nav>
+
+        @* 頁面內容 *@
+        <div class="col-md-9 offset-md-3">
+            <div data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-offset="10" tabindex="0">
+
+                <h3 class="card-title mb-3" id="item1">飯飯系列</h3>
+                <div class="card mb-5 p-3 border" id="A1">
+                    <div class="ca1 d-flex flex-column flex-md-row align-items-center justify-content-start gap-4">
+                        <a href="#" class="stretched-link"></a>
+                        <img src="~/菜單圖/經典雞滷飯.png" class="img-fluid rounded" style="width:400px; height:300px; position: relative; right: 28px; top:8px" alt="經典雞滷飯">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-stitle">經典雞滷飯</h5>
+                        <p class="card-text">細火慢燉的雞肉滷汁滲透Q彈白飯，鹹香入味，肉質嫩滑，每一口都是傳統家常的美好滋味！</p>
+                    </div>
+                </div>
+
+                <p></p>
+
+                <div class="card mb-5 p-3 border" id="A2">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-start gap-4">
+                        <a href="#" class="stretched-link"></a>
+                        <img src="~/菜單圖/蝦滷飯.png" class="img-fluid rounded" style="width:400px; height:300px; position: relative; right: 28px; top:8px;" alt="蝦滷飯">
+                    </div>
+                    <div class="card-body flex-grow-1 position-relative">
+                        <h5 class="card-stitle">蝦滷飯</h5>
+                        <p class="card-text">鮮蝦滷製獨特滷汁，鹹香中帶海味鮮甜，滷汁滲入米飯，層次豐富，每口都是極致享受！</p>
+                    </div>
+                </div>
+
+                <p></p>
+
+                <div class="card mb-5 p-3 border" id="A3">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-start gap-4">
+                        <a href="#" class="stretched-link"></a>
+                        <img src="~/菜單圖/銷魂舒肥雞肉飯.jpg" class="img-fluid rounded" style="width:400px; height:300px; position: relative; right: 28px; top:8px;" alt="銷魂舒肥雞肉飯">
+                    </div>
+                    <div class="card-body flex-grow-1 position-relative">
+                        <h5 class="card-stitle">銷魂舒肥雞肉飯</h5>
+                        <p class="card-text">低溫舒肥雞肉嫩滑多汁，搭配香氣四溢的特製醬汁與Q彈米飯，每口都滿足味蕾。</p>
+                    </div>
+                </div>
+
+                <p></p>
+
+                <h3 class="card-title mb-3" id="item2">麵麵系列</h3>
+                <div class="card mb-5 p-3 border" id="B1">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-start gap-4">
+                        <a href="#" class="stretched-link"></a>
+                        <img src="~/菜單圖/香辣肉燥拌麵.png" class="img-fluid rounded" style="width:400px; height:300px; position: relative; right: 28px; top:8px;" alt="香辣肉燥拌麵">
+                    </div>
+                    <div class="card-body flex-grow-1 position-relative">
+                        <h5 class="card-stitle">香辣肉燥拌麵</h5>
+                        <p class="card-text">辣香四溢的肉燥醬汁拌勻Q彈麵條，香氣撲鼻，麻辣帶勁，一口接一口停不下來！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

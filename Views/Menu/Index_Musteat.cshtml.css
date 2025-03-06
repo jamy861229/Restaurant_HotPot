@@ -1,0 +1,235 @@
+﻿/* 移除滾動監控的顏色框 */
+.nav-link.active {
+    background-color: transparent !important;
+}
+
+/* 確保內容不被導覽列遮擋 */
+.container {
+    padding-top: 30px;  /*調整此數值，確保與導覽列高度匹配 */
+}
+
+/* ========== 巢狀導覽列固定樣式 (適用於桌面) ========== */
+/*#navbar-example3 {
+    position: fixed;
+    top: 310px;*/ /* 避免遮住標題 */
+    /*left: 150px;*/ /* 靠近左側 */
+    /*width: 250px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    z-index: 1050;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+}*/
+
+
+@media (min-width: 992px) {
+    #navbar-example3 {
+        position: fixed;
+        top: 15%; /* 使用百分比但降低，避免太高 */
+        left: 5vw;
+        width: 250px;
+        max-height: 80vh;
+        overflow-y: auto;
+        z-index: 1050;
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
+    }
+}
+
+/* 確保內容區塊不被遮擋 */
+.col-md-9 {
+    margin-left: 270px; /* 讓內容不會被導覽列壓住 */
+}
+
+/* ========== 巢狀導覽列固定樣式 (適用於桌面) ========== */
+
+
+
+
+
+
+
+/* ========== 巢狀導覽列 - 小於 992px：改為相對定位 (適用於平板 & 手機) ========== */
+@media (max-width: 991px) {
+    #navbar-example3 {
+        position: relative;
+        width: 100%;
+        left: 0;
+        top: 0;
+        max-height: none;
+        padding: 10px;
+        box-shadow: none;
+        background-color: #fff;
+    }
+
+    .col-md-9 {
+        margin-left: 0; /* 確保內容區塊不被遮擋 */
+    }
+}
+
+/* 確保卡片內部的 d-flex 撐滿 */
+.card .d-flex {
+    display: flex;
+    flex-direction: row; /* 水平排列 */
+    align-items: center; /* 垂直置中 */
+    justify-content: flex-start; /* 讓圖片靠左對齊 */
+    width: 100%; /* 確保 d-flex 撐滿 card */
+    gap: 20px; /* 控制圖片與文字間距 */
+}
+
+/* 調整圖片大小 */
+.card img {
+    max-width: 40%; /* 限制圖片寬度，防止超過 */
+    height: auto;
+    object-fit: cover;
+    flex-shrink: 0; /* 防止圖片被壓縮 */
+}
+
+/* 文字區塊的調整 */
+.card-body {
+    flex-grow: 1; /* 讓文字填滿剩餘空間 */
+    max-width: 60%; /* 讓文字區塊不超過範圍 */
+}
+
+/* ========== 巢狀導覽列 - 小於 992px：改為相對定位 (適用於平板 & 手機) ========== */
+
+
+
+
+
+
+
+
+/* ========== 小於 992px (適用於平板 & 手機) ========== */
+/*@media (max-width: 991px) {
+    .card .d-flex {
+        flex-direction: column;*/ /* 在小螢幕時，讓圖片與文字垂直排列 */
+        /*align-items: center;
+        text-align: center;*/ /* 讓文字置中 */
+    /*}
+
+    .card img {
+        max-width: 100%;*/ /* 小螢幕時，讓圖片滿版 */
+        /*height: auto;*/ /* 自動調整高度 */
+    /*}
+
+    .card-body {
+        max-width: 100%;*/ /* 讓文字區塊填滿 */
+        /*text-align: center;*/ /* 文字置中 */
+    /*}
+}*/
+
+/*@media (max-width: 991px) {
+    .card {
+        flex-direction: column;
+        max-width: 100%;
+        max-height: none;
+    }
+
+        .card img {
+            max-width: 100%;*/ /* 小螢幕時，讓圖片滿版 */
+            /*height: auto;*/ /* 自動調整高度 */
+            /*object-fit: cover;
+            flex-shrink: 0;
+        }
+
+    .card-body {
+        max-width: 100%;*/ /* 讓文字區塊填滿 */
+        /*text-align: center;*/ /* 文字置中 */
+    /*}
+}*/
+
+@media (max-width: 991px) {
+    .card {
+        flex-direction: column;
+        max-width: 100%;
+        max-height: none;
+        overflow: hidden; /* 避免圖片超出 */
+    }
+
+
+        .card img {
+            max-width: 100%; /* 讓圖片佔比減少，避免超過卡片 */
+            height: auto;
+            margin: 0 auto; /* 讓圖片置中 */
+            object-fit: contain;
+        }
+
+    .card-body {
+        max-width: 100%; /* 讓文字區塊填滿 */
+        text-align: center;
+    }
+}
+
+/* ========== 小於 992px (適用於平板 & 手機) ========== */
+
+
+
+
+/* ========== 大螢幕樣式 (992px 以上) ========== */
+/*@media (min-width: 992px) {
+    .card-stitle {
+        color: black;
+        font-size: 30px;
+        position: relative;
+        left: 385px;
+        bottom: 300px;
+    }
+
+    .card-text {
+        color: black;
+        font-size: 20px;
+        position: relative;
+        left: 385px;
+        bottom: 300px;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 20px;*/ /*調整內邊距 */
+        /*max-width: 900px;*/ /*設置特定卡片的最大寬度 */
+        /*max-height: 350px;
+    }
+}*/
+
+@media (min-width: 992px) {
+    .card-stitle {
+        color: black;
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        color: black;
+        font-size: 18px;
+        word-wrap: break-word;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 20px; /*調整內邊距 */
+        max-width: 900px; /*設置特定卡片的最大寬度 */
+        max-height: 350px;
+    }
+
+    .card img {
+        max-width: 40%;
+        height: auto;
+        flex-shrink: 0;
+    }
+
+    .card-body {
+        flex-grow: 1;
+        width: 100%;
+        padding: 10px;
+        text-align: left;
+    }
+}
+/* ========== 大螢幕樣式 (992px 以上) ========== */
+

@@ -1,0 +1,112 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "菜單品鑑";
+}
+
+@* 內容區域 *@
+<div class="col-md-9 mt-5"></div>
+@* 創建div元素，設置class為 text-center，將內容置中對齊 *@
+<div class="text-center">
+    @* 創建h1標題元素，設置class為 display-4，設置標題文本 *@
+    <h2 class="display-4">老饕必吃 — 極致鍋物饗宴</h2>
+	<h4>嚴選頂級食材，搭配獨門湯底，每一口都是對食材與手藝的極致追求，帶來溫潤醇厚的美味饗宴。</h4>
+</div>
+
+<p></p>
+
+@* 巢狀導覽列 *@
+<div class="container mt-5">
+    <div class="row">
+        <nav id="navbar-example3" class="nsty navbar navbar-light bg-light flex-column align-items-stretch p-3 h-30 col-md-2 col-lg-2 d-none d-md-block position-fixed top-md-20 start-md-20 bottom-md-20 me-md-20 top-lg-10 start-lg-10 bottom-lg-10 me-lg-10 collapse">
+            <a class="navbar-brand text-dark" href="#">老饕必吃</a>
+            <nav class="nav nav-pills flex-column">
+                <a class="nav-link text-dark" href="#item1">燒酒麻香鍋系列</a>
+                <nav class="nav nav-pills flex-column">
+                    <a class="nav-link ms-3 my-1 text-dark" href="#A1">燒酒烏骨雞鍋</a>
+                    <a class="nav-link ms-3 my-1 text-dark" href="#A2">麻油煎蛋絲瓜蛤蠣鍋</a>
+                </nav>
+                <a class="nav-link text-dark" href="#item2">老饕精選鍋系列</a>
+                <nav class="nav nav-pills flex-column">
+                    <a class="nav-link ms-3 my-1 text-dark" href="#B1">剝皮辣椒烏骨雞鍋</a>
+                    <a class="nav-link ms-3 my-1 text-dark" href="#B2">魷魚螺肉蒜烏骨雞鍋</a>
+                </nav>
+                <a class="nav-link text-dark" href="#item3">石頭爆炒鍋系列</a>
+                <nav class="nav nav-pills flex-column">
+                    <a class="nav-link ms-3 my-1 text-dark" href="#C1">蒜頭爆炒烏骨雞鍋</a>
+                </nav>
+                </nav>
+        </nav>
+
+ @* 頁面內容 *@
+        <div class="col-md-9 offset-md-3">
+            <div data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-offset="10" tabindex="0">
+
+                <h3 class="card-title mb-3" id="item1">燒酒麻香鍋系列</h3>
+                <div class="card mb-5 p-3 border" id="A1">
+                    <div class="ca1 d-flex flex-column flex-md-row align-items-center justify-content-start gap-4">
+                        <a href="#" class="stretched-link"></a>
+                        <img src="~/菜單圖/燒酒烏骨雞鍋.png" class="img-fluid rounded" style="width:400px; height:300px; position: relative; right: 28px; top:8px" alt="燒酒烏骨雞鍋">
+					</div>
+                    <div class="card-body">
+                        <h5 class="card-stitle">燒酒烏骨雞鍋</h5>
+                        <p class="card-text">濃郁米酒香氣燉煮烏骨雞，酒香四溢，暖胃又暖心，冬天必吃的經典補湯！</p>
+                    </div>
+				</div>
+          
+                <p></p>
+
+                <div class="card mb-5 p-3 border" id="A2">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-start gap-4">
+                        <a href="#" class="stretched-link"></a>
+                        <img src="~/菜單圖/麻油煎蛋絲瓜蛤蠣鍋.png" class="img-fluid rounded" style="width:400px; height:300px; position: relative; right: 28px; top:8px;" alt="麻油煎蛋絲瓜蛤蠣鍋">
+                    </div>
+                    <div class="card-body flex-grow-1 position-relative">
+                            <h5 class="card-stitle">麻油煎蛋絲瓜蛤蠣鍋</h5>
+                            <p class="card-text">麻油香氣襯托嫩滑煎蛋，絲瓜與蛤蠣交織鮮甜湯底，清爽又滋補，暖心暖胃！</p>
+                    </div>
+                </div>
+
+                    <p></p>
+
+                <h3 class="card-title mb-3"  id="item2" >老饕精選鍋系列</h3>
+                <div class="card mb-5 p-3 border" id="B1">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-start gap-4">
+                        <a href="#" class="stretched-link"></a>
+                        <img src="~/菜單圖/剝皮辣椒烏骨雞鍋.png" class="img-fluid rounded" style="width:400px; height:300px; position: relative; right: 28px; top:8px;" alt="剝皮辣椒烏骨雞鍋">
+                    </div>
+                    <div class="card-body flex-grow-1 position-relative">
+                        <h5 class="card-stitle">剝皮辣椒烏骨雞鍋</h5>
+                        <p class="card-text">剝皮辣椒的甘甜與微辣完美融合烏骨雞湯，鮮香回甘，溫潤不嗆，令人一吃上癮！</p>
+                    </div>
+                </div>
+
+                <p></p>
+
+                <div class="card mb-5 p-3 border" id="B2">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-start gap-4">
+                        <a href="#" class="stretched-link"></a>
+                        <img src="~/菜單圖/魷魚螺肉蒜烏骨雞鍋.png" class="img-fluid rounded" style="width:400px; height:300px; position: relative; right: 28px; top:8px;" alt="魷魚螺肉蒜烏骨雞鍋">
+                   </div>
+                    <div class="card-body flex-grow-1 position-relative">
+                        <h5 class="card-stitle">魷魚螺肉蒜烏骨雞鍋</h5>
+                        <p class="card-text">經典眷村風味，魷魚、螺肉與蒜頭熬煮成醇厚湯頭，搭配烏骨雞，甘甜濃郁超涮嘴！</p>
+                    </div>
+                </div>
+
+                <p></p>
+
+			    <h3 class="card-title mb-3" id="item3">石頭爆炒鍋系列</h3>
+                <div class="card mb-5 p-3 border" id="C1">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-start gap-4">
+                        <a href="#" class="stretched-link"></a>
+                        <img src="~/菜單圖/蒜頭爆炒烏骨雞鍋.jpg" class="img-fluid rounded" style="width:400px; height:300px; position: relative; right: 28px; top:8px;" alt="蒜頭爆炒烏骨雞鍋">
+                    </div>
+                    <div class="card-body flex-grow-1 position-relative">
+                        <h5 class="card-stitle">蒜頭爆炒烏骨雞鍋</h5>
+                        <p class="card-text">大火爆炒蒜香逼出烏骨雞鮮美，濃郁湯頭香醇順口，每一口都是層次豐富的美味享受！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
