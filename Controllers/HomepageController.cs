@@ -6,8 +6,8 @@ namespace Restaurant.Controllers
 {
     public class HomepageController : Controller
     {
-        private readonly HomepageDbContext _context;
-        public HomepageController(HomepageDbContext context)
+        private readonly MyDbContext _context;
+        public HomepageController(MyDbContext context)
         {
             _context = context;
         }
