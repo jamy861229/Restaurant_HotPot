@@ -1,68 +1,73 @@
-﻿@*https://localhost:7210/CustomerFeedback/Create_CustomerFeedback*@
+﻿@* https://localhost:7210/CustomerFeedback/Create_CustomerFeedback *@
+<!-- FontAwesome 圖示庫 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 @model Restaurant.Models.CustomerFeedbackView
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 @{
     ViewData["Title"] = "聯絡我們";
 }
 
 <form asp-action="Create_CustomerFeedback" method="post" class="p-4 border rounded bg-light needs-validation" style="max-width: 500px; margin: auto;" novalidate>
     <div>
-        @Html.DisplayNameFor(model => model.Feedback_Name)
-        @Html.EditorFor(model => model.Feedback_Name, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.Feedback_Name, "", new { @class = "text-danger" })
+        @Html.DisplayNameFor(model => model.FeedbackName)
+        @Html.EditorFor(model => model.FeedbackName, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.FeedbackName, "", new { @class = "text-danger" })
     </div>
     <br />
     <div class="d-flex align-items-center">
         <div class="me-3">
-            @Html.DisplayNameFor(model => model.Feedback_Gender)
+            @Html.DisplayNameFor(model => model.FeedbackGender)
         </div>
         <div class="form-check me-3">
-            @Html.RadioButtonFor(model => model.Feedback_Gender, "Male", new { @class = "form-check-input", id = "male" })
+            @Html.RadioButtonFor(model => model.FeedbackGender, "Male", new { @class = "form-check-input", id = "male" })
             <label for="male" class="form-check-label">先生</label>
         </div>
         <div class="form-check me-3">
-            @Html.RadioButtonFor(model => model.Feedback_Gender, "Female", new { @class = "form-check-input", id = "female" })
+            @Html.RadioButtonFor(model => model.FeedbackGender, "Female", new { @class = "form-check-input", id = "female" })
             <label for="female" class="form-check-label">女士</label>
         </div>
 
         <div class="form-check me-3">
-            @Html.RadioButtonFor(model => model.Feedback_Gender, "Prefer not to say", new { @class = "form-check-input", id = "other" })
+            @Html.RadioButtonFor(model => model.FeedbackGender, "Other", new { @class = "form-check-input", id = "other" })
             <label for="other" class="form-check-label">不方便透漏</label>
         </div>
     </div>
-        @Html.ValidationMessageFor(model => model.Feedback_Gender, "", new { @class = "text-danger" })
-   <br />
+    @Html.ValidationMessageFor(model => model.FeedbackGender, "", new { @class = "text-danger" })
+    <br />
     <div>
-        @Html.DisplayNameFor(model => model.Feedback_DateTime)
+        @Html.DisplayNameFor(model => model.FeedbackDateTime)
         <div class="input-group date" id="datetimepicker" data-target-input="nearest">
-            @Html.TextBoxFor(model => model.Feedback_DateTime, new { @class = "form-control datetimepicker-input", data_target = "#datetimepicker" })
+            @Html.TextBoxFor(model => model.FeedbackDateTime, new { @class = "form-control datetimepicker-input", data_target = "#datetimepicker" })
             <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
             </div>
         </div>
-        @Html.ValidationMessageFor(model => model.Feedback_DateTime, "", new { @class = "text-danger" })
+        @Html.ValidationMessageFor(model => model.FeedbackDateTime, "", new { @class = "text-danger" })
     </div>
     <div>
-        @Html.DisplayNameFor(model => model.Feedback_DiningLocationId)
-        @Html.DropDownListFor(model => model.Feedback_DiningLocationId, ViewBag.Feedback_DiningLocationId as IEnumerable<SelectListItem>, "請選擇分店", new { @class = "form-control" })
+        @Html.DisplayNameFor(model => model.FeedbackDiningLocationId)
+        @Html.DropDownListFor(model => model.FeedbackDiningLocationId, ViewBag.Feedback_DiningLocationId as IEnumerable<SelectListItem>, "請選擇分店", new { @class = "form-control" })
     </div>
     <div>
-        @Html.DisplayNameFor(model => model.Feedback_MenuId)
-        @Html.DropDownListFor(model => model.Feedback_MenuId, ViewBag.Feedback_MenuId as IEnumerable<SelectListItem>, "請選擇用餐品項", new { @class = "form-control" })
+        @Html.DisplayNameFor(model => model.FeedbackMenuId)
+        @Html.DropDownListFor(model => model.FeedbackMenuId, ViewBag.Feedback_MenuId as IEnumerable<SelectListItem>, "請選擇用餐品項", new { @class = "form-control" })
     </div>
     <div>
-        @Html.DisplayNameFor(model => model.Feedback_Phone)
-        @Html.EditorFor(model => model.Feedback_Phone, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.Feedback_Phone, "", new { @class = "text-danger" })
+        @Html.DisplayNameFor(model => model.FeedbackPhone)
+        @Html.EditorFor(model => model.FeedbackPhone, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.FeedbackPhone, "", new { @class = "text-danger" })
     </div>
     <div>
-        @Html.DisplayNameFor(model => model.Feedback_Email)
-        @Html.EditorFor(model => model.Feedback_Email, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.Feedback_Email, "", new { @class = "text-danger" })
+        @Html.DisplayNameFor(model => model.FeedbackEmail)
+        @Html.EditorFor(model => model.FeedbackEmail, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.FeedbackEmail, "", new { @class = "text-danger" })
     </div>
     <div>
-        @Html.DisplayNameFor(model => model.Feedback_Content)
-        @Html.TextAreaFor(model => model.Feedback_Content, new { @class = "form-control", rows = "3" })
-        @Html.ValidationMessageFor(model => model.Feedback_Content, "", new { @class = "text-danger" })
+        @Html.DisplayNameFor(model => model.FeedbackContent)
+        @Html.TextAreaFor(model => model.FeedbackContent, new { @class = "form-control", rows = "3" })
+        @Html.ValidationMessageFor(model => model.FeedbackContent, "", new { @class = "text-danger" })
     </div>
     <br />
     <div class="text-center">
