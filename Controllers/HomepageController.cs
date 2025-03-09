@@ -15,7 +15,7 @@ namespace Restaurant.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Demo = await _context.Carousel.ToListAsync();
+            ViewBag.Demo = await _context.Carousels.ToListAsync();
             return View();
         }
     }

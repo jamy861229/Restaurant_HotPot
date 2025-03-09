@@ -36,7 +36,7 @@ public partial class Customer
   
     public DateTime? CustomerCreatedAt { get; set; }
 
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+    public virtual ICollection<OrderView> Orders { get; set; } = new List<OrderView>();
 
-    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+    public virtual ICollection<ReservationView> Reservations { get; set; } = new List<ReservationView>();
 }
