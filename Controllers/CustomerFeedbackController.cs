@@ -7,82 +7,96 @@ namespace Restaurant.Controllers
 {
     public class CustomerFeedbackController : Controller
     {
-        private readonly RestaurantContext _context;
+        private readonly MyDbContext _context;
 
-        public CustomerFeedbackController(RestaurantContext context)
+        public CustomerFeedbackController(MyDbContext context)
         {
             _context = context;
         }
 
         public async Task<IActionResult> Create_CustomerFeedback()
         {
-            ViewBag.Feedback = await _context.CustomerFeedback.ToListAsync();
+            ViewBag.Feedback = await _context.CustomerFeedbacks.ToListAsync();
 
             // 取得餐廳列表
             var restaurantList = await _context.RestaurantInfos.ToListAsync();
             ViewBag.Feedback_DiningLocationId = restaurantList.Select(r => new SelectListItem
             {
                 Text = r.RestaurantName,
-                Value = r.RestaurantRestaurantId.ToString()
+                Value = r.RestaurantId.ToString()
             }).ToList();
 
             // 取得菜單列表
             var menuList = await _context.Menus.ToListAsync();
             ViewBag.Feedback_MenuId = menuList.Select(m => new SelectListItem
             {
-                Text = m.MenuItemName,
-                Value = m.MenuMenuId.ToString()
+                Text = m.MenuName,
+                Value = m.MenuId.ToString()
             }).ToList();
 
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create_CustomerFeedback
-         ([Bind("Feedback_FeedbackId,Feedback_Name,Feedback_Gender," +
-            "Feedback_DiningLocationId,Feedback_DiningLocation," +
-            "Feedback_Phone,Feedback_Email,Feedback_Content,Feedback_Time," +
-            "Feedback_DateTime,Feedback_MenuId,Feedback_MenuName")] 
-        CustomerFeedbackView model)
+        public async Task<IActionResult> Create_CustomerFeedback(CustomerFeedbackView model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                model.Feedback_Time = DateTime.Now;
-
-                // 取得餐廳名稱
-                var restaurant = await _context.RestaurantInfos.FindAsync(model.Feedback_DiningLocationId);
-                if (restaurant != null)
+                foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
                 {
-                    model.Feedback_DiningLocation = restaurant.RestaurantName;
+                    Console.WriteLine("模型驗證錯誤：" + modelError.ErrorMessage);
                 }
 
-                // 取得菜單名稱
-                var menu = await _context.Menus.FindAsync(model.Feedback_MenuId);
-                if (menu != null)
+                // 重新載入選單
+                var restaurantList = await _context.RestaurantInfos.ToListAsync();
+                ViewBag.Feedback_DiningLocationId = restaurantList.Select(r => new SelectListItem
                 {
-                    model.Feedback_MenuName = menu.MenuItemName;
-                }
+                    Text = r.RestaurantName,
+                    Value = r.RestaurantId.ToString()
+                }).ToList();
 
-                _context.Add(model);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Create_CustomerFeedback");
+                var menuList = await _context.Menus.ToListAsync();
+                ViewBag.Feedback_MenuId = menuList.Select(m => new SelectListItem
+                {
+                    Text = m.MenuName,
+                    Value = m.MenuId.ToString()
+                }).ToList();
+
+                return View(model);
             }
 
-            ViewBag.Feedback_DiningLocationId = (await _context.RestaurantInfos.ToListAsync()).Select(r => new SelectListItem
-            {
-                Text = r.RestaurantName,
-                Value = r.RestaurantRestaurantId.ToString()
-            }).ToList();
 
-            ViewBag.Feedback_MenuId = (await _context.Menus.ToListAsync()).Select(m => new SelectListItem
+            var feedback = new CustomerFeedbackView
             {
-                Text = m.MenuItemName,
-                Value = m.MenuMenuId.ToString()
-            }).ToList();
+                FeedbackName = model.FeedbackName!,
+                FeedbackGender = model.FeedbackGender!,
+                FeedbackDateTime = model.FeedbackDateTime ?? DateTime.Now,
+                FeedbackDiningLocationId = model.FeedbackDiningLocationId,
+                FeedbackMenuId = model.FeedbackMenuId ?? 0,
+                FeedbackPhone = model.FeedbackPhone!,
+                FeedbackEmail = model.FeedbackEmail!,
+                FeedbackContent = model.FeedbackContent!,
+                FeedbackTime = DateTime.Now,
+            };
 
-            return View(model);
+            // 取得餐廳名稱
+            var restaurant = await _context.RestaurantInfos.FindAsync(model.FeedbackDiningLocationId);
+            if (restaurant != null)
+            {
+                feedback.FeedbackDiningLocation = restaurant.RestaurantName;
+            }
+
+            // 取得菜單名稱
+            var menu = await _context.Menus.FindAsync(model.FeedbackMenuId);
+            if (menu != null)
+            {
+                feedback.FeedbackMenuName = menu.MenuName;
+            }
+
+            _context.CustomerFeedbacks.Add(feedback);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Create_CustomerFeedback");
         }
-
-
     }
 }
 

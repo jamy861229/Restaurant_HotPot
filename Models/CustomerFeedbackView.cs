@@ -1,57 +1,61 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Restaurant.Models;
 
 [Keyless]
 public class CustomerFeedbackView
 {
-    public int Feedback_FeedbackId { get; set; }
+    public int FeedbackId { get; set; }
 
     [Required(ErrorMessage = "請輸入姓名")]
     [Display(Name = "姓名")]
-    public string? Feedback_Name { get; set; }
+    public string? FeedbackName { get; set; }
 
     [Required(ErrorMessage = "請選擇性別")]
     [Display(Name = "性別")]
-    public string? Feedback_Gender { get; set; }
+    public string? FeedbackGender { get; set; }
 
     [Required(ErrorMessage = "請選擇用餐時段")]
     [Display(Name = "用餐時段")]
-    public DateTime? Feedback_DateTime { get; set; }
+    public DateTime? FeedbackDateTime { get; set; }
 
     [Required(ErrorMessage = "請選擇分店")]
     [Display(Name = "用餐門市")]
-    public int Feedback_DiningLocationId { get; set; }
+    public int FeedbackDiningLocationId { get; set; }
 
     [Display(Name = "用餐門市")]
-    public string? Feedback_DiningLocation { get; set; }
+    public string? FeedbackDiningLocation { get; set; }
+
 
     [Required(ErrorMessage = "請選擇用餐品項")]
+    [NotMapped]
     [Display(Name = "用餐品項")]
-    public int? Feedback_MenuId { get; set; }
+    public int? FeedbackMenuId { get; set; }
 
     [Display(Name = "用餐品項")]
-    public string? Feedback_MenuName { get; set; }
+    [NotMapped]
+    public string? FeedbackMenuName { get; set; }
 
     [Required(ErrorMessage = "請輸入手機號碼")]
     [RegularExpression(@"^09[0-9]{8}$", ErrorMessage = "手機號碼格式錯誤")]
     [Display(Name = "電話")]
-    public string? Feedback_Phone { get; set; }
+    public string? FeedbackPhone { get; set; }
 
     [Required(ErrorMessage = "請輸入電子郵件")]
     [EmailAddress(ErrorMessage = "請輸入有效的電子郵件地址")]
-    [Display(Name = "email")]
-    public string? Feedback_Email { get; set; }
+    [Display(Name = "Email")]
+    public string? FeedbackEmail { get; set; }
 
     [Required(ErrorMessage = "請輸入您的意見")]
     [Display(Name = "問題建議")]
-    public string? Feedback_Content { get; set; }
+    public string? FeedbackContent { get; set; }
 
     [Display(Name = "填寫時間")]
-    public DateTime? Feedback_Time { get; set; }
-
-    public virtual MenuView? FeedbackMenu { get; set; }
+    public DateTime? FeedbackTime { get; set; }
+    public virtual RestaurantInfoView? FeedbackDiningLocationNavigation { get; set; }
 }

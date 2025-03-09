@@ -11,9 +11,9 @@ namespace Restaurant.Controllers
 {
     public class CustomersController : Controller
     {
-        private readonly HotPotContext _context;
+        private readonly MyDbContext _context;
 
-        public CustomersController(HotPotContext context)
+        public CustomersController(MyDbContext context)
         {
             _context = context;
         }
@@ -33,7 +33,7 @@ namespace Restaurant.Controllers
             }
 
             var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerCustomerId == id);
+                .FirstOrDefaultAsync(m => m.CustomerId == id);
             if (customer == null)
             {
                 return NotFound();
@@ -124,7 +124,7 @@ namespace Restaurant.Controllers
             }
 
             var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerCustomerId == id);
+                .FirstOrDefaultAsync(m => m.CustomerId == id);
             if (customer == null)
             {
                 return NotFound();
@@ -150,7 +150,7 @@ namespace Restaurant.Controllers
 
         private bool CustomerExists(int id)
         {
-            return _context.Customers.Any(e => e.CustomerCustomerId == id);
+            return _context.Customers.Any(e => e.CustomerId == id);
         }
 
 
@@ -164,7 +164,7 @@ namespace Restaurant.Controllers
             }
 
             var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerCustomerId == id);
+                .FirstOrDefaultAsync(m => m.CustomerId == id);
             if (customer == null)
             {
                 return NotFound();
