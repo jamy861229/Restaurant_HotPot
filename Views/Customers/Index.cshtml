@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Restaurant.Models.Customer>
+﻿@model IEnumerable<Restaurant.Models.CustomerView>
 
 @{
     ViewData["Title"] = "Index";
@@ -25,13 +25,7 @@
                 @Html.DisplayNameFor(model => model.CustomerPassword)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CustomerBirthDate)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.CustomerAccount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerPoints)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CustomerAddress)
@@ -58,13 +52,7 @@
                 @Html.DisplayFor(modelItem => item.CustomerPassword)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CustomerBirthDate)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.CustomerAccount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerPoints)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CustomerAddress)
@@ -73,10 +61,10 @@
                 @Html.DisplayFor(modelItem => item.CustomerCreatedAt)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.CustomerCustomerId">Edit</a> |
-                    <a href="~/Customers/Index_Member" asp-route-id="@item.CustomerCustomerId" >Details</a> |
-                    @Html.ActionLink("Edit", "Edit", new { id = item.CustomerCustomerId }) |
-                    <a asp-action="Delete" asp-route-id="@item.CustomerCustomerId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.CustomerId">Edit</a> |
+                    <a href="~/Customers/Index_Member" asp-route-id="@item.CustomerId" >Details</a> |
+                    @Html.ActionLink("Edit", "Edit", new { id = item.CustomerId }) |
+                    <a asp-action="Delete" asp-route-id="@item.CustomerId">Delete</a>
             </td>
         </tr>
 }

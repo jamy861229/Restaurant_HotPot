@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Restaurant.Models;
 
-public partial class Menu
+public partial class MenuView
 {
     public int MenuId { get; set; }
 
@@ -19,9 +19,6 @@ public partial class Menu
     public bool? MenuIsAvailable { get; set; }
 
     public string? MenuImageUrl { get; set; }
-
-    [NotMapped]
-    public string MenuItemName { get; set; } = null!;
 
     public virtual ICollection<OrderItemView> OrderItems { get; set; } = new List<OrderItemView>();
 }

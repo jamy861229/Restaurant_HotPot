@@ -31,7 +31,7 @@ public class CustomerFeedbackView
     [Display(Name = "用餐門市")]
     public string? FeedbackDiningLocation { get; set; }
 
-
+    
     [Required(ErrorMessage = "請選擇用餐品項")]
     [NotMapped]
     [Display(Name = "用餐品項")]

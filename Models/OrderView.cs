@@ -19,9 +19,6 @@ public partial class OrderView
     public string OrderType { get; set; } = null!;
 
     [NotMapped]
-    public string FeedbackMenuName { get; set; } = null!;
-
-    [NotMapped]
     public string OrderMenuName { get; set; } = null!;
 
     [NotMapped]

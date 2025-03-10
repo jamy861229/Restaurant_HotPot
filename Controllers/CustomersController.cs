@@ -53,7 +53,7 @@ namespace Restaurant.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerCustomerId,CustomerName,CustomerPhone,CustomerEmail,CustomerPassword,CustomerBirthDate,CustomerAccount,CustomerPoints,CustomerAddress,CustomerCreatedAt")] Customer customer)
+        public async Task<IActionResult> Create([Bind("CustomerCustomerId,CustomerName,CustomerPhone,CustomerEmail,CustomerPassword,CustomerBirthDate,CustomerAccount,CustomerPoints,CustomerAddress,CustomerCreatedAt")] CustomerView customer)
         {
             if (ModelState.IsValid)
             {
@@ -85,9 +85,9 @@ namespace Restaurant.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerCustomerId,CustomerName,CustomerPhone,CustomerEmail,CustomerPassword,CustomerBirthDate,CustomerAccount,CustomerPoints,CustomerAddress,CustomerCreatedAt")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("CustomerCustomerId,CustomerName,CustomerPhone,CustomerEmail,CustomerPassword,CustomerBirthDate,CustomerAccount,CustomerPoints,CustomerAddress,CustomerCreatedAt")] CustomerView customer)
         {
-            if (id != customer.CustomerCustomerId)
+            if (id != customer.CustomerId)
             {
                 return NotFound();
             }
@@ -101,7 +101,7 @@ namespace Restaurant.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CustomerExists(customer.CustomerCustomerId))
+                    if (!CustomerExists(customer.CustomerId))
                     {
                         return NotFound();
                     }

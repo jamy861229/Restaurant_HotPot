@@ -15,7 +15,7 @@ public partial class OrderItemView
 
     public decimal OrderItemUnitPrice { get; set; }
 
-    public virtual Menu OrderItemMenu { get; set; } = null!;
+    public virtual MenuView OrderItemMenu { get; set; } = null!;
 
     public virtual OrderView OrderItemOrder { get; set; } = null!;
 }

@@ -15,13 +15,13 @@ public partial class MyDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Carousel> Carousels { get; set; }
+    public virtual DbSet<HomepageView> Carousels { get; set; }
 
     public virtual DbSet<CustomerView> Customers { get; set; }
 
     public virtual DbSet<CustomerFeedbackView> CustomerFeedbacks { get; set; }
 
-    public virtual DbSet<Menu> Menus { get; set; }
+    public virtual DbSet<MenuView> Menus { get; set; }
 
     public virtual DbSet<OrderView> Orders { get; set; }
 
@@ -38,7 +38,7 @@ public partial class MyDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Carousel>(entity =>
+        modelBuilder.Entity<HomepageView>(entity =>
         {
             entity.HasKey(e => e.CarouselId).HasName("PK__Carousel__7EE7615BDD5E5554");
 
@@ -126,7 +126,7 @@ public partial class MyDbContext : DbContext
                 .HasConstraintName("FK__CustomerF__Feedb__5CD6CB2B");
         });
 
-        modelBuilder.Entity<Menu>(entity =>
+        modelBuilder.Entity<MenuView>(entity =>
         {
             entity.HasKey(e => e.MenuId).HasName("PK__Menu__69E72338B04A1585");
 

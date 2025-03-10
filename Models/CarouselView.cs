@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Restaurant.Models;
 
-public partial class Carousel
+public partial class CarouselView
 {
     public int CarouselId { get; set; }
 
