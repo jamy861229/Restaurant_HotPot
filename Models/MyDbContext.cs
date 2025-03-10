@@ -34,7 +34,7 @@ public partial class MyDbContext : DbContext
     public virtual DbSet<RestaurantInfoView> RestaurantInfos { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-INTVBJ1\\MSSQLSERVER01;Database=RestaurantDB;Integrated Security=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=10.0.101.160,1433;Initial Catalog=RestaurantDB;User Id=TeamHotPots;Password=MSIT62;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
