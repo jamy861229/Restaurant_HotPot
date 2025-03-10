@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Models;
-using Umbraco.Core.Persistence.Repositories;
+//using Umbraco.Core.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +15,7 @@ builder.Services.AddRazorPages(); // 0310 加的
 //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 //    .AddCookie();
 
-builder.Services.AddDbContext<HotPotContext>(
+builder.Services.AddDbContext<MyDbContext>(
 options => options.UseSqlServer(builder.Configuration.GetConnectionString("HotPotConnstring")));
 
 //// Add services to the container. 使用 cookie 判斷是否是登入狀態
@@ -76,6 +76,6 @@ app.MapRazorPages(); // 0310
 或者，保持 MapDefaultControllerRoute();，但改變 HomeController 的 Index() 行為，讓它重定向到 Customers/Member_Login。*/
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Customers}/{action=Member_Login}/{id?}");
+    pattern: "{controller=Homepage}/{action=Index}/{id?}");
 // _Member  Register    Member_Login    create    Index_Member    Index
 app.Run();
