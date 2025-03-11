@@ -25,8 +25,6 @@ public partial class RestaurantInfoView
 
     public int RestaurantCapacity { get; set; }
 
-    public int RestaurantReservationCount { get; set; }
-
     public DateTime RestaurantCreatedAt { get; set; }
 
     public virtual ICollection<CustomerFeedbackView> CustomerFeedbacks { get; set; } = new List<CustomerFeedbackView>();

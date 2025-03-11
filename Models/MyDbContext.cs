@@ -298,7 +298,6 @@ public partial class MyDbContext : DbContext
             entity.Property(e => e.RestaurantPhone)
                 .HasMaxLength(20)
                 .HasColumnName("Restaurant_Phone");
-            entity.Property(e => e.RestaurantReservationCount).HasColumnName("Restaurant_ReservationCount");
         });
 
         OnModelCreatingPartial(modelBuilder);
