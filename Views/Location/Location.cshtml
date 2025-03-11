@@ -1,0 +1,256 @@
+﻿@model IEnumerable<Restaurant.Models.RestaurantInfo>
+@{
+    int maxPeople = 8;
+    ViewBag.Title = "門市資訊";
+    // 如果 TempData["SuccessMessage"] 有值，取出並顯示
+    var successMsg = TempData["SuccessMessage"] as string;
+}
+
+<!-- 引入自訂 CSS 與 Bootstrap -->
+<link rel="stylesheet" href="~/css/LocationCss.css" asp-append-version="true" />
+<link rel="JSsheet" href="~/js/Location.js" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<body>
+    <!-- 上方介紹區塊 -->
+    <div class="container my-5">
+        <div class="row justify-content-center align-items-center mb-4 d-none d-md-flex">
+            <div class="col-md-4">
+                <div class="restinfo">
+                    <p class="small-text">自1994年起至今</p>
+                    <p class="normal-text">一份飄香多年的幸福滋味</p>
+                    <p class="normal-text">客座滿堂，用心烹煮</p>
+                    <p class="normal-text">攜萬客靈魂之台中直輸合式鍋物</p>
+                    <p class="normal-text">持續努力在平凡中做出與眾不同的亮點</p>
+                    <p class="normal-text">獻給您老字號最經典美味的極致饗宴</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="restphoto border">
+                    <img src="~/images/TaichungHanKou.jpg" alt="台中漢口店" class="img-fluid">
+                </div>
+            </div>
+        </div>
+        <div class="container my-5">
+            <div class="row">
+                <div class="col-12">
+                    <div class="text-center">
+                        <!-- 文字區塊 -->
+                        <h3 class="section-title mb-2">門市據點．點餐．訂位</h3>
+                        <!-- 細線 -->
+                        <div class="section-line mx-auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 分店資訊列表 -->
+        @foreach (var restaurant in Model)
+        {
+            <!-- 每筆資料一個 row，置中顯示 (justify-content-center)，欄之間距 g，與底部間距 mb -->
+            <div class="row justify-content-center align-items-center" style="margin-bottom:3em">
+                @if (restaurant.InfoPosition == "Left")
+                {
+                    <!-- 地圖在左、門市資訊在右 -->
+                    <div class="col-md-4 ms-6 ">
+                        <div class="map-container position-relative" style="cursor:pointer;"
+                             onclick="openGoogleMaps('@restaurant.Name')">
+                            <img src="@Url.Content(restaurant.ImageUrl)" alt="@restaurant.Name" class="img-fluid" />
+                            <iframe src="@restaurant.MapEmbedUrl"
+                                    width="350" height="250"
+                                    style="border:0;" allowfullscreen=""
+                                    loading="lazy"></iframe>
+                        </div>
+                    </div>
+                    <div class="col-md-4  g-4 mb-3 ms-6">
+                        <div class="store-card p-3 shadow-sm d-flex flex-column">
+                            <h2 class="store-title">@restaurant.Name</h2>
+                            <p class="store-info">
+                                <strong>預約訂位：</strong>
+                                <a href="tel:@restaurant.Phone" class="phone-link">@restaurant.Phone</a>
+                            </p>
+                            <p class="store-info">
+                                <strong>門市位置：</strong>
+                                <a href="https://www.google.com/maps/search/?api=1&query=@restaurant.Address" target="_blank">
+                                    @restaurant.Address
+                                </a>
+                            </p>
+                            <p class="store-info">
+                                <strong>營業時間：</strong>
+                                @Html.Raw(restaurant.OpeningHours)
+                            </p>
+                            <p class="store-info">
+                                <strong>最後點餐：</strong>
+                                @restaurant.LastOrderTime
+                            </p>
+                            <div class="d-flex justify-content-center gap-3 mt-auto">
+                                <button type="button" class="btn btn-outline-warning"
+                                        data-bs-toggle="modal" data-bs-target="#bookingModal"
+                                        data-branch="@restaurant.Name">
+                                    立即訂位
+                                </button>
+                                <button type="button" class="btn btn-outline-warning">線上訂餐</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <!-- InfoPosition == "Right"：門市資訊在左、地圖在右 -->
+                    <div class="col-md-4 g-4 mb-3 ms-6">
+                        <div class="store-card p-3 shadow-sm d-flex flex-column">
+                            <h2 class="store-title">@restaurant.Name</h2>
+                            <p class="store-info">
+                                <strong>預約訂位：</strong>
+                                <a href="tel:@restaurant.Phone" class="phone-link">@restaurant.Phone</a>
+                            </p>
+                            <p class="store-info">
+                                <strong>門市位置：</strong>
+                                <a href="https://www.google.com/maps/search/?api=1&query=@restaurant.Address" target="_blank">
+                                    @restaurant.Address
+                                </a>
+                            </p>
+                            <p class="store-info">
+                                <strong>營業時間：</strong>
+                                @Html.Raw(restaurant.OpeningHours)
+                            </p>
+                            <p class="store-info">
+                                <strong>最後點餐：</strong>
+                                @restaurant.LastOrderTime
+                            </p>
+                            <div class="d-flex justify-content-center gap-3 mt-auto">
+                                <button type="button" class="btn btn-outline-warning"
+                                        data-bs-toggle="modal" data-bs-target="#bookingModal"
+                                        data-branch="@restaurant.Name">
+                                    立即訂位
+                                </button>
+                                <button type="button" class="btn btn-outline-warning">線上訂餐</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 ms-6">
+                        <div class="map-container position-relative" style="cursor:pointer;"
+                             onclick="openGoogleMaps('@restaurant.Name')">
+                            <img src="@Url.Content(restaurant.ImageUrl)" alt="@restaurant.Name" class="img-fluid" />
+                            <iframe src="@restaurant.MapEmbedUrl"
+                                    width="350" height="250"
+                                    style="border:0;" allowfullscreen=""
+                                    loading="lazy"></iframe>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- 立即訂位的 Modal -->
+    @if (!string.IsNullOrEmpty(successMsg))
+    {
+        <script>
+            alert('@successMsg');
+        </script>
+    }
+
+    <!-- 這裡可以直接顯示表單，或放在 Modal 中 -->
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel">訂位表單</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Modal Body (包含表單) -->
+                <div class="modal-body">
+                    <form id="bookingForm" method="post" action="/Reservations">
+                        <!-- 假設 /Reservations 是接收 POST 的控制器動作 -->
+                        <!-- 分店名稱欄位 -->
+                        <div class="mb-3">
+                            <label for="branch" class="form-label">分店:</label>
+                            <input type="text" class="form-control" id="branch" name="RestaurantName" readonly required />
+                        </div>
+
+                        <!-- 其他欄位：電話、人數、日期時間等 -->
+                        <div>
+                            <label>姓名：</label>
+                            <input type="text" class="form-control" id="name" name="ReservationName" required />
+                        </div>
+                        <div>
+                            <label>電話：</label>
+                            <input type="text" class="form-control" id="phone" name="ReservationPhone" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="people" class="form-label">人數:</label>
+                            <select class="form-select" id="people" name="People" required>
+                                <option value="">請選擇人數</option>
+                                @for (int i = 1; i <= maxPeople; i++)
+                                {
+                                    <option value="@i">@i 人</option>
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label>日期與時間：</label>
+                            <input type="text" class="form-select" id="dateTime" name="ReservationDate" required />
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">送出訂位</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 點擊地圖圖片時開啟 Google Maps
+        function openGoogleMaps(branch) {
+            let url = "";
+            switch (branch) {
+                case "台中漢口店":
+                    url = "https://maps.app.goo.gl/Pbg4yd2jrigAkm3y6";
+                    break;
+                case "台中崇德店":
+                    url = "https://maps.app.goo.gl/z3TnqiZpHXFvqmRs9";
+                    break;
+                case "台中美村店":
+                    url = "https://maps.app.goo.gl/eRTRnPytL8aTcVHV9";
+                    break;
+                case "台中青海店":
+                    url = "https://maps.app.goo.gl/yuGGUwKCrBetgQGm7";
+                    break;
+                case "台中國安店":
+                    url = "https://maps.app.goo.gl/Tws5znETrnGmgbrP7";
+                    break;
+                default:
+                    url = "https://www.google.com/maps";
+            }
+            window.open(url);
+        }
+
+             flatpickr("#dateTime", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true,
+            minuteIncrement: 15
+        });
+              // 取得 Modal 元素
+        var bookingModal = document.getElementById('bookingModal');
+
+        // 在 Modal 顯示前觸發
+        bookingModal.addEventListener('show.bs.modal', function (event) {
+            // 取得觸發此 Modal 的按鈕
+            var button = event.relatedTarget;
+            // 從按鈕中取出 data-branch 屬性的值
+            var branchName = button.getAttribute('data-branch');
+
+            // 找到表單中對應的輸入欄位
+            var branchInput = bookingModal.querySelector('#branch');
+            // 將分店名稱寫入該欄位
+            branchInput.value = branchName;
+        });
+    </script>
+</body>
