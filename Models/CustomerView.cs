@@ -1,4 +1,5 @@
-﻿namespace Restaurant.Models;
+﻿using System.ComponentModel.DataAnnotations;
+namespace Restaurant.Models;
 
 public partial class CustomerView
 {

@@ -14,12 +14,13 @@
     <!-- 上方按鈕 -->
     <div class="d-flex justify-content-center mb-3">
         <a href="/Order" class="btn btn-primary mx-2">訂餐</a>
-        <a href="/Reservation" class="btn btn-secondary mx-2">訂位</a>
+        <a href="~/StoreInformation/StoreInformation" class="btn btn-secondary mx-2">訂位</a>
     </div>
 
     <!-- 會員資訊 -->
     <div class="card p-3 mb-4">
         <h4>會員資訊</h4>
+        <a asp-action="Edit" asp-route-id="@Model.CustomerId"  class="btn btn-secondary ">修改資料✏️</a>
         <p><strong>帳號:</strong> @Model.CustomerAccount</p>
         <p><strong>姓名:</strong> @Model.CustomerName</p>
         <p><strong>電話:</strong> @Model.CustomerPhone</p>
