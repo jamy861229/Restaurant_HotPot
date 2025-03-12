@@ -50,6 +50,15 @@
                     </ul>
                     <form class="d-flex">
                         <a class="btn btn-outline-success">人頭</a>
+                        @if (User.Identity.IsAuthenticated)   // layout 需加入這段
+                        {
+                                <span class=  "navber-text me-3"> 歡迎, @User.Identity.Name</span>
+                                <a class="btn btn-outline-danger" href="~/HomePage/Index">登出</a>
+                        }
+                        else
+                        {
+                                    <a class="btn btn-outline-success" href="~/Customers/Member_Login")>登入</a>						
+                        } 
                     </form>
                 </div>
             </div>

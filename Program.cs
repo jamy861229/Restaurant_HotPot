@@ -27,7 +27,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
        options.ExpireTimeSpan = TimeSpan.FromSeconds(20); //過期時間為20分鐘(秒)
        options.SlidingExpiration = true; //如果登入期間使用者有活動(例如發送請求),則重新計算過期時間
        options.LoginPath = "/Customers/Member_Login"; //未登入自動導至這個網址
-
+       options.Events = new CookieAuthenticationEvents
+       {
+           OnRedirectToLogin = context =>
+           {
+               context.Response.StatusCode = 401; // 回傳 401 未授權，而不是跳轉
+               return Task.CompletedTask;
+           }
+       };
        // 下面這些是為了讓跨站點的請求可以傳遞Cookie
        options.Cookie.HttpOnly = true; // 保護Cookie避免被JavaScript存取
        options.Cookie.SameSite = SameSiteMode.Lax; // 設定SameSite策略，避免跨站點問題
