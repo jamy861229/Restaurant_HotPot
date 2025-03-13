@@ -17,8 +17,8 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using Umbraco.Core.Models.Membership;
-using Microsoft.AspNet.Identity;
+//using Umbraco.Core.Models.Membership;
+//using Microsoft.AspNet.Identity;
 using System.Diagnostics;
 
 
