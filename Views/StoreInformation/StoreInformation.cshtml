@@ -2,13 +2,10 @@
 @{
     int maxPeople = 8;
     ViewBag.Title = "門市資訊";
-    // 如果 TempData["SuccessMessage"] 有值，取出並顯示
-    var successMsg = TempData["SuccessMessage"] as string;
 }
 
 <!-- 引入自訂 CSS 與 Bootstrap -->
-<link rel="stylesheet" href="~/css/LocationCss.css" asp-append-version="true" />
-<link rel="JSsheet" href="~/js/Location.js" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/StoreInformation.css" asp-append-version="true" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap">
@@ -87,7 +84,8 @@
                             <div class="d-flex justify-content-center gap-3 mt-auto">
                                 <button type="button" class="btn btn-outline-warning"
                                         data-bs-toggle="modal" data-bs-target="#bookingModal"
-                                        data-branch="@restaurant.RestaurantName">
+                                        data-restaurant-id="@restaurant.RestaurantId"
+                                        data-restaurant-name="@restaurant.RestaurantName">
                                     立即訂位
                                 </button>
                                 <button type="button" class="btn btn-outline-warning">線上訂餐</button>
@@ -122,7 +120,8 @@
                             <div class="d-flex justify-content-center gap-3 mt-auto">
                                 <button type="button" class="btn btn-outline-warning"
                                         data-bs-toggle="modal" data-bs-target="#bookingModal"
-                                        data-branch="@restaurant.RestaurantName">
+                                        data-restaurant-id="@restaurant.RestaurantId"
+                                        data-restaurant-name="@restaurant.RestaurantName">
                                     立即訂位
                                 </button>
                                 <button type="button" class="btn btn-outline-warning">線上訂餐</button>
@@ -145,13 +144,6 @@
     </div>
 
     <!-- 立即訂位的 Modal -->
-    @if (!string.IsNullOrEmpty(successMsg))
-    {
-        <script>
-            alert('@successMsg');
-        </script>
-    }
-
     <!-- 這裡可以直接顯示表單，或放在 Modal 中 -->
     <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -163,12 +155,17 @@
                 </div>
                 <!-- Modal Body (包含表單) -->
                 <div class="modal-body">
-                    <form id="bookingForm" method="post" action="/Reservations">
+                    <form asp-controller="StoreInformation" asp-action="StoreInformation" method="post">
                         <!-- 假設 /Reservations 是接收 POST 的控制器動作 -->
                         <!-- 分店名稱欄位 -->
                         <div class="mb-3">
-                            <label for="branch" class="form-label">分店:</label>
-                            <input type="text" class="form-control" id="branch" name="RestaurantName" readonly required />
+                            <label for="restaurantId" class="visually-hidden">分店ID</label>
+                            <input type="hidden" class="form-control" id="restaurantId" name="RestaurantId" required />
+                            <!-- 如果需要顯示門市名稱，可另加一個 readonly 的 input -->
+                        </div>
+                        <div class="mb-3">
+                            <label for="restaurantName" class="form-label">分店:</label>
+                            <input type="text" class="form-control" id="restaurantName" name="RestaurantName" readonly />
                         </div>
 
                         <!-- 其他欄位：電話、人數、日期時間等 -->
@@ -194,7 +191,7 @@
                             <label>日期與時間：</label>
                             <input type="text" class="form-select" id="dateTime" name="ReservationDate" required />
                         </div>
-                        <div class="d-flex justify-content-end">
+                        <div class="d-flex justify-content-end mt-3">
                             <button type="submit" class="btn btn-primary">送出訂位</button>
                         </div>
                     </form>
@@ -237,20 +234,36 @@
             time_24hr: true,
             minuteIncrement: 15
         });
-              // 取得 Modal 元素
         var bookingModal = document.getElementById('bookingModal');
 
-        // 在 Modal 顯示前觸發
         bookingModal.addEventListener('show.bs.modal', function (event) {
-            // 取得觸發此 Modal 的按鈕
             var button = event.relatedTarget;
-            // 從按鈕中取出 data-branch 屬性的值
-            var branchName = button.getAttribute('data-branch');
 
-            // 找到表單中對應的輸入欄位
-            var branchInput = bookingModal.querySelector('#branch');
-            // 將分店名稱寫入該欄位
-            branchInput.value = branchName;
+            // 從按鈕中取出 data 屬性
+            var restaurantId = button.getAttribute('data-restaurant-id');
+            var restaurantName = button.getAttribute('data-restaurant-name');
+
+            // 輸出除錯訊息
+            console.log("取得的 restaurantId:", restaurantId);
+            console.log("取得的 restaurantName:", restaurantName);
+
+            // 隱藏欄位 (RestaurantId)
+            var restaurantIdInput = bookingModal.querySelector('#restaurantId');
+            if (restaurantIdInput) {
+                restaurantIdInput.value = restaurantId;
+                console.log("隱藏欄位 restaurantId 的值設為:", restaurantIdInput.value);
+            } else {
+                console.error("找不到隱藏欄位 #restaurantId");
+            }
+
+            // 顯示欄位 (RestaurantName)
+            var restaurantNameInput = bookingModal.querySelector('#restaurantName');
+            if (restaurantNameInput) {
+                restaurantNameInput.value = restaurantName;
+                console.log("分店名稱欄位 restaurantName 的值設為:", restaurantNameInput.value);
+            } else {
+                console.error("找不到分店名稱欄位 #restaurantName");
+            }
         });
     </script>
 </body>
