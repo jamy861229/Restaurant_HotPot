@@ -22,6 +22,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
     <!-- FontAwesome 圖示庫 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    
 </head>
 <body>
     <header>
@@ -38,9 +40,9 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">菜單品鑑</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">老饕必吃</a></li>
-                                <li><a class="dropdown-item" href="#">精選附食</a></li>
-                                <li><a class="dropdown-item" href="#">甜點熟食</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index_Musteat", "Menu")">老饕必吃</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index1_Mealsincluded", "Menu")">精選附食</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index2_Desserts", "Menu")">甜點熟食</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#">點餐</a></li>
                             </ul>

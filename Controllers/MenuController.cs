@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Models;
 
@@ -13,16 +14,19 @@ namespace Restaurant.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
         public IActionResult Index_Musteat()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Index1_Mealsincluded()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Index2_Desserts()
         {
             return View();
