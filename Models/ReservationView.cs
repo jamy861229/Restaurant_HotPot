@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 
 namespace Restaurant.Models;
@@ -21,7 +22,8 @@ public partial class ReservationView
 
     public DateTime ReservationCreatedDate { get; set; }
 
+    [ValidateNever]
     public virtual CustomerView Customer { get; set; } = null!;
-
+    [ValidateNever]
     public virtual RestaurantInfoView Restaurant { get; set; } = null!;
 }

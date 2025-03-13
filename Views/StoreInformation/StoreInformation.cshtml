@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Restaurant.Models.RestaurantInfoView>
+﻿@model Restaurant.Models.ReservationRestaurantViewModel
 @{
     int maxPeople = 8;
     ViewBag.Title = "門市資訊";
@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <body>
+    @Html.ValidationSummary()
     <!-- 上方介紹區塊 -->
     <div class="container my-5">
         <div class="row justify-content-center align-items-center mb-4 d-none d-md-flex">
@@ -43,7 +44,7 @@
             </div>
         </div>
         <!-- 分店資訊列表 -->
-        @foreach (var restaurant in Model)
+        @foreach (var restaurant in Model.RestaurantInfos)
         {
             <!-- 每筆資料一個 row，置中顯示 (justify-content-center)，欄之間距 g，與底部間距 mb -->
             <div class="row justify-content-center align-items-center" style="margin-bottom:3em">
@@ -160,7 +161,7 @@
                         <!-- 分店名稱欄位 -->
                         <div class="mb-3">
                             <label for="restaurantId" class="visually-hidden">分店ID</label>
-                            <input type="hidden" class="form-control" id="restaurantId" name="RestaurantId" required />
+                            <input type="hidden" class="form-control" id="restaurantId" name="Reservation.RestaurantId" required />
                             <!-- 如果需要顯示門市名稱，可另加一個 readonly 的 input -->
                         </div>
                         <div class="mb-3">
@@ -171,15 +172,15 @@
                         <!-- 其他欄位：電話、人數、日期時間等 -->
                         <div>
                             <label>姓名：</label>
-                            <input type="text" class="form-control" id="name" name="ReservationName" required />
+                            <input asp-for="Reservation.ReservationName" class="form-control" id="name" required />
                         </div>
                         <div>
                             <label>電話：</label>
-                            <input type="text" class="form-control" id="phone" name="ReservationPhone" required />
+                            <input asp-for="Reservation.ReservationPhone" class="form-control" id="phone" required />
                         </div>
                         <div class="mb-3">
                             <label for="people" class="form-label">人數:</label>
-                            <select class="form-select" id="people" name="People" required>
+                            <select class="form-select" asp-for="Reservation.ReservationPeople" required>
                                 <option value="">請選擇人數</option>
                                 @for (int i = 1; i <= maxPeople; i++)
                                 {
@@ -189,7 +190,7 @@
                         </div>
                         <div>
                             <label>日期與時間：</label>
-                            <input type="text" class="form-select" id="dateTime" name="ReservationDate" required />
+                            <input type="text" class="form-select" id="dateTime" name="Reservation.ReservationDate" required />
                         </div>
                         <div class="d-flex justify-content-end mt-3">
                             <button type="submit" class="btn btn-primary">送出訂位</button>
@@ -199,7 +200,12 @@
             </div>
         </div>
     </div>
-
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>

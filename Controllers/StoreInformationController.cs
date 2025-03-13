@@ -13,49 +13,64 @@ namespace Restaurant.Controllers
             _context = context;
         }
 
+        [HttpGet]
         public async Task<IActionResult> StoreInformation()
         {
             var stores = await _context.RestaurantInfos.ToListAsync();
-            return View(stores);
+            var viewModel = new ReservationRestaurantViewModel
+            {
+                RestaurantInfos = stores,
+                Reservation = new ReservationView()  // 空的預約資料，供表單使用
+            };
+
+            return View(viewModel);
         }
-        //POST: Reservation/Create
-        //GET: Reservation/Create
-        //[HttpGet]
-        //public IActionResult StoreInformation()
-        //{
-        //    return View();
-        //}
-        // POST: Reservation/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> StoreInformation([Bind("RestaurantId,CustomerId,ReservationName,ReservationPhone,ReservationPeople,ReservationDate")] ReservationView reservation)
+        // POST: StoreInformation (處理預約表單提交)
+        public async Task<IActionResult> StoreInformation(ReservationRestaurantViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                // 這裡使用 Reservation (資料庫實體) 而非 ReservationView
-                ReservationView reservation1 = new ReservationView
+                // 這裡假設實際存取 Reservations 資料表的實體為 Reservation
+                // 如果您的 DbSet 型別為 ReservationView，也可以直接使用 ReservationView
+                var newReservation = new ReservationView
                 {
-                    // 其餘欄位來自表單或預設
-                    RestaurantId = reservation.RestaurantId,
-                    ReservationName = reservation.ReservationName,
-                    ReservationPhone = reservation.ReservationPhone,
-                    ReservationPeople = reservation.ReservationPeople,
-                    ReservationDate = reservation.ReservationDate,
-
-                    // 指定固定的 CustomerID
+                    RestaurantId = viewModel.Reservation.RestaurantId,
+                    ReservationName = viewModel.Reservation.ReservationName,
+                    ReservationPhone = viewModel.Reservation.ReservationPhone,
+                    ReservationPeople = viewModel.Reservation.ReservationPeople,
+                    ReservationDate = viewModel.Reservation.ReservationDate,
                     CustomerId = 1,
-
-                    // 設定系統時間給 ReservationCreatedDate
                     ReservationCreatedDate = DateTime.Now
                 };
 
-                _context.Reservations.Add(reservation1);
+                _context.Reservations.Add(newReservation);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("Success");
+                TempData["SuccessMessage"] = "預約成功！";
+                return RedirectToAction("StoreInformation");
             }
-            return View(reservation);
+            else
+            {
+                // 這裡可以用來看是哪個欄位出錯
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var err in errors)
+                {
+                    Console.WriteLine(err.ErrorMessage);
+                }
+            }
+            // 驗證失敗時，重新取得門市列表資料，再回傳 ViewModel
+            viewModel.RestaurantInfos = await _context.RestaurantInfos.ToListAsync();
+            return View(viewModel);
         }
 
+        // 預約成功頁面 (選用)
+        public IActionResult Success()
+        {
+            return View();
+        }
     }
+
 }
+
