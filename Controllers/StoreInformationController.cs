@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Models;
+using System.Security.Claims;
 
 namespace Restaurant.Controllers
 {
@@ -25,15 +26,24 @@ namespace Restaurant.Controllers
 
             return View(viewModel);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // POST: StoreInformation (處理預約表單提交)
         public async Task<IActionResult> StoreInformation(ReservationRestaurantViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                // 這裡假設實際存取 Reservations 資料表的實體為 Reservation
-                // 如果您的 DbSet 型別為 ReservationView，也可以直接使用 ReservationView
+                // 取得目前登入使用者的 CustomerId
+                // 請確認你在登入時有將 CustomerId 放入 Claim("UserId")
+                var userIdClaim = User.FindFirst("UserId");
+                if (userIdClaim == null)
+                {
+                    // 如果找不到，可能尚未登入，可導向登入頁面
+                    return RedirectToAction("Member_Login", "Customers");
+                }
+                int customerId = int.Parse(userIdClaim.Value);
+
+                // 建立預約資料，注意這邊我們使用 ReservationView 作為實體型別（請確認資料庫對應的實體）
                 var newReservation = new ReservationView
                 {
                     RestaurantId = viewModel.Reservation.RestaurantId,
@@ -41,7 +51,7 @@ namespace Restaurant.Controllers
                     ReservationPhone = viewModel.Reservation.ReservationPhone,
                     ReservationPeople = viewModel.Reservation.ReservationPeople,
                     ReservationDate = viewModel.Reservation.ReservationDate,
-                    CustomerId = 1,
+                    CustomerId = customerId, // 從登入使用者取得 CustomerId
                     ReservationCreatedDate = DateTime.Now
                 };
 
@@ -53,14 +63,14 @@ namespace Restaurant.Controllers
             }
             else
             {
-                // 這裡可以用來看是哪個欄位出錯
+                // Log 錯誤訊息以便排查
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
                 foreach (var err in errors)
                 {
                     Console.WriteLine(err.ErrorMessage);
                 }
             }
-            // 驗證失敗時，重新取得門市列表資料，再回傳 ViewModel
+            // 驗證失敗時重新取得分店資訊
             viewModel.RestaurantInfos = await _context.RestaurantInfos.ToListAsync();
             return View(viewModel);
         }
@@ -70,7 +80,39 @@ namespace Restaurant.Controllers
         {
             return View();
         }
+
+        // API：根據分店與日期查詢各小時預約人數，回傳客滿的小時清單
+        [HttpGet]
+        public async Task<IActionResult> GetFullyBookedHours(int restaurantId, string date)
+        {
+            DateTime selectedDate = DateTime.Parse(date);
+            // 查詢該分店該日期所有預約資料
+            var reservations = await _context.Reservations
+                                .Where(r => r.RestaurantId == restaurantId && r.ReservationDate.Date == selectedDate.Date)
+                                .ToListAsync();
+
+            // 依小時分組，計算每個小時總預約人數
+            var hourCapacity = reservations
+                .GroupBy(r => r.ReservationDate.Hour)
+                .Select(g => new { Hour = g.Key, TotalPeople = g.Sum(r => r.ReservationPeople) })
+                .ToList();
+
+            // 取得該分店的最大收客數（假設 RestaurantInfo 有 RestaurantCapacity 屬性）
+            int maxCapacity = GetMaxCapacity(restaurantId);
+
+            // 篩選總人數大於或等於最大收客數的時段
+            var fullyBookedHours = hourCapacity
+                                    .Where(h => h.TotalPeople >= maxCapacity)
+                                    .Select(h => h.Hour)
+                                    .ToList();
+
+            return Json(fullyBookedHours);
+        }
+
+        private int GetMaxCapacity(int restaurantId)
+        {
+            var restaurant = _context.RestaurantInfos.FirstOrDefault(r => r.RestaurantId == restaurantId);
+            return restaurant != null ? restaurant.RestaurantCapacity : 0;
+        }
     }
-
 }
-
