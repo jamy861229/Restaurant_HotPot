@@ -1,6 +1,7 @@
 ﻿/* 移除滾動監控的顏色框 */
-.nav-link.active {
-    background-color: transparent !important;
+.nav-pills .nav-link.active {
+    background-color: inherit !important;
+    color: #000 !important; /* 保持原本顏色 */
 }
 
 .card-body {
@@ -8,6 +9,51 @@
 }
 
 /* 調整卡片標題的樣式 */
-.card-title {
+.card-stitle {
     margin-bottom: 15px; /* 調整標題與內容之間的間距 */
+}
+
+/* 設置 flex 容器的樣式 */
+.flex-container {
+    display: flex;
+    flex-direction: column; /* 小螢幕上垂直排列 */
+    align-items: center; /* 子元素在交叉軸（垂直方向）上居中對齊 */
+    justify-content: center; /* 子元素在主軸（水平方向）上居中對齊 */
+    gap: 1.5rem; /* 子元素之間的間距為 1.5rem */
+}
+
+/* 中等及以上大小的螢幕上水平排列，子元素在主軸（水平方向）上左對齊 */
+@media (min-width: 768px) {
+    .flex-container {
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+}
+
+/* 大螢幕上水平排列，子元素在主軸（水平方向）上左對齊 */
+@media (min-width: 992px) {
+    .flex-container {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+}
+
+#upBtn {
+    display: none;
+    position: fixed;
+    bottom: 70px;
+    left: 10px;
+    z-index: 99;
+    border: none;
+    outline: none;
+    background-color: #B9B973;
+    color: white;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+#upBtn:hover {
+    background-color: #CDCD9A;
 }

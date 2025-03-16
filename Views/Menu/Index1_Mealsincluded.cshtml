@@ -41,9 +41,9 @@
                 <h3 class="card-title mb-3" id="item1">飯飯系列</h3>
 
                 <div class="card mb-5 p-3 border" id="A1">
-                    <div id="ca1" class="d-flex flex-column flex-md-row flex-lg-row align-items-center justify-content-center justify-content-md-start justify-content-lg-start gap-4">
+                    <div id="ca1" class="flex-container">
                         <a href="#" class="stretched-link"></a>
-                        <img src="~/images/經典雞滷飯.png" class="img-fluid rounded" style="width:400px; height:auto;" alt="經典雞滷飯">
+                        <img src="~/菜單圖/經典雞滷飯.png" class="img-fluid rounded" style="width:400px; height:auto;" alt="經典雞滷飯">
                         <div class="card-body">
                             <h5 class="card-stitle">經典雞滷飯</h5>
                             <p class="card-text">細火慢燉的雞肉滷汁滲透Q彈白飯，鹹香入味，肉質嫩滑，每一口都是傳統家常的美好滋味！</p>
@@ -54,9 +54,9 @@
                 <p></p>
 
                 <div class="card mb-5 p-3 border" id="A2">
-                    <div id="ca2" class="d-flex flex-column flex-md-row flex-lg-row align-items-center justify-content-center justify-content-md-start justify-content-lg-start gap-4">
+                    <div id="ca2" class="flex-container">
                         <a href="#" class="stretched-link"></a>
-                        <img src="~/images/蝦滷飯.png" class="img-fluid rounded" style="width:400px; height:auto;" alt="蝦滷飯">
+                        <img src="~/菜單圖/蝦滷飯.png" class="img-fluid rounded" style="width:400px; height:auto;" alt="蝦滷飯">
                         <div class="card-body">
                             <h5 class="card-stitle">蝦滷飯</h5>
                             <p class="card-text">鮮蝦滷製獨特滷汁，鹹香中帶海味鮮甜，滷汁滲入米飯，層次豐富，每口都是極致享受！</p>
@@ -67,9 +67,9 @@
                 <p></p>
 
                 <div class="card mb-5 p-3 border" id="A3">
-                    <div id="ca3" class="d-flex flex-column flex-md-row flex-lg-row align-items-center justify-content-center justify-content-md-start justify-content-lg-start gap-4">
+                    <div id="ca3" class="flex-container">
                         <a href="#" class="stretched-link"></a>
-                        <img src="~/images/銷魂舒肥雞肉飯.jpg" class="img-fluid rounded" style="width:400px; height:auto;" alt="銷魂舒肥雞肉飯">
+                        <img src="~/菜單圖/銷魂舒肥雞肉飯.jpg" class="img-fluid rounded" style="width:400px; height:auto;" alt="銷魂舒肥雞肉飯">
                         <div class="card-body">
                             <h5 class="card-stitle">銷魂舒肥雞肉飯</h5>
                             <p class="card-text">低溫舒肥雞肉嫩滑多汁，搭配香氣四溢的特製醬汁與Q彈米飯，每口都滿足味蕾。</p>
@@ -82,9 +82,9 @@
                 <h3 class="card-title mb-3" id="item2">麵麵系列</h3>
 
                 <div class="card mb-5 p-3 border" id="B1">
-                    <div id="ca4" class="d-flex flex-column flex-md-row flex-lg-row align-items-center justify-content-center justify-content-md-start justify-content-lg-start gap-4">
+                    <div id="ca4" class="flex-container">
                         <a href="#" class="stretched-link"></a>
-                        <img src="~/images/香辣肉燥拌麵.png" class="img-fluid rounded" style="width:400px; height:auto;" alt="香辣肉燥拌麵">
+                        <img src="~/菜單圖/香辣肉燥拌麵.png" class="img-fluid rounded" style="width:400px; height:auto;" alt="香辣肉燥拌麵">
                         <div class="card-body">
                             <h5 class="card-stitle">香辣肉燥拌麵</h5>
                             <p class="card-text">辣香四溢的肉燥醬汁拌勻Q彈麵條，香氣撲鼻，麻辣帶勁，一口接一口停不下來！</p>
@@ -95,3 +95,28 @@
         </div>
     </div>
 </div>
+
+<button onclick="topFunction()" id="upBtn" class="bi bi-arrow-up">TOP</button>
+
+<script>
+    // Get the button
+    let mybutton = document.getElementById("upBtn");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+
+     function scrollFunction() {
+         if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+             mybutton.style.display = "block";
+         }
+         else {
+             mybutton.style.display = "none";
+         }
+     }
+
+      // When the user clicks on the button, scroll to the top of the document
+     function topFunction() {
+         document.body.scrollTop = 0;
+         document.documentElement.scrollTop = 0;
+     }
+</script>
