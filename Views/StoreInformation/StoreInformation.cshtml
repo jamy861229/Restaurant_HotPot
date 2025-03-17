@@ -28,7 +28,7 @@
             </div>
             <div class="col-md-6">
                 <div class="restphoto border">
-                    <img src="~/images/TaichungHanKou.jpg" alt="台中漢口店" class="img-fluid">
+                    <img src="~/images/Taichung_Hankou_台中漢口.jpg" alt="台中漢口店" class="img-fluid">
                 </div>
             </div>
         </div>
@@ -162,6 +162,7 @@
                 <!-- Modal Body (包含表單) -->
                 <div class="modal-body">
                     <form asp-controller="StoreInformation" asp-action="StoreInformation" method="post">
+                        @Html.AntiForgeryToken()
                         <!-- 假設 /Reservations 是接收 POST 的控制器動作 -->
                         <!-- 分店名稱欄位 -->
                         <div class="mb-3">
@@ -193,9 +194,12 @@
                                 }
                             </select>
                         </div>
-                        <div>
-                            <label>日期：</label>
-                            <input type="text" class="form-select" id="dateTime" name="Reservation.ReservationDate" required />
+                        <div class="mb-3">
+                            <label for="dateTime" class="form-label">選擇日期與時間:</label>
+                            <input type="text" class="form-control" id="dateTime" name="Reservation.ReservationDate" required />
+                            <small class="text-muted">
+                                ※ 線上訂位僅限 11:30 ~ 23:45，午夜 12 點至 5 點不開放，當天不開放訂位。
+                            </small>
                         </div>
                         <div class="d-flex justify-content-end mt-3">
                             <button type="submit" class="btn btn-primary">送出訂位</button>
@@ -243,45 +247,39 @@
             }
             window.open(url);
         }
-        // 自訂函式，取得本地日期字串，格式為 yyyy-MM-dd
-        let currentSelectedDate = "";
 
-        function getLocalDateString(date) {
-          const year = date.getFullYear();
-          const month = ('0' + (date.getMonth() + 1)).slice(-2);
-          const day = ('0' + date.getDate()).slice(-2);
-          return `${year}-${month}-${day}`;
-        }
 
-        const disableCallback = function(date) {
-          // 檢查是否為 2025 年 3 月 15 日（注意：月份從 0 開始，3 月為 2）
-          if (date.getFullYear() === 2025 && date.getMonth() === 2 && date.getDate() === 15) {
-            // 若時間正好是 13:00，則禁用該時段
-            if (date.getHours() === 13 && date.getMinutes() === 0) {
-              console.log(`檢查：${getLocalDateString(date)} ${date.getHours()}點 → disabled`);
-              return true;
-            }
-          }
-          return false;
-        };
+                 document.addEventListener('DOMContentLoaded', function () {
+            var bookedDates = JSON.parse('@Html.Raw(ViewBag.BookedDates)');
+            console.log("已客滿日期:", bookedDates);
 
-        flatpickr("#dateTime", {
-          enableTime: true,
-          dateFormat: "Y-m-d H:i",
-          time_24hr: true,
-          minuteIncrement: 15,
-          defaultHour: 12,
-          minDate: "today",
-          onChange: function(selectedDates, dateStr, instance) {
-            // 假設 dateStr 格式 "2025-03-15 12:00"，只取日期部分
-            currentSelectedDate = dateStr.split(" ")[0];
-            console.log("使用者選取日期:", currentSelectedDate);
-            instance.redraw();
-          },
-          disable: [ disableCallback ]
+            var tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            var tomorrowStr = tomorrow.toISOString().split("T")[0];
+
+            flatpickr("#dateTime", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true,
+                minuteIncrement: 15,
+                minDate: tomorrowStr,
+                minTime: "11:30",
+                maxTime: "23:59",
+                disable: bookedDates,
+                onDayCreate: function(dObj, dStr, fp, dayElem) {
+                    // 取得當前單元格的日期字串
+                    var dateStr = fp.formatDate(dayElem.dateObj, "Y-m-d");
+                    // 如果該日期在已客滿陣列中，就附加一個 "客滿" 標籤
+                    if (bookedDates.indexOf(dateStr) !== -1) {
+                        var label = document.createElement("span");
+                        label.className = "fully-booked-label";
+                        label.textContent = "客滿";
+                        dayElem.appendChild(label);
+                    }
+                }
+            });
         });
-
-         // 取得restaurantId與restaurantName
+        // 取出 data 屬性restaurant-id 及 restaurant-name
         var bookingModal = document.getElementById('bookingModal');
         bookingModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;

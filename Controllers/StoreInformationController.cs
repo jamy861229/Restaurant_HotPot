@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Models;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace Restaurant.Controllers
 {
@@ -13,20 +14,49 @@ namespace Restaurant.Controllers
         {
             _context = context;
         }
-
         [HttpGet]
         public async Task<IActionResult> StoreInformation()
         {
             var stores = await _context.RestaurantInfos.ToListAsync();
+
+            // 取得所有分店的已客滿日期
+            var bookedDates = await _context.Reservations
+                .GroupBy(r => new { r.RestaurantId, DateOnly = r.ReservationDate.Date })
+                .Select(g => new
+                {
+                    g.Key.RestaurantId,
+                    Date = g.Key.DateOnly,
+                    TotalPeople = g.Sum(r => r.ReservationPeople)
+                })
+                .Join(
+                    _context.RestaurantInfos,
+                    res => res.RestaurantId,
+                    rest => rest.RestaurantId,
+                    (res, rest) => new
+                    {
+                        res.RestaurantId,
+                        res.Date,
+                        res.TotalPeople,
+                        Capacity = rest.RestaurantCapacity
+                    }
+                )
+                .Where(g => g.TotalPeople >= g.Capacity)
+                .Select(g => g.Date)
+                .Distinct()
+                .ToListAsync();
+
+            // 將禁用日期轉成 JSON 格式 (yyyy-MM-dd)
+            var bookedDateStrings = bookedDates.Select(d => d.ToString("yyyy-MM-dd")).ToArray();
+            ViewBag.BookedDates = JsonSerializer.Serialize(bookedDateStrings);
+
             var viewModel = new ReservationRestaurantViewModel
             {
                 RestaurantInfos = stores,
-                Reservation = new ReservationView()  // 空的預約資料，供表單使用
+                Reservation = new ReservationView()
             };
 
             return View(viewModel);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> StoreInformation(ReservationRestaurantViewModel viewModel)
@@ -64,55 +94,18 @@ namespace Restaurant.Controllers
             else
             {
                 // Log 錯誤訊息以便排查
-                var errors = ModelState.Values.SelectMany(v => v.Errors);
-                foreach (var err in errors)
+                foreach (var entry in ModelState)
                 {
-                    Console.WriteLine(err.ErrorMessage);
+                    foreach (var error in entry.Value.Errors)
+                    {
+                        Console.WriteLine($"欄位：{entry.Key}，錯誤：{error.ErrorMessage}");
+                    }
                 }
+
+                // 驗證失敗時重新取得分店資訊
+                viewModel.RestaurantInfos = await _context.RestaurantInfos.ToListAsync();
+                return View(viewModel);
             }
-            // 驗證失敗時重新取得分店資訊
-            viewModel.RestaurantInfos = await _context.RestaurantInfos.ToListAsync();
-            return View(viewModel);
-        }
-
-        // 預約成功頁面 (選用)
-        public IActionResult Success()
-        {
-            return View();
-        }
-
-        // API：根據分店與日期查詢各小時預約人數，回傳客滿的小時清單
-        [HttpGet]
-        public async Task<IActionResult> GetFullyBookedHours(int restaurantId, string date)
-        {
-            DateTime selectedDate = DateTime.Parse(date);
-            // 查詢該分店該日期所有預約資料
-            var reservations = await _context.Reservations
-                                .Where(r => r.RestaurantId == restaurantId && r.ReservationDate.Date == selectedDate.Date)
-                                .ToListAsync();
-
-            // 依小時分組，計算每個小時總預約人數
-            var hourCapacity = reservations
-                .GroupBy(r => r.ReservationDate.Hour)
-                .Select(g => new { Hour = g.Key, TotalPeople = g.Sum(r => r.ReservationPeople) })
-                .ToList();
-
-            // 取得該分店的最大收客數（假設 RestaurantInfo 有 RestaurantCapacity 屬性）
-            int maxCapacity = GetMaxCapacity(restaurantId);
-
-            // 篩選總人數大於或等於最大收客數的時段
-            var fullyBookedHours = hourCapacity
-                                    .Where(h => h.TotalPeople >= maxCapacity)
-                                    .Select(h => h.Hour)
-                                    .ToList();
-
-            return Json(fullyBookedHours);
-        }
-
-        private int GetMaxCapacity(int restaurantId)
-        {
-            var restaurant = _context.RestaurantInfos.FirstOrDefault(r => r.RestaurantId == restaurantId);
-            return restaurant != null ? restaurant.RestaurantCapacity : 0;
         }
     }
 }
