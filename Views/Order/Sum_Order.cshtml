@@ -7,7 +7,6 @@
 }
 
 <h2>確認訂單</h2>
-
 <table class="table">
     <thead>
         <tr>
@@ -20,6 +19,7 @@
     <tbody>
         @foreach (var item in Model.OrderItems) 
         {
+
             <tr>
                 <td>@item.OrderItemMenuName</td>
                 <td>@item.OrderItemQuantity</td>
@@ -43,6 +43,8 @@
 </div>
 
 <form method="post" asp-action="Confirm_Order">
+    <div class="text-center">
     <button type="submit" class="btn btn-primary">確認訂單</button>
     <a asp-action="Dessert_Order" class="btn btn-secondary">返回修改</a>
+    </div>
 </form>
