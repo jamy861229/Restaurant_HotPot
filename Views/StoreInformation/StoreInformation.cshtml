@@ -1,6 +1,6 @@
 ﻿@model Restaurant.Models.ReservationRestaurantViewModel
 @{
-    int maxPeople = 8;
+    int maxPeople = 10;
     ViewBag.Title = "門市資訊";
 }
 <!-- 引入自訂 CSS 與 Bootstrap -->
@@ -85,7 +85,7 @@
                             <!-- 隱藏欄位，用來存放分店ID；這裡假設只用一間分店進行預約 -->
                             <input type="hidden" id="restaurantId" value="@restaurant.RestaurantId" />
                             <div class="d-flex justify-content-center gap-3 mt-auto">
-                                <button type="button" class="btn btn-outline-warning"
+                                <button type="button" class="btn btn-outline-warning btn-reservation"
                                         data-bs-toggle="modal" data-bs-target="#bookingModal"
                                         data-restaurant-id="@restaurant.RestaurantId"
                                         data-restaurant-name="@restaurant.RestaurantName">
@@ -123,7 +123,7 @@
                             <!-- 隱藏欄位，用來存放分店ID；這裡假設只用一間分店進行預約 -->
                             <input type="hidden" id="restaurantId" value="@restaurant.RestaurantId" />
                             <div class="d-flex justify-content-center gap-3 mt-auto">
-                                <button type="button" class="btn btn-outline-warning"
+                                <button type="button" class="btn btn-outline-warning btn-reservation"
                                         data-bs-toggle="modal" data-bs-target="#bookingModal"
                                         data-restaurant-id="@restaurant.RestaurantId"
                                         data-restaurant-name="@restaurant.RestaurantName">
@@ -160,7 +160,7 @@
                 </div>
                 <!-- Modal Body (包含表單) -->
                 <div class="modal-body">
-                    <form asp-controller="StoreInformation" asp-action="StoreInformation" method="post">
+                    <form id="bookingForm" asp-controller="StoreInformation" asp-action="StoreInformation" method="post">
                         @Html.AntiForgeryToken()
                         <!-- 假設 /Reservations 是接收 POST 的控制器動作 -->
                         <!-- 分店名稱欄位 -->
@@ -321,7 +321,45 @@
                 });
             }
         });
+        // 這裡 isLoggedIn 會是 true 或 false 字串
+        var isLoggedIn = '@User.Identity.IsAuthenticated'.toLowerCase();
+        console.log("使用者是否已登入: " + isLoggedIn);
+        document.addEventListener('DOMContentLoaded', function () {
+            // 假設 isLoggedIn 為 "true" 或 "false" 字串
+            document.querySelectorAll('.btn-reservation').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    if (isLoggedIn === "false") {
+                        // 若未登入，直接導向登入頁面
+                        window.location.href = '@Url.Action("Member_Login", "Customers")';
+                        e.preventDefault(); // 阻止後續事件（例如打開 Modal）
+                        return false;
+                    }
+                    // 若已登入，則讓 Bootstrap 自動打開 Modal
+                });
+            });
+        });
+            document.addEventListener('DOMContentLoaded', function () {
+            var bookingForm = document.getElementById('bookingForm');
+            bookingForm.addEventListener('submit', function (e) {
+                // 阻止表單自動送出
+                e.preventDefault();
 
-
+                // 顯示確認對話框
+                Swal.fire({
+                    title: '確定送出訂位？',
+                    text: '送出後無法更改資訊，只能取消訂位。',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: '確定送出',
+                    cancelButtonText: '取消'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // 若使用者確認，就提交表單
+                        bookingForm.submit();
+                    }
+                    // 若使用者取消，不做任何事
+                });
+            });
+        });
     </script>
 </body>
