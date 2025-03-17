@@ -26,32 +26,39 @@
     
 </head>
 <body>
-    <header>
+    <header class="myfont fs-5">
+        <!--myfont = 自設字體
+            ps/ms = bs語法：左側外內距
+            text-nowrap = bs語法：即使被壓縮也不換行。
+            fs = bs語法：字大小（試試看大螢幕效果，如果太小可考慮響應式在1440的時候調整到fs-4）。
+        -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">LOGO</a>
+                <a class="navbar-brand ps-3" href="#"><img style="width:150px" src="~/images/LogoIMG.png"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link active" href="#">最新消息</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("StoreInformation", "StoreInformation")">門市資訊</a></li>
+                        <li class="nav-item text-nowrap ps-5"><a class="nav-link active" href="#">最新消息</a></li>
+                        <li class="nav-item text-nowrap ps-5"><a class="nav-link" href="@Url.Action("StoreInformation", "StoreInformation")">門市資訊</a></li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">菜單品鑑</a>
+                            <a class="nav-link dropdown-toggle ps-5" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">菜單品鑑</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="@Url.Action("Index_Musteat", "Menu")">老饕必吃</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Index1_Mealsincluded", "Menu")">精選附食</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Index2_Desserts", "Menu")">甜點熟食</a></li>
+                                <li><a class="dropdown-item ps-5" href="@Url.Action("Index_Musteat", "Menu")">老饕必吃</a></li>
+                                <li><a class="dropdown-item ps-5" href="@Url.Action("Index1_Mealsincluded", "Menu")">精選附食</a></li>
+                                <li><a class="dropdown-item ps-5" href="@Url.Action("Index2_Desserts", "Menu")">甜點熟食</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Index_Order", "Order")">點餐</a></li>
+                                <li><a class="dropdown-item" href="#">點餐</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Member_Login", "Customers")">會員專區</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">會員專區</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">聯絡我們</a></li>
                     </ul>
+
+                    <!-- 把人頭(MemberHead)跟登入合併 -->
                     <form class="d-flex">
-                        <a class="btn btn-outline-success">人頭</a>
+ 
                         @if (User.Identity.IsAuthenticated)   // layout 需加入這段
                         {
                                 <span class=  "navber-text me-3"> 歡迎, @User.Identity.Name</span>
@@ -59,7 +66,7 @@
                         }
                         else
                         {
-                                    <a class="btn btn-outline-success" href="~/Customers/Member_Login")>登入</a>						
+                            <a class="btn btn-outline-success" href="~/Customers/Member_Login" )><img style="width:50%" src="~/images/MemberHead.png">登入</a>
                         } 
                     </form>
                 </div>

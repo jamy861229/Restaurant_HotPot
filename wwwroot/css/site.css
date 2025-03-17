@@ -21,3 +21,15 @@ body {
     margin-bottom: 60px;
     background-color: #DEDEBE
 }
+
+/*字型（粉圓體）*/
+@charset "UTF-8";
+
+@font-face {
+    font-family: jf-openhuninn-2.1;
+    src: url('~/ttf/jf-openhuninn-2.1.woff') format('woff');
+}
+
+.myfont {
+    font-family: 'jf-openhuninn-2.1';
+}
