@@ -68,7 +68,6 @@ namespace Restaurant.Controllers
                 return View(model);
             }
 
-
             var feedback = new CustomerFeedbackView
             {
                 FeedbackName = model.FeedbackName!,
