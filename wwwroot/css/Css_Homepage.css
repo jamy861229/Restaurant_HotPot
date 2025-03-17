@@ -17,3 +17,71 @@
     display: flex;
     align-items: center;
 }
+/* 預設 */
+.container {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card2 {
+    position: relative;
+}
+
+.size {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backface-visibility: hidden;
+    transition: transform 0.5s ease;
+}
+
+.front {
+    transform: rotateY(0deg);
+}
+
+.back {
+    transform: rotateY(-180deg);
+}
+
+.card2:hover .front {
+    transform: rotateY(180deg);
+}
+
+.card2:hover .back {
+    transform: rotateY(0deg);
+}
+
+
+/* 響應式（>1000）*/
+@media (min-width: 1000px) {
+    .container {
+        max-width: 100vw; /* 滿版（100% 螢幕寬度） */
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    #NewsCard {
+        max-width: 700px;
+        height: auto;
+    }
+}
+
+/* 響應式（<1000）*/
+@media (max-width: 1000px) {
+    #NewsCard {
+        max-width: 500px;
+        height: auto;
+    }
+}
+
+@media (max-width: 800px) {
+    #NewsCard {
+        max-width: 400px;
+        height: auto;
+    }
+}
+
