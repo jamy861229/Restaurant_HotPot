@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Newtonsoft.Json;
 using NuGet.Protocol;
 using Restaurant.Models;
 using System.Runtime.InteropServices;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 
 namespace Restaurant.Controllers
@@ -43,14 +45,9 @@ namespace Restaurant.Controllers
         [HttpGet]
         public async Task<JsonResult> GetCustomerData()
         {
-            if (!HttpContext.Request.Cookies.TryGetValue("CustomerId", out string? customerIdValue) ||
-                !int.TryParse(customerIdValue, out int customerId))
-            {
-                return Json(null); // 若 Cookie 無效或無法解析，則回傳 null
-            }
-
+            int orderCustomerId = Convert.ToInt32(HttpContext.Session.GetString("Order_CustomerId"));
             var customer = await _context.Customers
-                                         .Where(c => c.CustomerId == customerId)
+                                         .Where(c => c.CustomerId == orderCustomerId)
                                          .Select(c => new
                                          {
                                              customerName = c.CustomerName,
@@ -58,7 +55,11 @@ namespace Restaurant.Controllers
                                          })
                                          .FirstOrDefaultAsync();
 
-            return Json(customer);
+            if (customer != null)
+            {
+                return Json(customer);
+            }
+            return Json(null);
         }
 
 
@@ -70,15 +71,32 @@ namespace Restaurant.Controllers
 
             ViewBag.OrderRestaurantId = restaurantList.Select(r => new SelectListItem
             {
-                Text = r.RestaurantName, // 下拉選單顯示的名稱
-                Value = r.RestaurantId.ToString() // 確保這裡的欄位名稱是正確的
+                Text = r.RestaurantName,
+                Value = r.RestaurantId.ToString()
             }).ToList();
 
             // 預設區域選單為空
             ViewBag.RegionList = new List<SelectListItem>();
 
+            // 取得目前登入使用者的 CustomerId
+            var userIdClaim = User.FindFirst("UserId");
+
+            if (userIdClaim == null)
+            {
+                ViewBag.OrderCustomerId = 14;
+                HttpContext.Session.SetString("Order_CustomerId", "14");
+                ViewBag.AllowedOrderTypes = new List<string> { "DineIn" }; // 未登入者只能內用
+            }
+            else
+            {
+                ViewBag.OrderCustomerId = int.Parse(userIdClaim.Value);
+                HttpContext.Session.SetString("Order_CustomerId", userIdClaim.Value);
+                ViewBag.AllowedOrderTypes = new List<string> { "TakeOut", "Delivery", "DineIn" }; // 登入者可選擇全部
+            }
+
             return View();
         }
+
 
         [AllowAnonymous]
         [HttpPost]
@@ -88,6 +106,7 @@ namespace Restaurant.Controllers
 
             if (model.OrderType == "DineIn")
             {
+                model.OrderCustomerId = 14;
                 model.OrderName = "內用";
                 model.OrderPhone = "內用";
                 model.OrderAddress = "內用";
@@ -95,6 +114,7 @@ namespace Restaurant.Controllers
             else if (model.OrderType == "TakeOut")
             {
                 model.OrderAddress = "外帶";
+                model.OrderCustomerId = Convert.ToInt32(HttpContext.Session.GetString("OrderCustomerId"));
             }
             else
             {
@@ -105,8 +125,8 @@ namespace Restaurant.Controllers
                 string region = match.Success ? "台中市" + match.Groups[1].Value : "未知區域";
 
                 model.OrderAddress = region + model.StreetAddress;
+                model.OrderCustomerId = Convert.ToInt32(HttpContext.Session.GetString("Order_CustomerId"));
             }
-
 
             HttpContext.Session.SetString("Order_Name", model.OrderName);
             HttpContext.Session.SetString("Order_Phone", model.OrderPhone);
@@ -136,13 +156,14 @@ namespace Restaurant.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Soup_Order(int [] menuIds,string[] menuNames, int[] quantities, decimal[] unitPrices)
+        public IActionResult Soup_Order(int[] menuIds, string[] menuNames, int[] quantities, decimal[] unitPrices)
         {
             var selectedItems = new List<OrderItemView>();
 
+
             for (int i = 0; i < menuNames.Length; i++)
             {
-                if (quantities[i] > 0) // 過濾掉沒有選購的
+                if (quantities[i] > 0)
                 {
                     selectedItems.Add(new OrderItemView
                     {
@@ -258,6 +279,7 @@ namespace Restaurant.Controllers
         public async Task<IActionResult> Sum_Order()
         {
             // 從 Session 讀取訂單資訊
+            var orderCustomerId = Convert.ToInt32(HttpContext.Session.GetString("Order_CustomerId"));
             var orderType = HttpContext.Session.GetString("Order_Type");
             var orderName = HttpContext.Session.GetString("Order_Name");
             var orderPhone = HttpContext.Session.GetString("Order_Phone");
@@ -281,6 +303,7 @@ namespace Restaurant.Controllers
             // 建立 ViewModel
             var viewModel = new OrderSummaryView
             {
+                OrderCustomerId = orderCustomerId,
                 OrderType = orderType,
                 OrderName = orderName,
                 OrderPhone = orderPhone,
@@ -298,6 +321,7 @@ namespace Restaurant.Controllers
         public async Task<IActionResult> Confirm_Order()
         {
             // 從 Session 讀取訂單資訊
+            var orderCustomerId = Convert.ToInt32(HttpContext.Session.GetString("Order_CustomerId"));
             var orderType = HttpContext.Session.GetString("Order_Type");
             var orderName = HttpContext.Session.GetString("Order_Name");
             var orderPhone = HttpContext.Session.GetString("Order_Phone");
@@ -319,7 +343,7 @@ namespace Restaurant.Controllers
             // 建立訂單記錄
             var newOrder = new OrderView
             {
-                OrderCustomerId = 1,
+                OrderCustomerId = orderCustomerId,
                 OrderRestaurantId = Convert.ToInt32(orderRestaurantId),
                 OrderType = orderType,
                 OrderName = orderName,
@@ -334,7 +358,7 @@ namespace Restaurant.Controllers
             await _context.SaveChangesAsync();
 
             var orderId = await _context.Orders
-                                         .Where(o=> o.OrderDate == newOrder.OrderDate)
+                                         .Where(o => o.OrderDate == newOrder.OrderDate)
                                          .Select(o => new
                                          {
                                              OrderId = o.OrderId
@@ -362,7 +386,7 @@ namespace Restaurant.Controllers
             HttpContext.Session.Remove("SelectedStapleFoods");
             HttpContext.Session.Remove("SelectedDesserts");
 
-            return RedirectToAction("Checkout", new { orderId = newOrder.OrderId });
+            return RedirectToAction("Index_Order");
         }
 
     }

@@ -42,6 +42,9 @@ public partial class OrderSummaryView
     public string OrderRestaurant { get; set; }
 
     [NotMapped]
+    public int OrderCustomerId { get; set; }
+
+    [NotMapped]
     public decimal TotalAmount { get; set; }
 
     [NotMapped]
