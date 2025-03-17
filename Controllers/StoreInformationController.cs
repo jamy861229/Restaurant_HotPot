@@ -19,8 +19,8 @@ namespace Restaurant.Controllers
         {
             var stores = await _context.RestaurantInfos.ToListAsync();
 
-            // 取得所有分店的已客滿日期
-            var bookedDates = await _context.Reservations
+            // 先查出所有 "分店ID + 日期 + 總人數" 以及分店容量
+            var storeBookedDates = await _context.Reservations
                 .GroupBy(r => new { r.RestaurantId, DateOnly = r.ReservationDate.Date })
                 .Select(g => new
                 {
@@ -40,14 +40,24 @@ namespace Restaurant.Controllers
                         Capacity = rest.RestaurantCapacity
                     }
                 )
+                // 找出該店當天總人數 >= 該店容量 => 該日期客滿
                 .Where(g => g.TotalPeople >= g.Capacity)
-                .Select(g => g.Date)
-                .Distinct()
+                .Select(g => new { g.RestaurantId, g.Date })
                 .ToListAsync();
 
-            // 將禁用日期轉成 JSON 格式 (yyyy-MM-dd)
-            var bookedDateStrings = bookedDates.Select(d => d.ToString("yyyy-MM-dd")).ToArray();
-            ViewBag.BookedDates = JsonSerializer.Serialize(bookedDateStrings);
+            // 接下來，我們要把上面結果整理成 Dictionary< int, List<string> >
+            // key: RestaurantId, value: 該店已客滿日期清單 (yyyy-MM-dd)
+            var storeDatesDict = storeBookedDates
+                .GroupBy(x => x.RestaurantId)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(d => d.Date.ToString("yyyy-MM-dd")).Distinct().ToList()
+                );
+
+            // 將字典序列化成 JSON
+            // 最終格式類似: { "1": ["2025-03-15","2025-03-20"], "2": ["2025-04-10"] ... }
+            var storeDatesDictJson = JsonSerializer.Serialize(storeDatesDict);
+            ViewBag.StoreBookedDatesDict = storeDatesDictJson;
 
             var viewModel = new ReservationRestaurantViewModel
             {
@@ -57,6 +67,7 @@ namespace Restaurant.Controllers
 
             return View(viewModel);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> StoreInformation(ReservationRestaurantViewModel viewModel)

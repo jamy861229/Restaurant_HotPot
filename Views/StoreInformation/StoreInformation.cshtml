@@ -3,7 +3,6 @@
     int maxPeople = 8;
     ViewBag.Title = "門市資訊";
 }
-
 <!-- 引入自訂 CSS 與 Bootstrap -->
 <link rel="stylesheet" href="~/css/StoreInformation.css" asp-append-version="true" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -248,67 +247,81 @@
             window.open(url);
         }
 
+        document.addEventListener('DOMContentLoaded', function () {
+            // 解析後端傳來的字典，格式如：{ "1": ["2025-03-15", "2025-03-20"], "2": ["2025-04-10"] }
+            var storeDatesDict = JSON.parse('@Html.Raw(ViewBag.StoreBookedDatesDict)');
+            console.log("各分店已客滿日期字典:", storeDatesDict);
 
-                 document.addEventListener('DOMContentLoaded', function () {
-            var bookedDates = JSON.parse('@Html.Raw(ViewBag.BookedDates)');
-            console.log("已客滿日期:", bookedDates);
+            // 取得 Modal 元素
+            var bookingModal = document.getElementById('bookingModal');
 
-            var tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            var tomorrowStr = tomorrow.toISOString().split("T")[0];
+            bookingModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var restaurantId = button.getAttribute('data-restaurant-id');
+                var restaurantName = button.getAttribute('data-restaurant-name');
 
-            flatpickr("#dateTime", {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                time_24hr: true,
-                minuteIncrement: 15,
-                minDate: tomorrowStr,
-                minTime: "11:30",
-                maxTime: "23:59",
-                disable: bookedDates,
-                onDayCreate: function(dObj, dStr, fp, dayElem) {
-                    // 取得當前單元格的日期字串
-                    var dateStr = fp.formatDate(dayElem.dateObj, "Y-m-d");
-                    // 如果該日期在已客滿陣列中，就附加一個 "客滿" 標籤
-                    if (bookedDates.indexOf(dateStr) !== -1) {
-                        var label = document.createElement("span");
-                        label.className = "fully-booked-label";
-                        label.textContent = "客滿";
-                        dayElem.appendChild(label);
-                    }
+                // 將分店 ID 與名稱填入 Modal 表單的對應欄位
+                var restaurantIdInput = bookingModal.querySelector('#restaurantId');
+                if (restaurantIdInput) {
+                    restaurantIdInput.value = restaurantId;
+                    console.log("隱藏欄位 restaurantId 的值設為:", restaurantIdInput.value);
+                } else {
+                    console.error("找不到隱藏欄位 #restaurantId");
                 }
+
+                var restaurantNameInput = bookingModal.querySelector('#restaurantName');
+                if (restaurantNameInput) {
+                    restaurantNameInput.value = restaurantName;
+                    console.log("分店名稱欄位 restaurantName 的值設為:", restaurantNameInput.value);
+                } else {
+                    console.error("找不到分店名稱欄位 #restaurantName");
+                }
+
+                // 取得該店的已客滿日期清單 (若無則給空陣列)
+                var disabledDates = storeDatesDict[restaurantId] || [];
+                console.log("分店 " + restaurantId + " 已客滿日期:", disabledDates);
+
+                // 初始化 flatpickr，並加入 onDayCreate 來顯示 "客滿" 標籤
+                initFlatpickr(disabledDates);
             });
-        });
-        // 取出 data 屬性restaurant-id 及 restaurant-name
-        var bookingModal = document.getElementById('bookingModal');
-        bookingModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
 
-            // 從按鈕中取出 data 屬性
-            var restaurantId = button.getAttribute('data-restaurant-id');
-            var restaurantName = button.getAttribute('data-restaurant-name');
+            // 幫助函式：初始化 flatpickr
+            function initFlatpickr(disabledDates) {
+                var dateInput = document.getElementById('dateTime');
+                // 計算明天 (禁止當天訂位)
+                var tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                var tomorrowStr = tomorrow.toISOString().split("T")[0];
 
-            // 輸出除錯訊息
-            console.log("取得的 restaurantId:", restaurantId);
-            console.log("取得的 restaurantName:", restaurantName);
+                // 如果已有 flatpickr 實例，先銷毀
+                if (dateInput._flatpickr) {
+                    dateInput._flatpickr.destroy();
+                }
 
-            // 隱藏欄位 (RestaurantId)
-            var restaurantIdInput = bookingModal.querySelector('#restaurantId');
-            if (restaurantIdInput) {
-                restaurantIdInput.value = restaurantId;
-                console.log("隱藏欄位 restaurantId 的值設為:", restaurantIdInput.value);
-            } else {
-                console.error("找不到隱藏欄位 #restaurantId");
+                flatpickr("#dateTime", {
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i",
+                    time_24hr: true,
+                    minuteIncrement: 15,
+                    minDate: tomorrowStr,   // 當天不開放訂位，從明天開始
+                    minTime: "11:30",
+                    maxTime: "23:59",
+                    disable: disabledDates, // 禁用該店的已客滿日期
+                    onDayCreate: function(dObj, dStr, fp, dayElem) {
+                        // 將當前單元格的日期轉換成 "yyyy-MM-dd" 格式
+                        var dayDate = fp.formatDate(dayElem.dateObj, "Y-m-d");
+                        // 如果這個日期在 disabledDates 陣列中，附加 "客滿" 標籤
+                        if (disabledDates.indexOf(dayDate) !== -1) {
+                            var label = document.createElement("span");
+                            label.className = "fully-booked-label";
+                            label.textContent = "客滿";
+                            dayElem.appendChild(label);
+                        }
+                    }
+                });
             }
-
-            // 顯示欄位 (RestaurantName)
-            var restaurantNameInput = bookingModal.querySelector('#restaurantName');
-            if (restaurantNameInput) {
-                restaurantNameInput.value = restaurantName;
-                console.log("分店名稱欄位 restaurantName 的值設為:", restaurantNameInput.value);
-            } else {
-                console.error("找不到分店名稱欄位 #restaurantName");
-            }
         });
+
+
     </script>
 </body>
