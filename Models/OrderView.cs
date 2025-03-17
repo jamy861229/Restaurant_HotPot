@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Restaurant.Models;
@@ -10,24 +11,26 @@ public partial class OrderView
 
     public int OrderCustomerId { get; set; }
 
+    [Display(Name = "訂餐分店")]
     public int OrderRestaurantId { get; set; }
 
     public DateTime OrderDate { get; set; }
 
     public decimal OrderTotalAmount { get; set; }
 
-    public string OrderType { get; set; } = null!;
+    [Display(Name = "訂餐類型")]
+    public string? OrderType { get; set; }
 
     [NotMapped]
     public string OrderMenuName { get; set; } = null!;
 
-    [NotMapped]
+    [Display(Name ="訂餐姓名")]
     public string OrderName { get; set; } = null!;
 
-    [NotMapped]
+    [Display(Name = "訂餐電話")]
     public string OrderPhone { get; set; } = null!;
 
-    [NotMapped]
+    [Display(Name = "訂餐地址")]
     public string OrderAddress { get; set; } = null!;
 
     [NotMapped]
@@ -47,6 +50,9 @@ public partial class OrderView
 
     [NotMapped]
     public decimal OrderMenuPrice { get; set; }
+
+    [NotMapped]
+    public decimal TotalAmount { get; set; }
 
     public virtual CustomerView OrderCustomer { get; set; } = null!;
 

@@ -27,15 +27,12 @@ public partial class MyDbContext : DbContext
 
     public virtual DbSet<OrderItemView> OrderItems { get; set; }
 
-    public virtual DbSet<PaymentView> Payments { get; set; }
-
     public virtual DbSet<ReservationView> Reservations { get; set; }
 
     public virtual DbSet<RestaurantInfoView> RestaurantInfos { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=10.0.101.160,1433;Initial Catalog=RestaurantDB;User Id=TeamHotPots;Password=MSIT62;TrustServerCertificate=True");
-
+        => optionsBuilder.UseSqlServer("Server=10.0.101.132;Initial Catalog=Restaurant;User Id=TeamHotPots;Password=MSIT62;TrustServerCertificate=True");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<HomepageView>(entity =>
@@ -168,8 +165,17 @@ public partial class MyDbContext : DbContext
                 .HasColumnName("Order_TotalAmount");
             entity.Property(e => e.OrderType)
                 .HasMaxLength(50)
-                .HasDefaultValue("Pending")
+                .HasDefaultValue("DineIn")
                 .HasColumnName("Order_Type");
+            entity.Property(e => e.OrderName)
+                .HasMaxLength(50)
+                .HasColumnName("Order_Name");
+            entity.Property(e => e.OrderPhone)
+                .HasMaxLength(50)
+                .HasColumnName("Order_Phone");
+            entity.Property(e => e.OrderAddress)
+                .HasMaxLength(50)
+                .HasColumnName("Order_Address");
 
             entity.HasOne(d => d.OrderCustomer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.OrderCustomerId)
@@ -190,6 +196,7 @@ public partial class MyDbContext : DbContext
             entity.Property(e => e.OrderItemMenuId).HasColumnName("OrderItem_MenuId");
             entity.Property(e => e.OrderItemOrderId).HasColumnName("OrderItem_OrderId");
             entity.Property(e => e.OrderItemQuantity).HasColumnName("OrderItem_Quantity");
+            entity.Property(e => e.OrderItemMenuName).HasColumnName("OrderItem_MenuName");
             entity.Property(e => e.OrderItemUnitPrice)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("OrderItem_UnitPrice");
