@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Models;
@@ -14,6 +15,7 @@ namespace Restaurant.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Create_CustomerFeedback()
         {
             ViewBag.Feedback = await _context.CustomerFeedbacks.ToListAsync();
@@ -36,6 +38,8 @@ namespace Restaurant.Controllers
 
             return View();
         }
+
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create_CustomerFeedback(CustomerFeedbackView model)
         {
