@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Models;
 using System.Security.Claims;
@@ -15,6 +16,7 @@ namespace Restaurant.Controllers
             _context = context;
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> StoreInformation()
         {
             var stores = await _context.RestaurantInfos.ToListAsync();
