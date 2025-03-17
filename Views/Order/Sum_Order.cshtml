@@ -1,0 +1,48 @@
+﻿@model OrderSummaryView
+
+@{
+    ViewBag.Title = "結帳";
+    int currentStep = ViewBag.CurrentStep ?? 4;
+    string[] steps = { "火鍋", "附食", "甜點", "結帳" };
+}
+
+<h2>確認訂單</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>品項名稱</th>
+            <th>數量</th>
+            <th>單價</th>
+            <th>小計</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderItems) 
+        {
+            <tr>
+                <td>@item.OrderItemMenuName</td>
+                <td>@item.OrderItemQuantity</td>
+                <td>@item.OrderItemUnitPrice</td>
+                <td>@(item.OrderItemUnitPrice * item.OrderItemQuantity)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4>總金額：@Model.TotalAmount</h4>
+
+<div class="mb-3">
+    <strong>訂購人：</strong> @Model.OrderName
+</div>
+<div class="mb-3">
+    <strong>聯絡電話：</strong> @Model.OrderPhone
+</div>
+<div class="mb-3">
+    <strong>外送地址：</strong> @Model.OrderAddress
+</div>
+
+<form method="post" asp-action="Confirm_Order">
+    <button type="submit" class="btn btn-primary">確認訂單</button>
+    <a asp-action="Dessert_Order" class="btn btn-secondary">返回修改</a>
+</form>

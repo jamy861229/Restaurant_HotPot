@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Restaurant.Models.OrderView>
+<link rel="stylesheet" href="~/css/Order.css" asp-append-version="true" />
+@{
+    ViewBag.Title = "訂餐 - 附食選擇";
+    int currentStep = ViewBag.CurrentStep ?? 2;
+    string[] steps = { "火鍋", "附食", "甜點", "結帳" };
+}
+
+<div class="container mt-4">
+    <!-- 步驟條 -->
+    <div class="stepper">
+        @for (int i = 0; i < steps.Length; i++)
+        {
+            var stepClass = i + 1 < currentStep ? "completed" : (i + 1 == currentStep ? "active" : "");
+            <div class="step @stepClass">
+                <span>@(i + 1)</span><br>@steps[i]
+            </div>
+        }
+    </div>
+
+    <!-- 動態顯示附食 -->
+    <form method="post" action="@Url.Action("StapleFood_Order")">
+        <div>
+            <div class="row">
+                @foreach (var stapleFood in Model)
+                {
+                    <div class="col-md-6 mb-2">
+                        <div class="order-item border p-3">
+                            <div class="row">
+                                <!-- OrderMenuImage 佔 1、4、7 -->
+                                <div class="col-4 d-flex justify-content-center align-items-center">
+                                    <img src="@stapleFood.OrderMenuImage" class="img-fluid fixed-size">
+                                </div>
+
+                                <!-- 右側內容 -->
+                                <div class="col-8">
+                                    <!-- OrderMenuName 佔 2 -->
+                                    <input type="hidden" name="menuNames" value="@stapleFood.OrderMenuName">
+                                    <input type="hidden" name="menuIds" value="@stapleFood.OrderMenuId">
+                                    <div class="row">
+                                        <!-- OrderMenuDescription 佔 5、8 -->
+                                        <div class="col-md-6 col-12 d-flex align-items-center">
+                                            <p class="mb-1">@stapleFood.OrderMenuDescription</p>
+                                        </div>
+
+                                        <!-- OrderMenuPrice & 計數器 垂直對齊 -->
+                                        <div class="col-md-6 col-12 d-flex flex-column align-items-center">
+                                            <!-- OrderMenuPrice 佔 6 -->
+                                            <input type="hidden" name="unitPrices" value="@stapleFood.OrderMenuPrice">
+
+                                            <!-- 計數器 佔 9 -->
+                                            <div class="qty text-danger d-flex align-items-center justify-content-center">
+                                                <span class="minus bg-dark text-white rounded" data-id="@stapleFood.OrderMenuId">-</span>
+                                                <input type="number" class="count" name="quantities" value="0" min="0" readonly>
+                                                <span class="plus bg-dark text-white rounded" data-id="@stapleFood.OrderMenuId">+</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- 導覽按鈕 -->
+        <div class="text-end mt-4">
+            <button type="submit" class="btn btn-primary">下一步</button>
+        </div>
+    </form>
+
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(document).on("click", ".plus, .minus", function () {
+            let input = $(this).siblings("input");
+            let currentValue = parseInt(input.val());
+            input.val($(this).hasClass("plus") ? currentValue + 1 : Math.max(1, currentValue - 1));
+        });
+    });
+</script>
+
