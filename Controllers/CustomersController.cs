@@ -17,9 +17,10 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-//using Umbraco.Core.Models.Membership;
-//using Microsoft.AspNet.Identity;
+using Umbraco.Core.Models.Membership;
+using Microsoft.AspNet.Identity;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 
 
@@ -47,7 +48,7 @@ namespace Restaurant.Controllers
         }
 
         #region 註冊
-        #endregion
+
         [AllowAnonymous] //允許匿名
         // GET: Customers/Create
         public IActionResult Create()
@@ -58,7 +59,7 @@ namespace Restaurant.Controllers
         // POST: Customers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // 註冊密碼位隱碼 //
+        // 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
@@ -83,7 +84,6 @@ namespace Restaurant.Controllers
                     CustomerPhone = customer.CustomerPhone,  // 電話
                     CustomerEmail = customer.CustomerEmail,  // email
                     CustomerAddress = customer.CustomerAddress, // 地址
-                    //CustomerBirthDate = customer.CustomerBirthDate,  //  生日還沒寫進資料庫
                     CustomerAccount = customer.CustomerAccount, // 帳號
                     CustomerPassword = hashedPassword,       // 加密密碼
 
@@ -95,9 +95,10 @@ namespace Restaurant.Controllers
             }
             return View(customer);
         }
+        #endregion
 
         #region 登入
-        #endregion
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Member_Login()
@@ -105,7 +106,7 @@ namespace Restaurant.Controllers
             return View();
         }
 
-        
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Member_Login(string CustomerAccount, string CustomerPassword)  // 參數問題
@@ -114,8 +115,8 @@ namespace Restaurant.Controllers
             if (ModelState.IsValid)
             {
                 CustomerView? result = (from a in _context.Customers
-                                    where a.CustomerAccount == CustomerAccount
-                                    select a).SingleOrDefault();
+                                        where a.CustomerAccount == CustomerAccount
+                                        select a).SingleOrDefault();
                 if (result == null)
                 {
                     ViewBag.noMember = "去註冊啦";      // 這裡還沒弄到頁面
@@ -137,7 +138,7 @@ namespace Restaurant.Controllers
                     var authProperties = new AuthenticationProperties
                     {
                         IsPersistent = true, // 記住登入狀態
-                        ExpiresUtc = DateTime.UtcNow.AddSeconds(20) // 設定cookie 過期時間
+                        ExpiresUtc = DateTime.UtcNow.AddMinutes(20) // 設定cookie 過期時間
                     };
                     await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
@@ -164,6 +165,7 @@ namespace Restaurant.Controllers
             ViewBag.Error = "請檢查輸入欄位是否正確！";
             return View("Member_Login");
         }
+        #endregion
 
         #region 其他動作
         #endregion
@@ -180,7 +182,7 @@ namespace Restaurant.Controllers
 
 
         #region 會員專區
-        #endregion
+
         // GET: Customers
         [Authorize]
         public async Task<IActionResult> Index()   // 會員專區葉面
@@ -214,16 +216,82 @@ namespace Restaurant.Controllers
                     OrderId = o.OrderId,
                     OrderDate = o.OrderDate,
                     OrderTotalAmount = o.OrderTotalAmount,
-                   // Status = o.Status
+                    // Status = o.Status
                 }).ToList()
             };
             //return View(await _context.Customers.ToListAsync());
             return View(member);
-        }      
-        
+        }
 
+        #endregion
 
+        #region 編輯使用者資料
+        #endregion
 
+        [Authorize]
+        // GET: Customers/Edit/5
+        public async Task<IActionResult> Edit(int? Id)
+        {
+            if (Id == null)
+            {
+                return NotFound();
+            }
+
+            var customer = await _context.Customers.FindAsync(Id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return View(customer);
+        }
+
+        // POST: Customers/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [Authorize]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit( CustomerView customer)  // 這裡id =0 ?
+        {
+            Debug.WriteLine($"前端傳來的 Id: {customer.CustomerId}, CustomerId: {customer.CustomerId}");
+            if (customer.CustomerId != customer.CustomerId)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                try
+                {
+                    var existingCustomer = await _context.Customers.FindAsync(customer.CustomerId);
+                    if (existingCustomer == null)
+                    {
+                        return NotFound();
+                    }
+
+                    //寫進資料庫
+                    existingCustomer.CustomerName = customer.CustomerName;
+                    existingCustomer.CustomerPhone = customer.CustomerPhone;
+                    existingCustomer.CustomerAddress = customer.CustomerAddress;
+
+                    await _context.SaveChangesAsync();
+                }
+
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CustomerExists(customer.CustomerId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View("Index");
+        }
 
 
 
@@ -245,59 +313,9 @@ namespace Restaurant.Controllers
             return View(customer);
         }
 
-        
 
-        [Authorize]
-        // GET: Customers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-            return View(customer);
-        }
 
-        // POST: Customers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Customer_Id,CustomerName,CustomerPhone,CustomerEmail,CustomerPassword,CustomerBirthDate,CustomerAccount,CustomerPoints,CustomerAddress,CustomerCreatedAt")] CustomerView customer)
-        {
-            if (id != customer.CustomerId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(customer);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CustomerExists(customer.CustomerId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(customer);
-        }
 
         // GET: Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
