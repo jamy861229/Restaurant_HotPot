@@ -180,9 +180,9 @@
                             <label>姓名：</label>
                             <input asp-for="Reservation.ReservationName" class="form-control" id="name" required />
                         </div>
-                        <div class="mb-3">
+                        <div class ="mb-3">
                             <label>電話：</label>
-                            <input asp-for="Reservation.ReservationPhone" class="form-control" id="phone" required />
+                            <input asp-for="Reservation.ReservationPhone" class="form-control" id="phone" pattern="^[0-9]+$" required />
                         </div>
                         <div class="mb-3">
                             <label for="people" class="form-label">人數:</label>
@@ -196,7 +196,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="dateTime" class="form-label">選擇日期與時間:</label>
-                            <input type="datetime-local" class="form-control" id="dateTime" name="Reservation.ReservationDate" required
+                            <input type="text" class="form-control" id="dateTime" name="Reservation.ReservationDate" required
                                    value="@tomorrowAt1130.ToString("yyyy-MM-ddTHH:mm")" />
                             <small class="text-muted">
                                 ※ 線上訂位僅限 11:30 ~ 23:45，午夜 12 點至 5 點不開放，當天不開放訂位。
@@ -360,6 +360,26 @@
                     // 若使用者取消，不做任何事
                 });
             });
+        });
+            document.addEventListener('DOMContentLoaded', function () {
+            var phoneInput = document.getElementById('phone');
+            if (phoneInput) {
+                phoneInput.addEventListener('keypress', function (e) {
+                    var char = String.fromCharCode(e.which);
+                    // 如果輸入的字符不是數字，就阻止輸入
+                    if (!/^\d$/.test(char)) {
+                        e.preventDefault();
+                    }
+                });
+
+                // 如果使用者嘗試貼上非數字內容，也進行檢查
+                phoneInput.addEventListener('paste', function (e) {
+                    var pasteData = (e.clipboardData || window.clipboardData).getData('text');
+                    if (!/^\d+$/.test(pasteData)) {
+                        e.preventDefault();
+                    }
+                });
+            }
         });
     </script>
 </body>
