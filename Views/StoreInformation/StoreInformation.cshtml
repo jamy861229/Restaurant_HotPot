@@ -2,6 +2,8 @@
 @{
     int maxPeople = 10;
     ViewBag.Title = "門市資訊";
+    var tomorrow = DateTime.Now.AddDays(1);
+    var tomorrowAt1130 = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, 11, 30, 0);
 }
 <!-- 引入自訂 CSS 與 Bootstrap -->
 <link rel="stylesheet" href="~/css/StoreInformation.css" asp-append-version="true" />
@@ -174,11 +176,11 @@
                         </div>
 
                         <!-- 其他欄位：電話、人數、日期時間等 -->
-                        <div>
+                        <div class="mb-3">
                             <label>姓名：</label>
                             <input asp-for="Reservation.ReservationName" class="form-control" id="name" required />
                         </div>
-                        <div>
+                        <div class="mb-3">
                             <label>電話：</label>
                             <input asp-for="Reservation.ReservationPhone" class="form-control" id="phone" required />
                         </div>
@@ -194,7 +196,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="dateTime" class="form-label">選擇日期與時間:</label>
-                            <input type="text" class="form-control" id="dateTime" name="Reservation.ReservationDate" required />
+                            <input type="datetime-local" class="form-control" id="dateTime" name="Reservation.ReservationDate" required
+                                   value="@tomorrowAt1130.ToString("yyyy-MM-ddTHH:mm")" />
                             <small class="text-muted">
                                 ※ 線上訂位僅限 11:30 ~ 23:45，午夜 12 點至 5 點不開放，當天不開放訂位。
                             </small>
