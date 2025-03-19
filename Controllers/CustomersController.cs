@@ -136,19 +136,21 @@ namespace Restaurant.Controllers
                         new Claim("UserId",result.CustomerId.ToString()),//會員ID
                         //new Claim(ClaimTypes.Role,"Admin")
                     };
+
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var authProperties = new AuthenticationProperties
                     {
                         IsPersistent = true, // 記住登入狀態
                         ExpiresUtc = DateTime.UtcNow.AddMinutes(20) // 設定cookie 過期時間
                     };
+
+
                     await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity),
                         authProperties);
                     //Debug.WriteLine("資料庫密碼: " + result.CustomerPassword);
                     return RedirectToAction("Index", "Customers");
-
 
                 }
                 else
@@ -162,7 +164,6 @@ namespace Restaurant.Controllers
                     return View("Member_Login");
 
                 }
-
             }
             ViewBag.Error = "請檢查輸入欄位是否正確！";
             return View("Member_Login");
@@ -187,49 +188,51 @@ namespace Restaurant.Controllers
 
         // GET: Customers
         [Authorize]
-        public async Task<IActionResult> Index()   // 會員專區葉面
+        public async Task<IActionResult> Index(int Id)   // 會員專區葉面
         {
             // 使用 User.Identity.Name 來獲取當前登入的使用者帳號
             var customerAccount = User.Identity.Name;
-            if (string.IsNullOrEmpty(customerAccount))
+            var userId = User.FindFirst("UserId")?.Value; // **透過 Claims 取得 UserId**   這是 customerId
+            if (string.IsNullOrEmpty(customerAccount) || string.IsNullOrEmpty(userId))
             {
                 return RedirectToAction(nameof(Login));  // 如果沒有登入，則重導向登入頁面
             }
+            // 讀取cookie 
+            
             CustomerView? member = await _context.Customers
-        .Include(m => m.Orders)
-        .FirstOrDefaultAsync(m => m.CustomerAccount == customerAccount);   // 假設有登入機制
-
-
-
-            if (member == null)
+                .Include(m => m.Orders)
+                .FirstOrDefaultAsync(m => m.CustomerAccount == customerAccount);   // 假設有登入機制
+            if (member != null)
             {
-                return RedirectToAction(nameof(Create));
+                var viewModel = new CustomerView
+                {
+                    CustomerAccount = member.CustomerAccount,
+                    CustomerName = member.CustomerName,
+                    CustomerPhone = member.CustomerPhone,
+                    CustomerEmail = member.CustomerEmail,
+                    CustomerAddress = member.CustomerAddress
+                    //Orders = member.Orders.Select(o => new OrderView
+                    //{
+                    //    OrderId = o.OrderId,
+                    //    OrderDate = o.OrderDate,
+                    //    OrderTotalAmount = o.OrderTotalAmount,
+                    //    // Status = o.Status
+                    //}).ToList()
+                };
+                var 一個什麼 = GetOrderInfo(userId, "reserve");  //這裡的id 查的是 訂位id
+                //return View(await _context.Customers.ToListAsync());
+                var Data = new indexDto { RRIs = 一個什麼, viewModel = viewModel };
+                return View(Data);
             }
-
-            var viewModel = new CustomerView
-            {
-                CustomerAccount = member.CustomerAccount,
-                CustomerName = member.CustomerName,
-                CustomerPhone = member.CustomerPhone,
-                CustomerEmail = member.CustomerEmail,
-                CustomerAddress = member.CustomerAddress
-                //Orders = member.Orders.Select(o => new OrderView
-                //{
-                //    OrderId = o.OrderId,
-                //    OrderDate = o.OrderDate,
-                //    OrderTotalAmount = o.OrderTotalAmount,
-                //    // Status = o.Status
-                //}).ToList()
-            };
-            var 一個什麼 = GetOrderInfo(102, "reserve") ;
-            //return View(await _context.Customers.ToListAsync());
-            var Data = new indexDto {RRIs= 一個什麼 ,viewModel= viewModel };
-            return View( Data);
+            return RedirectToAction(nameof(Create));
         }
+            
+        
+          
 
         #endregion
-         
-        
+
+
 
         public class OrderRequest
         {
@@ -239,17 +242,20 @@ namespace Restaurant.Controllers
         }
 
         [HttpPost]
-        public List<RRI> GetOrderInfo(int id, string orderType)
+        public List<RRI> GetOrderInfo(string id , string orderType)  //這裡的id 要改用 CustomerId 來查找
         {
             if (orderType == "reserve")
             {
                 // 假設 model.ReservationId 是前端傳來的訂位ID
                 var reservationData = (from r in _context.Reservations
-                                       join ri in _context.RestaurantInfos
+                                       join ri in _context.RestaurantInfos                                       
                                        on r.RestaurantId equals ri.RestaurantId
-                                       where r.ReservationId ==  id
+                                       join C in _context.Customers
+                                       on r.CustomerId equals C.CustomerId
+                                       where r.CustomerId.ToString() == id 
                                        select new RRI
                                        {
+                                           Customer_Id = r.CustomerId,
                                            ReservationName = r.ReservationName,
                                            ReservationPhone = r.ReservationPhone,
                                            ReservationPeople = r.ReservationPeople,
@@ -257,20 +263,21 @@ namespace Restaurant.Controllers
                                            RestaurantAddress = ri.RestaurantAddress,
                                            ReservationDate = r.ReservationDate
                                        }).ToList();
-                
+
                 if (reservationData != null)
                 {
                     // 渲染訂位資料視圖，並傳遞 reservationData
                     //Debug.WriteLine(reservationData.ReservationName);
                     return reservationData;
                 }
-                
-            }return new List<RRI> { };
+
+            }
+            return new List<RRI> { };
             //return Json(new { message = "沒有找到相關訂位資料" });
 
 
         }
-        
+
 
         //用來將視圖渲染為字符串的輔助方法
         //public string RenderViewToString(string viewName, object model)
@@ -314,7 +321,7 @@ namespace Restaurant.Controllers
         [HttpPost]
         [Authorize]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit( CustomerView customer)  // 這裡id =0 ?
+        public async Task<IActionResult> Edit(CustomerView customer)  // 這裡id =0 ?
         {
             Debug.WriteLine($"前端傳來的 Id: {customer.CustomerId}, CustomerId: {customer.CustomerId}");
             if (customer.CustomerId != customer.CustomerId)
@@ -360,7 +367,7 @@ namespace Restaurant.Controllers
 
 
 
-
+        #region 用不到的程式碼
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -420,7 +427,7 @@ namespace Restaurant.Controllers
         {
             return _context.Customers.Any(e => e.CustomerId == id);
         }
-
+        #endregion
 
         // 自己加的
         public async Task<IActionResult> Index_Member(int? id)
@@ -442,7 +449,7 @@ namespace Restaurant.Controllers
         }
 
         #region Member_Register 沒在用
-       
+
         public IActionResult Member_Register()
         {
             return View();
@@ -470,13 +477,13 @@ namespace Restaurant.Controllers
         #region 登出
         #endregion
         [HttpGet]
-       // [HttpPost]
+        // [HttpPost]
         //[AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             // 確保 Cookie 真的被刪除
-            Response.Cookies.Delete(".AspNetCore.Cookies");
+            // Response.Cookies.Delete(".AspNetCore.Cookies");  //手動
             return RedirectToAction("Index", "Homepage");
         }
         [HttpGet]
@@ -484,8 +491,8 @@ namespace Restaurant.Controllers
         {
             return "未登入";
         }
-        
+
     }
 
-    
+
 }

@@ -3,13 +3,16 @@ namespace Restaurant.Models;
 
 public partial class CustomerView
 {
+    
+
     public int CustomerId { get; set; }
 
     [Required(ErrorMessage = "請輸入姓名")]
     [Display(Name = "姓名")]
     public string CustomerName { get; set; } = null!;
 
-    [Required(ErrorMessage = "請輸入有效的 電話")]
+    [Required(ErrorMessage = "請輸入電話")]
+    [Phone(ErrorMessage = "請輸入有效的 電話")]
     [Display(Name = "電話")]
     public string CustomerPhone { get; set; } = null!;
 
