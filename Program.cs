@@ -4,6 +4,8 @@ using Restaurant.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages(); // 0310 加的
@@ -24,17 +26,17 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
    .AddCookie(options =>
    {
-       options.ExpireTimeSpan = TimeSpan.FromMinutes(20); //過期時間為20分鐘(秒)
+       options.ExpireTimeSpan = TimeSpan.FromMinutes(20); //過期時間為20分鐘(秒) controller登入的地方也要記得改
        options.SlidingExpiration = true; //如果登入期間使用者有活動(例如發送請求),則重新計算過期時間
        options.LoginPath = "/Customers/Member_Login"; //未登入自動導至這個網址
-       options.Events = new CookieAuthenticationEvents
-       {
-           OnRedirectToLogin = context =>
-           {
-               context.Response.StatusCode = 401; // 回傳 401 未授權，而不是跳轉
-               return Task.CompletedTask;
-           }
-       };
+       //options.Events = new CookieAuthenticationEvents
+       //{
+       //    OnRedirectToLogin = context =>
+       //    {
+       //        context.Response.StatusCode = 401; // 回傳 401 未授權，而不是跳轉
+       //        return Task.CompletedTask;
+       //    }
+       //};
        // 下面這些是為了讓跨站點的請求可以傳遞Cookie
        options.Cookie.HttpOnly = true; // 保護Cookie避免被JavaScript存取
        options.Cookie.SameSite = SameSiteMode.Lax; // 設定SameSite策略，避免跨站點問題
@@ -46,10 +48,10 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-//builder.Services.AddMvc(options =>
-//{
-//    options.Filters.Add(new AuthorizeFilter());//全部動作都須通過登入驗證才能使用
-//});
+builder.Services.AddMvc(options =>
+{
+    options.Filters.Add(new AuthorizeFilter());//全部動作都須通過登入驗證才能使用
+});
 // 加入授權
 builder.Services.AddAuthorization(options =>
 {
