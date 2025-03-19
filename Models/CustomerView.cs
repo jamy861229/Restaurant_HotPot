@@ -3,7 +3,7 @@ namespace Restaurant.Models;
 
 public partial class CustomerView
 {
-        public int CustomerId { get; set; }
+    public int CustomerId { get; set; }
 
     [Required(ErrorMessage = "請輸入姓名")]
     [Display(Name = "姓名")]
@@ -13,7 +13,9 @@ public partial class CustomerView
     [Display(Name = "電話")]
     public string CustomerPhone { get; set; } = null!;
 
+    [DataType(DataType.EmailAddress)]
     [Required(ErrorMessage = "請輸入有效的 Email")]
+    [EmailAddress(ErrorMessage = "請輸入有效的 Email，包含@")]
     [Display(Name = "E-mail")]
     public string CustomerEmail { get; set; } = null!;
 

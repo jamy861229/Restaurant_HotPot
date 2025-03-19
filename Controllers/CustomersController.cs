@@ -17,10 +17,12 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using Umbraco.Core.Models.Membership;
-using Microsoft.AspNet.Identity;
+//using Umbraco.Core.Models.Membership;
+//using Microsoft.AspNet.Identity;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Restaurant.Dto;
 
 
 
@@ -95,7 +97,7 @@ namespace Restaurant.Controllers
             }
             return View(customer);
         }
-        #endregion
+        #endregion  //這是收和程式碼
 
         #region 登入
 
@@ -210,23 +212,84 @@ namespace Restaurant.Controllers
                 CustomerName = member.CustomerName,
                 CustomerPhone = member.CustomerPhone,
                 CustomerEmail = member.CustomerEmail,
-                CustomerAddress = member.CustomerAddress,
-                Orders = member.Orders.Select(o => new OrderView
-                {
-                    OrderId = o.OrderId,
-                    OrderDate = o.OrderDate,
-                    OrderTotalAmount = o.OrderTotalAmount,
-                    // Status = o.Status
-                }).ToList()
+                CustomerAddress = member.CustomerAddress
+                //Orders = member.Orders.Select(o => new OrderView
+                //{
+                //    OrderId = o.OrderId,
+                //    OrderDate = o.OrderDate,
+                //    OrderTotalAmount = o.OrderTotalAmount,
+                //    // Status = o.Status
+                //}).ToList()
             };
+            var 一個什麼 = GetOrderInfo(102, "reserve") ;
             //return View(await _context.Customers.ToListAsync());
-            return View(member);
+            var Data = new indexDto {RRIs= 一個什麼 ,viewModel= viewModel };
+            return View( Data);
         }
 
         #endregion
+         
+        
+
+        public class OrderRequest
+        {
+            public string? OrderType { get; set; }  // 訂位或訂餐的選擇
+            public int? ReservationId { get; set; }  // 訂位ID，可能為空
+            public int OrderId { get; set; }
+        }
+
+        [HttpPost]
+        public List<RRI> GetOrderInfo(int id, string orderType)
+        {
+            if (orderType == "reserve")
+            {
+                // 假設 model.ReservationId 是前端傳來的訂位ID
+                var reservationData = (from r in _context.Reservations
+                                       join ri in _context.RestaurantInfos
+                                       on r.RestaurantId equals ri.RestaurantId
+                                       where r.ReservationId ==  id
+                                       select new RRI
+                                       {
+                                           ReservationName = r.ReservationName,
+                                           ReservationPhone = r.ReservationPhone,
+                                           ReservationPeople = r.ReservationPeople,
+                                           RestaurantName = ri.RestaurantName,
+                                           RestaurantAddress = ri.RestaurantAddress,
+                                           ReservationDate = r.ReservationDate
+                                       }).ToList();
+                
+                if (reservationData != null)
+                {
+                    // 渲染訂位資料視圖，並傳遞 reservationData
+                    //Debug.WriteLine(reservationData.ReservationName);
+                    return reservationData;
+                }
+                
+            }return new List<RRI> { };
+            //return Json(new { message = "沒有找到相關訂位資料" });
+
+
+        }
+        
+
+        //用來將視圖渲染為字符串的輔助方法
+        //public string RenderViewToString(string viewName, object model)
+        //{
+        //    var controllerContext = this.ControllerContext;
+        //    var viewData = new ViewDataDictionary<object>(this.ViewData) { Model = model };
+        //    var tempData = this.TempData;
+        //    using (var sw = new StringWriter())
+        //    {
+        //        var viewEngineResult = _viewEngine.GetView("", viewName, false);
+        //        var viewContext = new ViewContext(controllerContext, viewEngineResult.View, viewData, tempData, sw, new HtmlHelperOptions());
+        //        viewEngineResult.View.RenderAsync(viewContext).Wait();
+        //        return sw.GetStringBuilder().ToString();
+        //    }
+        //}
+
 
         #region 編輯使用者資料
-        #endregion
+
 
         [Authorize]
         // GET: Customers/Edit/5
@@ -292,6 +355,9 @@ namespace Restaurant.Controllers
             }
             return View("Index");
         }
+
+        #endregion
+
 
 
 
@@ -376,7 +442,7 @@ namespace Restaurant.Controllers
         }
 
         #region Member_Register 沒在用
-        #endregion 
+       
         public IActionResult Member_Register()
         {
             return View();
@@ -398,21 +464,28 @@ namespace Restaurant.Controllers
 
             return View(customer);
         }
+        #endregion
+
 
         #region 登出
         #endregion
-        [HttpPost]
-        [AllowAnonymous]
+        [HttpGet]
+       // [HttpPost]
+        //[AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Member_Login");
+            // 確保 Cookie 真的被刪除
+            Response.Cookies.Delete(".AspNetCore.Cookies");
+            return RedirectToAction("Index", "Homepage");
         }
         [HttpGet]
         public string noLogin()
         {
             return "未登入";
         }
-
+        
     }
+
+    
 }
