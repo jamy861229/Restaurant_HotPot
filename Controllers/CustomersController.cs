@@ -105,6 +105,11 @@ namespace Restaurant.Controllers
         [AllowAnonymous]
         public IActionResult Member_Login()
         {
+            //重導向會員專區
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Customers");
+            }
             return View();
         }
 
@@ -197,8 +202,9 @@ namespace Restaurant.Controllers
             {
                 return RedirectToAction(nameof(Login));  // 如果沒有登入，則重導向登入頁面
             }
+           
             // 讀取cookie 
-            
+
             CustomerView? member = await _context.Customers
                 .Include(m => m.Orders)
                 .FirstOrDefaultAsync(m => m.CustomerAccount == customerAccount);   // 假設有登入機制
