@@ -6,45 +6,60 @@
     string[] steps = { "火鍋", "附食", "甜點", "結帳" };
 }
 
-<h2>確認訂單</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>品項名稱</th>
-            <th>數量</th>
-            <th>單價</th>
-            <th>小計</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.OrderItems) 
-        {
+<div class="container mt-5">
+    <form method="post" class="p-4 border rounded bg-light needs-validation" asp-action="Confirm_Order">
+        <h2>確認訂單</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>品項名稱</th>
+                    <th>數量</th>
+                    <th>單價</th>
+                    <th>小計</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderItems)
+                {
+                    <tr>
+                        <td>@item.OrderItemMenuName</td>
+                        <td>@item.OrderItemQuantity</td>
+                        <td>
+                            <span>
+                                NT$ @item.OrderItemUnitPrice
+                            </span>
+                        </td>
+                        <td>
+                            <span id="priceDisplay" data-unit-price="@(item.OrderItemUnitPrice * item.OrderItemQuantity)" style="color: red; font-weight: bold;">
+                                NT$
+                                @(item.OrderItemUnitPrice * item.OrderItemQuantity)
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-            <tr>
-                <td>@item.OrderItemMenuName</td>
-                <td>@item.OrderItemQuantity</td>
-                <td>@item.OrderItemUnitPrice</td>
-                <td>@(item.OrderItemUnitPrice * item.OrderItemQuantity)</td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <h4>
+            總金額：
+            <span id="priceDisplay" data-unit-price="@Model.TotalAmount" style="color: red; font-weight: bold;">
+                NT$@Model.TotalAmount
+            </span>
+        </h4>
 
-<h4>總金額：@Model.TotalAmount</h4>
+        <div class="mb-3">
+            <strong>訂購人：</strong> @Model.OrderName
+        </div>
+        <div class="mb-3">
+            <strong>聯絡電話：</strong> @Model.OrderPhone
+        </div>
+        <div class="mb-3">
+            <strong>外送地址：</strong> @Model.OrderAddress
+        </div>
 
-<div class="mb-3">
-    <strong>訂購人：</strong> @Model.OrderName
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">確認訂單</button>
+            <a asp-action="Dessert_Order" class="btn btn-secondary">返回修改</a>
+        </div>
+    </form>
 </div>
-<div class="mb-3">
-    <strong>聯絡電話：</strong> @Model.OrderPhone
-</div>
-<div class="mb-3">
-    <strong>外送地址：</strong> @Model.OrderAddress
-</div>
-
-<form method="post" asp-action="Confirm_Order">
-    <div class="text-center">
-    <button type="submit" class="btn btn-primary">確認訂單</button>
-    <a asp-action="Dessert_Order" class="btn btn-secondary">返回修改</a>
-    </div>
-</form>

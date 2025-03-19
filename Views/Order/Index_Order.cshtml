@@ -4,71 +4,73 @@
     ViewData["Title"] = "訂餐";
 }
 
-<form asp-action="Index_Order" method="post" class="p-4 border rounded bg-light needs-validation" style="max-width: 500px; margin: auto;" novalidate>
-    <div class="d-flex align-items-center">
-        @Html.HiddenFor(model => model.OrderCustomerId, new { name = "orderCustomerId" })
-        <div class="mt-3 flex-grow-1 me-3">
-            @Html.DisplayNameFor(model => model.OrderType)
-        </div>
+<div class="container mt-5 ">
+    <form asp-action="Index_Order" method="post" class="p-4 border bg-light needs-validation rounded" style="max-width: 500px; margin: auto;" novalidate>
+        <div class="d-flex align-items-center">
+            @Html.HiddenFor(model => model.OrderCustomerId, new { name = "orderCustomerId" })
+            <div class="mt-3 flex-grow-1 me-3">
+                @Html.DisplayNameFor(model => model.OrderType)
+            </div>
 
-        @foreach (var orderType in new[] { new { Id = "TakeOut", Label = "外帶" }, new { Id = "Delivery", Label = "外送" }, new { Id = "DineIn", Label = "內用" } })
-        {
-            if (((List<string>)ViewBag.AllowedOrderTypes).Contains(orderType.Id))
+            @foreach (var orderType in new[] { new { Id = "TakeOut", Label = "外帶" }, new { Id = "Delivery", Label = "外送" }, new { Id = "DineIn", Label = "內用" } })
             {
-                <div class="mt-3 flex-grow-1">
-                    @Html.RadioButtonFor(model => model.OrderType, orderType.Id, new { @class = "form-check-input", id = orderType.Id })
-                    <label for="@orderType.Id" class="form-check-label">@orderType.Label</label>
-                </div>
+                if (((List<string>)ViewBag.AllowedOrderTypes).Contains(orderType.Id))
+                {
+                    <div class="mt-3 flex-grow-1">
+                        @Html.RadioButtonFor(model => model.OrderType, orderType.Id, new { @class = "form-check-input", id = orderType.Id })
+                        <label for="@orderType.Id" class="form-check-label">@orderType.Label</label>
+                    </div>
+                }
             }
-        }
 
-        @Html.ValidationMessageFor(model => model.OrderType, "", new { @class = "text-danger" })
-    </div>
-
-    <div class="mt-3">
-        <div class="mt-3">
-            @Html.CheckBox("fetchData", new { id = "fetchData" })
-            <label class="form-check-label" for="fetchData">是否同會員資料</label>
+            @Html.ValidationMessageFor(model => model.OrderType, "", new { @class = "text-danger" })
         </div>
 
         <div class="mt-3">
-            <label>@Html.DisplayNameFor(model => model.OrderName)</label>
-            @Html.EditorFor(model => model.OrderName, new { htmlAttributes = new { @class = "form-control", id = "CustomerName" } })
-            @Html.ValidationMessageFor(model => model.OrderName, "", new { @class = "text-danger" })
-        </div>
+            <div class="mt-3">
+                @Html.CheckBox("fetchData", new { id = "fetchData" })
+                <label class="form-check-label" for="fetchData">是否同會員資料</label>
+            </div>
 
+            <div class="mt-3">
+                <label>@Html.DisplayNameFor(model => model.OrderName)</label>
+                @Html.EditorFor(model => model.OrderName, new { htmlAttributes = new { @class = "form-control", id = "CustomerName" } })
+                @Html.ValidationMessageFor(model => model.OrderName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="mt-3">
+                <label>@Html.DisplayNameFor(model => model.OrderPhone)</label>
+                @Html.EditorFor(model => model.OrderPhone, new { htmlAttributes = new { @class = "form-control", id = "CustomerPhone" } })
+                @Html.ValidationMessageFor(model => model.OrderPhone, "", new { @class = "text-danger" })
+            </div>
+        </div>
         <div class="mt-3">
-            <label>@Html.DisplayNameFor(model => model.OrderPhone)</label>
-            @Html.EditorFor(model => model.OrderPhone, new { htmlAttributes = new { @class = "form-control", id = "CustomerPhone" } })
-            @Html.ValidationMessageFor(model => model.OrderPhone, "", new { @class = "text-danger" })
+            <label>@Html.DisplayNameFor(model => model.OrderRestaurantId)</label>
+            @Html.DropDownListFor(model => model.OrderRestaurantId, ViewBag.OrderRestaurantId as List<SelectListItem>, "請選擇餐廳", new { @class = "form-control", id = "OrderRestaurantId" })
+            @Html.ValidationMessageFor(model => model.OrderRestaurantId, "", new { @class = "text-danger" })
         </div>
-    </div>
-    <div class="mt-3">
-        <label>@Html.DisplayNameFor(model => model.OrderRestaurantId)</label>
-        @Html.DropDownListFor(model => model.OrderRestaurantId, ViewBag.OrderRestaurantId as List<SelectListItem>, "請選擇餐廳", new { @class = "form-control", id = "OrderRestaurantId" })
-        @Html.ValidationMessageFor(model => model.OrderRestaurantId, "", new { @class = "text-danger" })
-    </div>
-    <br />
-    <label>@Html.DisplayNameFor(model => model.OrderAddress)</label>
-    <div class="d-flex align-items-center">
-        <div class="mt-3 flex-grow-1 me-3">
-            @Html.DropDownListFor(model => model.RegionAddress, ViewBag.RegionList as List<SelectListItem>, "請選擇區域", new { @class = "form-control", id = "RegionAddress", disabled = "disabled" })
+        <br />
+        <label>@Html.DisplayNameFor(model => model.OrderAddress)</label>
+        <div class="d-flex align-items-center">
+            <div class="mt-3 flex-grow-1 me-3">
+                @Html.DropDownListFor(model => model.RegionAddress, ViewBag.RegionList as List<SelectListItem>, "請選擇區域", new { @class = "form-control", id = "RegionAddress", disabled = "disabled" })
+            </div>
+            <div class="mt-3 flex-grow-1">
+                @Html.EditorFor(model => model.StreetAddress, new { htmlAttributes = new { @class = "form-control", id = "StreetAddress", placeholder = "請輸入訂餐地址" } })
+            </div>
         </div>
-        <div class="mt-3 flex-grow-1">
-            @Html.EditorFor(model => model.StreetAddress, new { htmlAttributes = new { @class = "form-control", id = "StreetAddress", placeholder = "請輸入訂餐地址" } })
+        <label style="color:red">外送範圍僅限餐廳所在行政區</label>
+        <br />
+        <label style="color:red">內用需到櫃台結帳後，方開始備餐</label>
+        <br />
+        <label style="color:red">如需外帶外送者請登入會員後再點餐</label>
+        <br />
+        <br />
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">下一頁</button>
         </div>
-    </div>
-    <label style="color:red">外送範圍僅限餐廳所在行政區</label>
-    <br/>
-    <label style="color:red">內用需到櫃台結帳後，方開始備餐</label>
-    <br />
-    <label style="color:red">如需外帶外送者請登入會員後再點餐</label>
-    <br />
-    <br />
-    <div class="text-center">
-        <button type="submit" class="btn btn-primary">下一頁</button>
-    </div>
-</form>
+    </form>
+</div>
 @section Scripts {
     <script>
         $(document).ready(function () {
@@ -181,8 +183,8 @@
                     $("#CustomerPhone").prop("disabled", false);
                     $("#StreetAddress").prop("disabled", true);
                     $("#StreetAddress").val(""); // 清空地址欄位
-                    $("#RegionAddress").val("").prop("disabled", true); 
-                    $("#fetchData").prop("disabled", false); 
+                    $("#RegionAddress").val("").prop("disabled", true);
+                    $("#fetchData").prop("disabled", false);
                 }
             }
 

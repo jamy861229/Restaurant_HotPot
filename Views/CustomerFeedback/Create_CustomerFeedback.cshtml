@@ -8,8 +8,8 @@
 @{
     ViewData["Title"] = "聯絡我們";
 }
-
-<form asp-action="Create_CustomerFeedback" method="post" class="p-4 border rounded bg-light needs-validation" style="max-width: 500px; margin: auto;" novalidate>
+<div class="container mt-5">
+    <form asp-action="Create_CustomerFeedback" method="post" class="p-4 border  rounded bg-light needs-validation" style="max-width: 500px; margin: auto;" novalidate>
     <div>
         @Html.DisplayNameFor(model => model.FeedbackName)
         @Html.EditorFor(model => model.FeedbackName, new { htmlAttributes = new { @class = "form-control" } })
@@ -74,6 +74,7 @@
         <input type="submit" value="提交" class="btn btn-primary" />
     </div>
 </form>
+    </div>
 <script>
     $(function () {
         $('#datetimepicker').datetimepicker({

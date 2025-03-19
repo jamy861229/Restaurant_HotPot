@@ -46,8 +46,10 @@
                                         <!-- OrderMenuPrice & 計數器 垂直對齊 -->
                                         <div class="col-md-6 col-12 d-flex flex-column align-items-center">
                                             <!-- OrderMenuPrice 佔 6 -->
-                                            <input type="hidden" name="unitPrices" value="@stapleFood.OrderMenuPrice">
-
+                                            <span id="priceDisplay" data-unit-price="@stapleFood.OrderMenuPrice" style="color: red; font-weight: bold;">
+                                                NT$ @stapleFood.OrderMenuPrice
+                                            </span>
+                                            <input type="hidden" name="unitPrices" value="@stapleFood.OrderMenuPrice" />
                                             <!-- 計數器 佔 9 -->
                                             <div class="qty text-danger d-flex align-items-center justify-content-center">
                                                 <span class="minus bg-dark text-white rounded" data-id="@stapleFood.OrderMenuId">-</span>
