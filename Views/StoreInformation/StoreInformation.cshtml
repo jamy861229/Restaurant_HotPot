@@ -183,7 +183,7 @@
                         <div class="mb-3">
                             <label for="phone">電話：</label>
                             <!-- 加上 maxlength 限制輸入長度 -->
-                            <input type="text" id="phone" name="phone" required pattern="^[0-9]{10}$" title="請輸入 10 位數字，且以 09 開頭" />
+                            <input asp-for="Reservation.ReservationPhone" class="form-control" id="phone" pattern="^09\d{8}$" title="請輸入以09開頭的10位數手機號碼" required />
                         </div>
                         <div class="mb-3">
                             <label for="people" class="form-label">人數:</label>
