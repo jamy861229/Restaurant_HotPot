@@ -1,6 +1,6 @@
 ﻿@model Restaurant.Models.ReservationRestaurantViewModel
 @{
-    int maxPeople = 10;
+    int maxPeople = 8;
     ViewBag.Title = "門市資訊";
     var tomorrow = DateTime.Now.AddDays(1);
     var tomorrowAt1130 = new DateTime(tomorrow.Year, tomorrow.Month, tomorrow.Day, 11, 30, 0);
@@ -187,12 +187,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="people" class="form-label">人數:</label>
-                            <select class="form-select" asp-for="Reservation.ReservationPeople" required>
+                            <select class="form-select" id="people" name="Reservation.ReservationPeople" required>
                                 <option value="">請選擇人數</option>
-                                @for (int i = 1; i <= maxPeople; i++)
-                                {
-                                    <option value="@i">@i 人</option>
-                                }
                             </select>
                         </div>
                         <div class="mb-3">
@@ -248,6 +244,7 @@
             window.open(url);
         }
 
+        //日期功能
         document.addEventListener('DOMContentLoaded', function () {
             // 解析後端傳來的字典，格式如：{ "1": ["2025-03-15", "2025-03-20"], "2": ["2025-04-10"] }
             var storeDatesDict = JSON.parse('@Html.Raw(ViewBag.StoreBookedDatesDict)');
@@ -322,6 +319,8 @@
                 });
             }
         });
+
+        //判斷是否登入
         // 這裡 isLoggedIn 會是 true 或 false 字串
         var isLoggedIn = '@User.Identity.IsAuthenticated'.toLowerCase();
         console.log("使用者是否已登入: " + isLoggedIn);
@@ -339,7 +338,8 @@
                 });
             });
         });
-            document.addEventListener('DOMContentLoaded', function () {
+        //送出確認框
+        document.addEventListener('DOMContentLoaded', function () {
             var bookingForm = document.getElementById('bookingForm');
             bookingForm.addEventListener('submit', function (e) {
                 // 阻止表單自動送出
@@ -362,6 +362,36 @@
                 });
             });
         });
+
+        //分店人數訂位限制
+                document.addEventListener('DOMContentLoaded', function () {
+            // 當 Modal 顯示時觸發
+            var bookingModal = document.getElementById('bookingModal');
+            bookingModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var restaurantName = button.getAttribute('data-restaurant-name');
+                // 根據分店名稱決定最大人數：如果是台中漢口店，則 maxPeople = 6；其他則 8
+                var maxPeople = (restaurantName === "台中漢口店") ? 4 : 6;
+
+                // 取得 <select> 元素，然後動態產生選項
+                populatePeopleSelect(maxPeople);
+            });
+        });
+
+        function populatePeopleSelect(maxPeople) {
+            var select = document.getElementById("people");
+            // 先清除除第一個 placeholder 以外的選項
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            // 動態生成 1 ~ maxPeople 的選項
+            for (var i = 1; i <= maxPeople; i++) {
+                var option = document.createElement("option");
+                option.value = i;
+                option.textContent = i + " 人";
+                select.appendChild(option);
+            }
+        }
 
     </script>
 </body>
