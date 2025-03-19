@@ -4,6 +4,7 @@ namespace Restaurant.Dto
 {
     public class RRI
     {
+        public int  Customer_Id;
         public string? ReservationName { get; set; }
         public string? ReservationPhone { get; set; }
         public int? ReservationPeople { get; set; }
@@ -16,7 +17,7 @@ namespace Restaurant.Dto
     public class indexDto //藥包兩個 list
     {
         public List<RRI>? RRIs {get;set;}
-        public CustomerView viewModel { get; set; }
+        public CustomerView? viewModel { get; set; }
 
     }
 }

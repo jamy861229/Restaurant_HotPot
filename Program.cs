@@ -41,6 +41,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
        options.Cookie.HttpOnly = true; // 保護Cookie避免被JavaScript存取
        options.Cookie.SameSite = SameSiteMode.Lax; // 設定SameSite策略，避免跨站點問題
    });
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.Strict;
+    options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
+    options.Secure = CookieSecurePolicy.Always;
+});
 // 啟用 Session 服務
 builder.Services.AddSession(options =>
 {
