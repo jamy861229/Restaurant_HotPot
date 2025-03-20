@@ -1,7 +1,21 @@
-﻿using Restaurant.Dto;
+﻿//using Restaurant.Dto;
 using Restaurant.Models;
 namespace Restaurant.Dto
 {
+
+    public class OO
+    {
+        public string? OrderName { get; set; }
+        public string? OrderType { get; set; }// 內用外帶
+        public string? OrderAddress { get; set; }
+
+        public int OrderItemQuantity { get; set; }
+        public string? OrderItemMenuName { get; set; }
+        public decimal OrderItemUnitPrice { get; set; }
+        public string? SelectedSection {  get; set; }
+
+
+    }
     public class RRI
     {
         public int  Customer_Id;
@@ -11,13 +25,25 @@ namespace Restaurant.Dto
         public string? RestaurantName { get; set; }
         public string? RestaurantAddress { get; set; }
         public DateTime ReservationDate { get; set; }
+        public string? SelectedSection { get; set; }
     }
+    public enum OrderTypeEnum
+    {
+        reserve, // 訂位
+        ordering // 訂餐
+    }
+
 
 
     public class indexDto //藥包兩個 list
     {
-        public List<RRI>? RRIs {get;set;}
+        public List<RRI> RRIs {get;set;}
         public CustomerView? viewModel { get; set; }
+        public List<OO> OOs {get;set;}
+        
 
+        public string OrderType { get; set; }  // 使用 Enum 限制值
+
+        
     }
 }

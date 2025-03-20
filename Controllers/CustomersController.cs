@@ -23,6 +23,7 @@ using System.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Restaurant.Dto;
+using Microsoft.DotNet.Scaffolding.Shared.Project;
 
 
 
@@ -184,26 +185,37 @@ namespace Restaurant.Controllers
         }
 
 
+        public class OrderRequest
+        {
+            public string? OrderType { get; set; }  // 訂位或訂餐的選擇
+            public int? ReservationId { get; set; }  // 訂位ID，可能為空
+            public int OrderId { get; set; }
+        }
+
+
         #region 會員專區
 
         // GET: Customers
         [Authorize]
-        public async Task<IActionResult> Index(int Id)   // 會員專區葉面
+        public async Task<IActionResult> Index(indexDto indexDto)   // 會員專區葉面 ordertype
         {
             // 使用 User.Identity.Name 來獲取當前登入的使用者帳號
             var customerAccount = User.Identity.Name;
             var userId = User.FindFirst("UserId")?.Value; // **透過 Claims 取得 UserId**   這是 customerId
+            
             if (string.IsNullOrEmpty(customerAccount) || string.IsNullOrEmpty(userId))
             {
                 return RedirectToAction(nameof(Login));  // 如果沒有登入，則重導向登入頁面
             }
             // 讀取cookie 
-            
+
             CustomerView? member = await _context.Customers
-                .Include(m => m.Orders)
+                //.Include(m => m.Orders)
                 .FirstOrDefaultAsync(m => m.CustomerAccount == customerAccount);   // 假設有登入機制
             if (member != null)
             {
+               
+                
                 var viewModel = new CustomerView
                 {
                     CustomerAccount = member.CustomerAccount,
@@ -219,40 +231,57 @@ namespace Restaurant.Controllers
                     //    // Status = o.Status
                     //}).ToList()
                 };
-                var 一個什麼 = GetOrderInfo(userId, "reserve");  //這裡的id 查的是 訂位id
-                //return View(await _context.Customers.ToListAsync());
-                var Data = new indexDto { RRIs = 一個什麼, viewModel = viewModel };
-                return View(Data);
-            }
+
+                //indexDto indexDto = new indexDto { } ;
+                //從前端來判斷使用者選擇甚麼 (reserve  Ordering) 在看要執行什麼方法
+                if (indexDto.OrderType == "ordering")
+                {
+                    var 兩個甚麼 = GetOrderItemsInfo(userId, indexDto.OrderType);    // 這裡 id 是寫死了
+                    var Data = new indexDto { RRIs = new List<RRI>(), OOs = 兩個甚麼, viewModel = viewModel };
+                    return View(Data);
+                }
+                else
+                {
+                    var 一個什麼 = GetOrderInfo(userId, indexDto.OrderType);  //這裡的id 查的是 訂位id
+                    var Data = new indexDto { RRIs = 一個什麼, viewModel = viewModel, OOs = new List<OO>() };
+                    return View(Data);
+                }
+                //else
+                //{
+                //    return View(new indexDto {viewModel=viewModel,RRIs = new List<RRI> (),OOs=new List<OO> () } );   //為何要定義indexDto 因為有兩種資料來自不同的查詢 為了要顯示在前端必須把它們合併成 一個 class 
+                //}
+
+
+                    //var 一個什麼 = GetOrderInfo(userId, "reserve");  //這裡的id 查的是 訂位id
+                    //var 兩個甚麼 = GetOrderItemsInfo(13, "Ordering");
+                    //return View(await _context.Customers.ToListAsync());
+                    //var Data = new indexDto { RRIs = 一個什麼, viewModel = viewModel,OOs = 兩個甚麼 };
+                    //return View(Data);
+                }
             return RedirectToAction(nameof(Create));
         }
-            
+
         
-          
+
 
         #endregion
 
 
 
-        public class OrderRequest
-        {
-            public string? OrderType { get; set; }  // 訂位或訂餐的選擇
-            public int? ReservationId { get; set; }  // 訂位ID，可能為空
-            public int OrderId { get; set; }
-        }
-
+        
+        // 呼叫訂位資料的方法
         [HttpPost]
-        public List<RRI> GetOrderInfo(string id , string orderType)  //這裡的id 要改用 CustomerId 來查找
+        public List<RRI> GetOrderInfo(string id, string orderType)  //這裡的id 要改用 CustomerId 來查找
         {
             if (orderType == "reserve")
             {
                 // 假設 model.ReservationId 是前端傳來的訂位ID
                 var reservationData = (from r in _context.Reservations
-                                       join ri in _context.RestaurantInfos                                       
+                                       join ri in _context.RestaurantInfos
                                        on r.RestaurantId equals ri.RestaurantId
                                        join C in _context.Customers
                                        on r.CustomerId equals C.CustomerId
-                                       where r.CustomerId.ToString() == id 
+                                       where r.CustomerId.ToString() == id
                                        select new RRI
                                        {
                                            Customer_Id = r.CustomerId,
@@ -261,7 +290,8 @@ namespace Restaurant.Controllers
                                            ReservationPeople = r.ReservationPeople,
                                            RestaurantName = ri.RestaurantName,
                                            RestaurantAddress = ri.RestaurantAddress,
-                                           ReservationDate = r.ReservationDate
+                                           ReservationDate = r.ReservationDate,
+                                           SelectedSection = "reserve"  // 預設顯示訂位資料
                                        }).ToList();
 
                 if (reservationData != null)
@@ -271,34 +301,71 @@ namespace Restaurant.Controllers
                     return reservationData;
                 }
 
+
             }
             return new List<RRI> { };
             //return Json(new { message = "沒有找到相關訂位資料" });
-
-
         }
 
+        
 
-        //用來將視圖渲染為字符串的輔助方法
-        //public string RenderViewToString(string viewName, object model)
-        //{
-        //    var controllerContext = this.ControllerContext;
-        //    var viewData = new ViewDataDictionary<object>(this.ViewData) { Model = model };
-        //    var tempData = this.TempData;
-        //    using (var sw = new StringWriter())
-        //    {
-        //        var viewEngineResult = _viewEngine.GetView("", viewName, false);
-        //        var viewContext = new ViewContext(controllerContext, viewEngineResult.View, viewData, tempData, sw, new HtmlHelperOptions());
-        //        viewEngineResult.View.RenderAsync(viewContext).Wait();
-        //        return sw.GetStringBuilder().ToString();
-        //    }
-        //}
+        [HttpPost]
+        public List<OO> GetOrderItemsInfo(string id, string orderType)  //這裡的id 要改用 CustomerId 來查找
+        {
+            if (orderType == "ordering") {
+                // 假設 model.ReservationId 是前端傳來的訂位ID
+                var orderingData = (from o in _context.Orders
+                                    join oi in _context.OrderItems
+                                    on o.OrderId equals oi.OrderItemId
+                                    join  C  in _context.Customers
+                                    on o.OrderCustomerId equals C.CustomerId
+                                    where C.CustomerId.ToString() == id
+                                    select new OO
+                                    {
+                                        
+                                        OrderName = o.OrderName,
+                                        OrderType = o.OrderType,
+                                        OrderAddress = o.OrderAddress,
+                                        OrderItemQuantity = oi.OrderItemQuantity,
+                                        OrderItemMenuName = oi.OrderItemMenuName,
+                                        OrderItemUnitPrice = oi.OrderItemUnitPrice,
+                                        SelectedSection = "ordering"
+                                    }).ToList();
+            
+            if (orderingData != null)
+            {
+                // 渲染訂位資料視圖，並傳遞 reservationData
+                //Debug.WriteLine(reservationData.ReservationName);
+                return orderingData;
+            }
+
+        }
+            return new List<OO> { };
+    //return Json(new { message = "沒有找到相關訂位資料" });
+}
 
 
-        #region 編輯使用者資料
+
+//用來將視圖渲染為字符串的輔助方法
+//public string RenderViewToString(string viewName, object model)
+//{
+//    var controllerContext = this.ControllerContext;
+//    var viewData = new ViewDataDictionary<object>(this.ViewData) { Model = model };
+//    var tempData = this.TempData;
+//    using (var sw = new StringWriter())
+//    {
+//        var viewEngineResult = _viewEngine.GetView("", viewName, false);
+//        var viewContext = new ViewContext(controllerContext, viewEngineResult.View, viewData, tempData, sw, new HtmlHelperOptions());
+//        viewEngineResult.View.RenderAsync(viewContext).Wait();
+//        return sw.GetStringBuilder().ToString();
+//    }
+//}
 
 
-        [Authorize]
+#region 編輯使用者資料
+
+
+[Authorize]
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? Id)
         {
