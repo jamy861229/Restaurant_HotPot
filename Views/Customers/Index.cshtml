@@ -1,7 +1,11 @@
-﻿@model Restaurant.Dto.indexDto
+﻿@using Restaurant.Dto
+@model Restaurant.Dto.indexDto
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}
 
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "Index";
 }
 
 @*@model Restaurant.Models.Customer*@
@@ -9,156 +13,112 @@
 
 
 <div class="container mt-4">
-    <h2 class="text-center">會員專區</h2>
+	<h2 class="text-center">會員專區</h2>
 
-    <!-- 上方按鈕 -->
-    <div class="d-flex justify-content-center mb-3">
-        <a href="~/Order/Index_Order" class="btn btn-primary mx-2">訂餐</a>
-        <a href="~/StoreInformation/StoreInformation" class="btn btn-secondary mx-2">訂位</a>
-    </div>
+	<!-- 上方按鈕 -->
+	<div class="d-flex justify-content-center mb-3">
+		<a href="~/Order/Index_Order" class="btn btn-primary mx-2">訂餐</a>
+		<a href="~/StoreInformation/StoreInformation" class="btn btn-secondary mx-2">訂位</a>
+	</div>
 
-    <!-- 會員資訊 -->
-    <div class="card p-3 mb-4">
-        <h4>會員資訊</h4>
-        <a asp-action="Edit" asp-route-id="@Model.viewModel.CustomerId"  class="btn btn-secondary ">修改資料✏️</a>
-        <p><strong>帳號:</strong> @Model.viewModel.CustomerAccount</p>
-        <p><strong>姓名:</strong> @Model.viewModel.CustomerName</p>
-        <p><strong>電話:</strong> @Model.viewModel.CustomerPhone</p>
-        <p><strong>Email:</strong> @Model.viewModel.CustomerEmail</p>
-        <p><strong>地址:</strong> @Model.viewModel.CustomerAddress</p>
-    </div>
+	<!-- 會員資訊 -->
+	<div class="card p-3 mb-4">
+		<h4>會員資訊</h4>
+		<a asp-action="Edit" asp-route-id="@Model.viewModel.CustomerId"  class="btn btn-secondary ">修改資料✏️</a>
+		<p><strong>帳號:</strong> @Model.viewModel.CustomerAccount</p>
+		<p><strong>姓名:</strong> @Model.viewModel.CustomerName</p>
+		<p><strong>電話:</strong> @Model.viewModel.CustomerPhone</p>
+		<p><strong>Email:</strong> @Model.viewModel.CustomerEmail</p>
+		<p><strong>地址:</strong> @Model.viewModel.CustomerAddress</p>
+	</div>
 
-    <!-- 訂單紀錄 (包含訂位/訂餐) -->
+	<!-- -----訂單紀錄 (包含訂位/訂餐)----- -->
 
-    <div class="form-group">
-    <label for="orderType">選擇服務類型</label>
-    <select id="orderType" name="orderType" class="form-control">
-        <option value="reserve">訂位</option>
-        <option value="order">訂餐</option>
-    </select>
-</div>
-
-<!-- 顯示訂位或訂餐資料的容器 -->
-<div id="orderDetails">
-    <!-- 預設顯示的資料區域 -->
-</div>
-
-
-
-    <h4>訂單紀錄</h4>
-    <table class="table table-bordered">
-        <thead class="thead-light">
-            <tr>
-                <th>訂位者姓名</th>
-                <th>電話</th>
-                <th>人數</th>
-                <th>店名</th>
-                <th>店家地址</th>
-                <th>訂位日期</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var order in Model.RRIs)
-            {  
-                  <tr>  
-                              <td>@order.ReservationName</td>  
-                                  <td>@order.ReservationPhone</td>  
-                                      <td>@order.ReservationPeople</td>  
-                                          <td>@order.RestaurantName</td>  
-                                              <td>@order.RestaurantAddress</td>  
-                          <td>@order.ReservationDate.ToString("yyyy-MM-dd")</td>  
-                          
-                    @*<td>@order.Status</td>  *@
-                  </tr>  
-              } 
-        </tbody>
-    </table>
-</div>
+	<h4>訂單紀錄</h4>
+	<!--訂單/訂位選擇-->
+	<form method="post" asp-controller="Customers" asp-action="Index">
+		<div> 
+			<label>
+				<input type="radio" asp-for="OrderType" value="reserve" onchange="this.form.submit()" checked/> 訂位資料
+			</label>
+			<label>
+				<input type="radio" asp-for="OrderType" value="ordering"  onchange="this.form.submit()"/> 訂餐資料
+			</label>
+		</div>
+	</form>
 
 
+	@*這裡要加判斷看使用者選什麼 (預設用訂位資料)*@
+	<!--訂位資料-->
+	@{
+		if (Model.OrderType == "reserve")
+		{
+			<div id = "reserve">
+				<h3>訂位資訊</h3>
+				<table class="table table-bordered" >
+					<thead class="thead-light">
+						<tr>
+							<th>訂位者姓名</th>
+							<th>電話</th>
+							<th>人數</th>
+							<th>店名</th>
+							<th>店家地址</th>
+							<th>訂位日期</th>
+						</tr>
+					</thead>
 
-@* <h1>Index</h1>  *@
+					<tbody>
+						@foreach (var order in Model.RRIs)
+						{  
+							<tr>  
+								<td>@order.ReservationName</td>  
+								<td>@order.ReservationPhone</td>  
+								<td>@order.ReservationPeople</td>  
+								<td>@order.RestaurantName</td>  
+								<td>@order.RestaurantAddress</td>  
+								<td>@order.ReservationDate.ToString("yyyy-MM-dd")</td>  					
+							</tr>  
+						} 
+					</tbody>
+				</table>
+			</div>
 
-@*  <p>  *@
-@*      <a asp-action="Create">Create New</a>  *@
-@*  </p>  *@
-@*  <table class="table">  *@
-@*      <thead>  *@
-@*          <tr>  *@
-@*              <th>  *@
-@*                  @Html.DisplayNameFor(model => model.CustomerName)  *@
-@*              </th> *@
-@*              <th>  *@
-@*                  @Html.DisplayNameFor(model => model.CustomerPhone)  *@
-@*              </th>  *@
-@*              <th>  *@
-@*                  @Html.DisplayNameFor(model => model.CustomerEmail)  *@
-@*              </th>  *@
-@*              <th>  *@
-@*                  @Html.DisplayNameFor(model => model.CustomerPassword)  *@
-@*              </th>  *@
-@*              @* <th> *@ 
-@*              @*     @Html.DisplayNameFor(model => model.CustomerBirthDate) *@  
-@*              @* </th> *@  
-@*              <th>  *@
-@*                  @Html.DisplayNameFor(model => model.CustomerAccount)  *@
-@*              </th>  *@
-@*              @* <th> *@  
-@*              @*     @Html.DisplayNameFor(model => model.CustomerPoints) *@  
-@*              @* </th> *@  
-@*              <th>  *@
-@*                  @Html.DisplayNameFor(model => model.CustomerAddress)  *@
-@*              </th>  *@
-@*              <th>  *@
-@*                  @Html.DisplayNameFor(model => model.CustomerCreatedAt)  *@
-@*              </th>  *@
-@*              <th></th>  *@
-@*          </tr>  *@
-@*      </thead>  *@
-@*      <tbody>  *@
-@*  @foreach (var item in Model) {  *@
-@*          <tr>  *@
-@*              <td>  *@
-@*                  @Html.DisplayFor(modelItem => item.CustomerName)  *@
-@*              </td>  *@
-@*              <td>  *@
-@*                  @Html.DisplayFor(modelItem => item.CustomerPhone)  *@
-@*              </td>  *@
-@*              <td>  *@
-@*                  @Html.DisplayFor(modelItem => item.CustomerEmail)  *@
-@*              </td>  *@
-@*              <td>  *@
-@*                  @Html.DisplayFor(modelItem => item.CustomerPassword)  *@
-@*              </td>  *@
-@*              @* <td> *@  
-@*              @*     @Html.DisplayFor(modelItem => item.CustomerBirthDate) *@  
-@*              @* </td> *@ 
-@*              @* <td> *@  
-@*              @*     @Html.DisplayFor(modelItem => item.CustomerAccount) *@  
-@*              @* </td> *@ 
-@*              @* <td> *@  
-@*              @*     @Html.DisplayFor(modelItem => item.CustomerPoints) *@  
-@*              @* </td> *@ 
-@*               <td>   *@
-@*                  @Html.DisplayFor(modelItem => item.CustomerAddress)  *@
-@*              </td>  *@
-@*              <td>  *@
-@*                  @Html.DisplayFor(modelItem => item.CustomerCreatedAt)  *@
-@*              </td>  *@
-@*               <td>  *@
-@*                   @* <a asp-action="Edit" asp-route-id="@item.Customer_Id">Edit</a> |  *@  
-@*                   @*     <a href="~/Customers/Index_Member" asp-route-id="@item.Customer_Id" >Details</a> |  *@  
-@*                   @*     @Html.ActionLink("Edit", "Edit", new { id = item.Customer_Id }) |  *@  
-@*                   @*     <a asp-action="Delete" asp-route-id="@item.Customer_Id">Delete</a>  *@ 
-@*                      @Html.ActionLink("Edit", "Edit", new { id = item.Customer_Id }) |  *@
-@*                      @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |   *@
-@*                      @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })   *@
-@*               </td>   *@
-@*          </tr>  *@
-@*  }  *@
-@*      </tbody>  *@
-@*  </table> *@
+		}
+		else 
+		{ 
+		<div id = "ordering" >  <!--訂餐資料-->
+			<h3>訂餐資訊</h3>
+				<table class="table table-bordered">
+				<thead class="thead-light">
+					<tr>
+						<th>訂餐者姓名</th>
+						<th>型態</th>
+						<th>地址</th>
+						<th>商品數量</th>
+						<th>品項</th>
+						<th>單價</th>
+						<th>總價</th>
+					</tr>
+				</thead>
 
- 
+				<tbody>
+					@foreach (var order in Model.OOs)
+					{  
+							<tr>  
+								<td>@order.OrderName </td>  
+								<td>@order.OrderType </td>  
+								<td>@order.OrderAddress</td>  
+								<td>@order.OrderItemQuantity</td>  
+								<td>@order.OrderItemMenuName</td>  
+								<td>@order.OrderItemUnitPrice</td>  					
+							</tr>  
+					} 
+				</tbody>
+			</table>
+		</div>
+		}
+	}
+			
 
+			
 
