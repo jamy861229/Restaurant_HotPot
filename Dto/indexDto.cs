@@ -13,6 +13,7 @@ namespace Restaurant.Dto
         public string? OrderItemMenuName { get; set; }
         public decimal OrderItemUnitPrice { get; set; }
         public string? SelectedSection {  get; set; }
+        public DateTime OrderDate {  get; set; }
 
 
     }

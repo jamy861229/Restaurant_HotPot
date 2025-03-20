@@ -21,6 +21,7 @@
 		<a href="~/StoreInformation/StoreInformation" class="btn btn-secondary mx-2">訂位</a>
 	</div>
 
+	<form >
 	<!-- 會員資訊 -->
 	<div class="card p-3 mb-4">
 		<h4>會員資訊</h4>
@@ -31,7 +32,7 @@
 		<p><strong>Email:</strong> @Model.viewModel.CustomerEmail</p>
 		<p><strong>地址:</strong> @Model.viewModel.CustomerAddress</p>
 	</div>
-
+	</form>
 	<!-- -----訂單紀錄 (包含訂位/訂餐)----- -->
 
 	<h4>訂單紀錄</h4>
@@ -39,10 +40,10 @@
 	<form method="post" asp-controller="Customers" asp-action="Index">
 		<div> 
 			<label>
-				<input type="radio" asp-for="OrderType" value="reserve" onchange="this.form.submit()" checked/> 訂位資料
+				<input type="radio" asp-for="OrderType" value="reserve" onchange="this.form.submit()" /> 訂位資料
 			</label>
 			<label>
-				<input type="radio" asp-for="OrderType" value="ordering"  onchange="this.form.submit()"/> 訂餐資料
+				<input type="radio" asp-for="OrderType" value="ordering"  onchange="this.form.submit()" /> 訂餐資料
 			</label>
 		</div>
 	</form>
@@ -84,7 +85,7 @@
 			</div>
 
 		}
-		else 
+		else if (Model.OrderType == "ordering")
 		{ 
 		<div id = "ordering" >  <!--訂餐資料-->
 			<h3>訂餐資訊</h3>
@@ -97,7 +98,7 @@
 						<th>商品數量</th>
 						<th>品項</th>
 						<th>單價</th>
-						<th>總價</th>
+						<th>日期</th>
 					</tr>
 				</thead>
 
@@ -110,12 +111,17 @@
 								<td>@order.OrderAddress</td>  
 								<td>@order.OrderItemQuantity</td>  
 								<td>@order.OrderItemMenuName</td>  
-								<td>@order.OrderItemUnitPrice</td>  					
+								<td>@order.OrderItemUnitPrice</td>  
+								<td>@order.OrderDate.ToShortDateString()</td>  					
+
 							</tr>  
 					} 
 				</tbody>
 			</table>
 		</div>
+		}
+		else{
+			<h1>尚未選擇訂單資訊</h1>
 		}
 	}
 			

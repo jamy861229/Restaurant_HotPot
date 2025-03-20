@@ -151,8 +151,7 @@ namespace Restaurant.Controllers
                     };
 
 
-                    await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
+                    await HttpContext.SignInAsync("MyCookie",
                         new ClaimsPrincipal(claimsIdentity),
                         authProperties);
                     //Debug.WriteLine("資料庫密碼: " + result.CustomerPassword);
@@ -201,7 +200,7 @@ namespace Restaurant.Controllers
         #region 會員專區
 
         // GET: Customers
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "MyCookie")]
         public async Task<IActionResult> Index(indexDto indexDto)   // 會員專區葉面 ordertype
         {
             // 使用 User.Identity.Name 來獲取當前登入的使用者帳號
@@ -243,7 +242,13 @@ namespace Restaurant.Controllers
                 if (indexDto.OrderType == "ordering")
                 {
                     var 兩個甚麼 = GetOrderItemsInfo(userId, indexDto.OrderType);    // 這裡 id 是寫死了
-                    var Data = new indexDto { RRIs = new List<RRI>(), OOs = 兩個甚麼, viewModel = viewModel };
+                    var Data = new indexDto { RRIs = new List<RRI>(), OOs = 兩個甚麼, viewModel = viewModel, OrderType = "ordering" };
+                    return View(Data);
+                }
+                else if (indexDto.OrderType == "reserve")
+                {
+                    var 一個什麼 = GetOrderInfo(userId, indexDto.OrderType);  //這裡的id 查的是 訂位id
+                    var Data = new indexDto { RRIs = 一個什麼, viewModel = viewModel, OOs = new List<OO>(), OrderType = "reserve" };
                     return View(Data);
                 }
                 else
@@ -252,6 +257,7 @@ namespace Restaurant.Controllers
                     var Data = new indexDto { RRIs = 一個什麼, viewModel = viewModel, OOs = new List<OO>() };
                     return View(Data);
                 }
+
                 //else
                 //{
                 //    return View(new indexDto {viewModel=viewModel,RRIs = new List<RRI> (),OOs=new List<OO> () } );   //為何要定義indexDto 因為有兩種資料來自不同的查詢 為了要顯示在前端必須把它們合併成 一個 class 
@@ -322,19 +328,19 @@ namespace Restaurant.Controllers
                 // 假設 model.ReservationId 是前端傳來的訂位ID
                 var orderingData = (from o in _context.Orders
                                     join oi in _context.OrderItems
-                                    on o.OrderId equals oi.OrderItemId
+                                    on o.OrderId equals oi.OrderItemOrderId
                                     join  C  in _context.Customers
                                     on o.OrderCustomerId equals C.CustomerId
                                     where C.CustomerId.ToString() == id
                                     select new OO
-                                    {
-                                        
+                                    {                                        
                                         OrderName = o.OrderName,
                                         OrderType = o.OrderType,
                                         OrderAddress = o.OrderAddress,
                                         OrderItemQuantity = oi.OrderItemQuantity,
                                         OrderItemMenuName = oi.OrderItemMenuName,
                                         OrderItemUnitPrice = oi.OrderItemUnitPrice,
+                                        OrderDate=o.OrderDate ,
                                         SelectedSection = "ordering"
                                     }).ToList();
             
@@ -352,38 +358,39 @@ namespace Restaurant.Controllers
 
 
 
-//用來將視圖渲染為字符串的輔助方法
-//public string RenderViewToString(string viewName, object model)
-//{
-//    var controllerContext = this.ControllerContext;
-//    var viewData = new ViewDataDictionary<object>(this.ViewData) { Model = model };
-//    var tempData = this.TempData;
-//    using (var sw = new StringWriter())
-//    {
-//        var viewEngineResult = _viewEngine.GetView("", viewName, false);
-//        var viewContext = new ViewContext(controllerContext, viewEngineResult.View, viewData, tempData, sw, new HtmlHelperOptions());
-//        viewEngineResult.View.RenderAsync(viewContext).Wait();
-//        return sw.GetStringBuilder().ToString();
-//    }
-//}
+        //用來將視圖渲染為字符串的輔助方法
+        //public string RenderViewToString(string viewName, object model)
+        //{
+        //    var controllerContext = this.ControllerContext;
+        //    var viewData = new ViewDataDictionary<object>(this.ViewData) { Model = model };
+        //    var tempData = this.TempData;
+        //    using (var sw = new StringWriter())
+        //    {
+        //        var viewEngineResult = _viewEngine.GetView("", viewName, false);
+        //        var viewContext = new ViewContext(controllerContext, viewEngineResult.View, viewData, tempData, sw, new HtmlHelperOptions());
+        //        viewEngineResult.View.RenderAsync(viewContext).Wait();
+        //        return sw.GetStringBuilder().ToString();
+        //    }
+        //}
 
 
-#region 編輯使用者資料
+        #region 編輯使用者資料
 
-
-[Authorize]
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = "MyCookie")]
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? Id)
         {
-            if (Id == null)
+            var userId = User.FindFirst("UserId")?.Value; // **透過 Claims 取得 UserId**   這是 customerId
+            if (userId == null)
             {
                 return NotFound();
             }
 
-            var customer = await _context.Customers.FindAsync(Id);
+            var customer = await _context.Customers.FindAsync(Convert.ToInt32(userId));
             if (customer == null)
             {
-                return NotFound();
+                return View("Create");
             }
             return View(customer);
         }
@@ -392,7 +399,7 @@ namespace Restaurant.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "MyCookie")]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(CustomerView customer)  // 這裡id =0 ?
         {
@@ -549,12 +556,12 @@ namespace Restaurant.Controllers
 
         #region 登出
         #endregion
-        [HttpGet]
+        [HttpPost]
         // [HttpPost]
         //[AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync("MyCookie");
             // 確保 Cookie 真的被刪除
             // Response.Cookies.Delete(".AspNetCore.Cookies");  //手動
             return RedirectToAction("Index", "Homepage");

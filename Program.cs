@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages(); // 0310 加的
@@ -23,9 +24,14 @@ options => options.UseSqlServer(builder.Configuration.GetConnectionString("Resta
 //// Add services to the container. 使用 cookie 判斷是否是登入狀態
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-   .AddCookie(options =>
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = "MyCookie"; // 自訂 Cookie 名稱
+    options.DefaultChallengeScheme = "MyCookie";
+    options.DefaultSignInScheme = "MyCookie";
+})
+   .AddCookie("MyCookie", options =>
    {
+       options.Cookie.Name = "MyAuthCookie"; // 這是新的 Cookie 名稱
        options.ExpireTimeSpan = TimeSpan.FromMinutes(20); //過期時間為20分鐘(秒) controller登入的地方也要記得改
        options.SlidingExpiration = true; //如果登入期間使用者有活動(例如發送請求),則重新計算過期時間
        options.LoginPath = "/Customers/Member_Login"; //未登入自動導至這個網址
@@ -40,6 +46,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
        // 下面這些是為了讓跨站點的請求可以傳遞Cookie
        options.Cookie.HttpOnly = true; // 保護Cookie避免被JavaScript存取
        options.Cookie.SameSite = SameSiteMode.Lax; // 設定SameSite策略，避免跨站點問題
+
    });
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {

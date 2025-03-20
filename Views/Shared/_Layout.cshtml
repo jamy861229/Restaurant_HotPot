@@ -58,16 +58,17 @@
                     </ul>
 
                     <!-- 把人頭(MemberHead)跟登入合併 -->
-                    <form class="d-flex">
+                    <form class="d-flex" method="post" asp-action="Logout" asp-controller="Customers">
  
                         @if (User.Identity.IsAuthenticated)   // layout 需加入這段
                         {
                                 <span class=  "navber-text me-3"> 歡迎, @User.Identity.Name</span>
-                                <a class="btn btn-outline-danger" href="~/HomePage/Index">登出</a>
+                                <button type="submit" class="btn btn-outline-danger" >登出</button>
                         }
                         else
                         {
-                            <a class="btn btn-outline-success" href="~/Customers/Member_Login"><img style="width:50%" src="~/images/MemberHead.png">登入</a>
+                            <a class="btn btn-outline-success" href="~/Customers/Member_Login">
+                                <img style="width:50%" src="~/images/MemberHead.png">登入</a>
                         } 
                     </form>
                 </div>
