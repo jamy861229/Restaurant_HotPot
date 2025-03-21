@@ -40,4 +40,5 @@ public partial class CustomerView
     public virtual ICollection<OrderView> Orders { get; set; } = new List<OrderView>();
 
     public virtual ICollection<ReservationView> Reservations { get; set; } = new List<ReservationView>();
+    public string Token { get; internal set; }
 }

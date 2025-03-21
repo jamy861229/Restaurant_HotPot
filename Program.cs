@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Restaurant;
+using Microsoft.AspNetCore.Identity;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages(); // 0310 加的
@@ -19,6 +22,8 @@ builder.Services.AddRazorPages(); // 0310 加的
 
 builder.Services.AddDbContext<MyDbContext>(
 options => options.UseSqlServer(builder.Configuration.GetConnectionString("RestaurantConnstring")));
+
+builder.Services.AddSingleton<EmailService>();   //0321 註冊email 的服務
 
 //// Add services to the container. 使用 cookie 判斷是否是登入狀態
 builder.Services.AddControllersWithViews();
@@ -65,6 +70,9 @@ builder.Services.AddAuthorization(options =>
         .RequireAuthenticatedUser()
         .Build();
 });
+
+
+
 
 var app = builder.Build();
 

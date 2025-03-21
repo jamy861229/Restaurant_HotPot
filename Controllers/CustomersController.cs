@@ -37,18 +37,47 @@ namespace Restaurant.Controllers
     {
         //CustomerView xa = new CustomerView();   //根據類別建立物件
 
-        private readonly ILogger<CustomersController> _logger;
-        private readonly MyDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly PasswordHasher<string> _passwordHasher = new PasswordHasher<string>();  // 哈希        
+        //private readonly ILogger<CustomersController> _logger;
+        //private readonly MyDbContext _context;
+        //private readonly IHttpContextAccessor _httpContextAccessor;
+        //private readonly PasswordHasher<string> _passwordHasher = new PasswordHasher<string>();  // 哈希        
 
-        public CustomersController(ILogger<CustomersController> logger, MyDbContext context,
-            IHttpContextAccessor httpContextAccessor)
-        {
-            _logger = logger;
-            _context = context;
-            _httpContextAccessor = httpContextAccessor;
-        }
+        //public CustomersController(ILogger<CustomersController> logger, MyDbContext context,
+        //    IHttpContextAccessor httpContextAccessor)
+        //{
+        //    _logger = logger;
+        //    _context = context;
+        //    _httpContextAccessor = httpContextAccessor;
+        //}
+
+        //private readonly UserManager<CustomersController> _userManager;
+        //private readonly EmailService _emailService;
+
+        //public CustomersController(UserManager<CustomersController> userManager, EmailService emailService)
+        //{
+        //    _userManager = userManager;
+        //    _emailService = emailService;
+        //}
+         private readonly ILogger<CustomersController> _logger;
+    private readonly MyDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly PasswordHasher<string> _passwordHasher = new PasswordHasher<string>(); // 密碼哈希
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly EmailService _emailService;
+
+    public CustomersController(
+        ILogger<CustomersController> logger,
+        MyDbContext context,
+        IHttpContextAccessor httpContextAccessor,
+        UserManager<IdentityUser> userManager,
+        EmailService emailService)
+    {
+        _logger = logger;
+        _context = context;
+        _httpContextAccessor = httpContextAccessor;
+        _userManager = userManager;
+        _emailService = emailService;
+    }
 
         #region 註冊
 
@@ -169,6 +198,63 @@ namespace Restaurant.Controllers
             ViewBag.Error = "請檢查輸入欄位是否正確！";
             return View("Member_Login");
         }
+        #endregion
+
+        #region 忘記密碼
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword( string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return View("ForgotPasswordConfirmation");
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var resetLink = Url.Action("ResetPassword", "Account",
+                new { token, email }, Request.Scheme);
+
+            await _emailService.SendEmailAsync(
+                email,
+                "重設密碼",
+                $"請點擊 <a href='{resetLink}'>這裡</a> 來重設您的密碼。"
+            );
+
+            return View("ForgotPasswordConfirmation");
+        }
+        #endregion
+
+        // 顯示重設密碼頁面
+        #region 重設密碼
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (token == null || email == null) return BadRequest("無效的密碼重設請求");
+            return View(new CustomerView { Token = token, CustomerEmail = email });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(CustomerView model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.CustomerEmail);
+            if (user == null) return RedirectToAction("ResetPasswordConfirmation");
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.CustomerPassword);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View(model);
+        }
+
+
         #endregion
 
         #region 其他動作
