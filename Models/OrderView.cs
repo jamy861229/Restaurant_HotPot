@@ -11,6 +11,7 @@ public partial class OrderView
 
     public int OrderCustomerId { get; set; }
 
+    [Required(ErrorMessage = "請選擇訂餐分店")]
     [Display(Name = "訂餐分店")]
     public int OrderRestaurantId { get; set; }
 
@@ -18,15 +19,18 @@ public partial class OrderView
 
     public decimal OrderTotalAmount { get; set; }
 
+    [Required(ErrorMessage = "請選擇訂餐類型")]
     [Display(Name = "訂餐類型")]
     public string? OrderType { get; set; }
 
     [NotMapped]
     public string OrderMenuName { get; set; } = null!;
 
+    [Required(ErrorMessage = "請輸入訂餐姓名")]
     [Display(Name ="訂餐姓名")]
     public string OrderName { get; set; } = null!;
 
+    [Required(ErrorMessage = "請輸入訂餐電話")]
     [Display(Name = "訂餐電話")]
     public string OrderPhone { get; set; } = null!;
 
@@ -36,6 +40,7 @@ public partial class OrderView
     [NotMapped]
     public int RegionAddress { get; set; }
 
+    [Required(ErrorMessage = "請輸入訂餐地址")]
     [NotMapped]
     public string StreetAddress { get; set; } = null!;
 
