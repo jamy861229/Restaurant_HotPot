@@ -150,16 +150,33 @@ namespace Restaurant.Controllers
                                 })
                                 .ToListAsync();
 
+            // **從 Session 取得已選擇的資料**
+            var selectedSoups = HttpContext.Session.GetString("SelectedSoups");
+            if (!string.IsNullOrEmpty(selectedSoups))
+            {
+                var selectedItems = JsonConvert.DeserializeObject<List<OrderItemView>>(selectedSoups);
+
+                // **將已選擇的數量設定回 hotpotBases**
+                foreach (var item in selectedItems)
+                {
+                    var menuItem = hotpotBases.FirstOrDefault(m => m.OrderMenuId == item.OrderItemMenuId);
+                    if (menuItem != null)
+                    {
+                        menuItem.SelectedQuantity = item.OrderItemQuantity; // 設定數量
+                    }
+                }
+            }
+
             ViewBag.CurrentStep = 1;
             return View(hotpotBases);
         }
+
 
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Soup_Order(int[] menuIds, string[] menuNames, int[] quantities, decimal[] unitPrices)
         {
             var selectedItems = new List<OrderItemView>();
-
 
             for (int i = 0; i < menuNames.Length; i++)
             {
@@ -175,10 +192,11 @@ namespace Restaurant.Controllers
                 }
             }
 
+            // **將選擇的資料存入 Session**
             HttpContext.Session.SetString("SelectedSoups", JsonConvert.SerializeObject(selectedItems));
-            return RedirectToAction("StapleFood_Order");
-        }
 
+            return RedirectToAction("StapleFood_Order"); // 進入下一步
+        }
 
         [AllowAnonymous]
         public async Task<IActionResult> StapleFood_Order()
@@ -194,6 +212,23 @@ namespace Restaurant.Controllers
                                     OrderMenuDescription = m.MenuDescription
                                 })
                                 .ToListAsync();
+
+            // **從 Session 取得已選擇的資料**
+            var selectedStapleFoods = HttpContext.Session.GetString("SelectedStapleFoods");
+            if (!string.IsNullOrEmpty(selectedStapleFoods))
+            {
+                var selectedItems = JsonConvert.DeserializeObject<List<OrderItemView>>(selectedStapleFoods);
+
+                // **將已選擇的數量設定回 staplefood**
+                foreach (var item in selectedItems)
+                {
+                    var menuItem = staplefood.FirstOrDefault(m => m.OrderMenuId == item.OrderItemMenuId);
+                    if (menuItem != null)
+                    {
+                        menuItem.SelectedQuantity = item.OrderItemQuantity; // 設定數量
+                    }
+                }
+            }
 
             ViewBag.CurrentStep = 2;
             return View(staplefood);
@@ -241,6 +276,23 @@ namespace Restaurant.Controllers
                                     OrderMenuDescription = m.MenuDescription
                                 })
                                 .ToListAsync();
+
+            // **從 Session 取得已選擇的資料**
+            var selectedDesserts = HttpContext.Session.GetString("SelectedDesserts");
+            if (!string.IsNullOrEmpty(selectedDesserts))
+            {
+                var selectedItems = JsonConvert.DeserializeObject<List<OrderItemView>>(selectedDesserts);
+
+                // **將已選擇的數量設定回 dessert**
+                foreach (var item in selectedItems)
+                {
+                    var menuItem = dessert.FirstOrDefault(m => m.OrderMenuId == item.OrderItemMenuId);
+                    if (menuItem != null)
+                    {
+                        menuItem.SelectedQuantity = item.OrderItemQuantity; // 設定數量
+                    }
+                }
+            }
 
             ViewBag.CurrentStep = 3;
             return View(dessert);
@@ -350,7 +402,7 @@ namespace Restaurant.Controllers
                 OrderPhone = orderPhone,
                 OrderAddress = orderAddress,
                 OrderDate = DateTime.Now,
-                TotalAmount = totalAmount
+                OrderTotalAmount = totalAmount
             };
 
             // 儲存訂單至資料庫

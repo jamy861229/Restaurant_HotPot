@@ -56,9 +56,6 @@ public partial class OrderView
     [NotMapped]
     public decimal OrderMenuPrice { get; set; }
 
-    [NotMapped]
-    public decimal TotalAmount { get; set; }
-
     public virtual CustomerView OrderCustomer { get; set; } = null!;
 
     public virtual ICollection<OrderItemView> OrderItems { get; set; } = new List<OrderItemView>();
@@ -66,4 +63,7 @@ public partial class OrderView
     public virtual RestaurantInfoView OrderRestaurant { get; set; } = null!;
 
     public virtual ICollection<PaymentView> Payments { get; set; } = new List<PaymentView>();
+
+    [NotMapped]
+    public int SelectedQuantity { get; set; }
 }
