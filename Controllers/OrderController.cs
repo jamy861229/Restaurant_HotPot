@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using NuGet.Protocol;
 using Restaurant.Models;
@@ -100,9 +101,44 @@ namespace Restaurant.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Index_Order(OrderView model)
+        public async Task<IActionResult> Index_Order(OrderView model)
         {
             HttpContext.Session.SetString("Order_Type", model.OrderType);
+
+            if (string.IsNullOrEmpty(Convert.ToString(model.OrderRestaurantId)) || Convert.ToString(model.OrderRestaurantId)=="0")
+            {
+                ModelState.AddModelError("OrderRestaurantError", "!!!訂餐分店必需填寫!!!");
+
+                // 取得餐廳列表
+                var restaurantList = await _context.RestaurantInfos.ToListAsync();
+
+                ViewBag.OrderRestaurantId = restaurantList.Select(r => new SelectListItem
+                {
+                    Text = r.RestaurantName,
+                    Value = r.RestaurantId.ToString()
+                }).ToList();
+
+                // 預設區域選單為空
+                ViewBag.RegionList = new List<SelectListItem>();
+
+                // 取得目前登入使用者的 CustomerId
+                var userIdClaim = User.FindFirst("UserId");
+
+                if (userIdClaim == null)
+                {
+                    ViewBag.OrderCustomerId = 14;
+                    HttpContext.Session.SetString("Order_CustomerId", "14");
+                    ViewBag.AllowedOrderTypes = new List<string> { "DineIn" }; // 未登入者只能內用
+                }
+                else
+                {
+                    ViewBag.OrderCustomerId = int.Parse(userIdClaim.Value);
+                    HttpContext.Session.SetString("Order_CustomerId", userIdClaim.Value);
+                    ViewBag.AllowedOrderTypes = new List<string> { "TakeOut", "Delivery", "DineIn" }; // 登入者可選擇全部
+                }
+
+                return View(model);
+            }
 
             if (model.OrderType == "DineIn")
             {
@@ -113,10 +149,43 @@ namespace Restaurant.Controllers
             }
             else if (model.OrderType == "TakeOut")
             {
+                if (string.IsNullOrEmpty(model.OrderName) || string.IsNullOrEmpty(model.OrderPhone))
+                {
+                    ModelState.AddModelError("TakeoutOrderError", "!!!外帶訂單需要填寫姓名和電話!!!");
+
+                    // 取得餐廳列表
+                    var restaurantList = await _context.RestaurantInfos.ToListAsync();
+
+                    ViewBag.OrderRestaurantId = restaurantList.Select(r => new SelectListItem
+                    {
+                        Text = r.RestaurantName,
+                        Value = r.RestaurantId.ToString()
+                    }).ToList();
+
+                    // 預設區域選單為空
+                    ViewBag.RegionList = new List<SelectListItem>();
+
+                    // 取得目前登入使用者的 CustomerId
+                    var userIdClaim = User.FindFirst("UserId");
+
+                    if (userIdClaim == null)
+                    {
+                        ViewBag.OrderCustomerId = 14;
+                        HttpContext.Session.SetString("Order_CustomerId", "14");
+                        ViewBag.AllowedOrderTypes = new List<string> { "DineIn" }; // 未登入者只能內用
+                    }
+                    else
+                    {
+                        ViewBag.OrderCustomerId = int.Parse(userIdClaim.Value);
+                        HttpContext.Session.SetString("Order_CustomerId", userIdClaim.Value);
+                        ViewBag.AllowedOrderTypes = new List<string> { "TakeOut", "Delivery", "DineIn" }; // 登入者可選擇全部
+                    }
+
+                    return View(model);
+                }
                 model.OrderAddress = "外帶";
-                model.OrderCustomerId = Convert.ToInt32(HttpContext.Session.GetString("OrderCustomerId"));
             }
-            else
+            else if (model.OrderType == "Delivery")
             {
                 var RegionAddress = GetRegionByRestaurant(model.OrderRestaurantId);
 
@@ -125,8 +194,44 @@ namespace Restaurant.Controllers
                 string region = match.Success ? "台中市" + match.Groups[1].Value : "未知區域";
 
                 model.OrderAddress = region + model.StreetAddress;
-                model.OrderCustomerId = Convert.ToInt32(HttpContext.Session.GetString("Order_CustomerId"));
+
+                if (string.IsNullOrEmpty(model.OrderName) || string.IsNullOrEmpty(model.OrderPhone) || string.IsNullOrEmpty(model.StreetAddress))
+                {
+                    ModelState.AddModelError("DeliveryOrderError", "!!!外送訂單需要填寫姓名、電話和地址!!!");
+
+                    // 取得餐廳列表
+                    var restaurantList = await _context.RestaurantInfos.ToListAsync();
+
+                    ViewBag.OrderRestaurantId = restaurantList.Select(r => new SelectListItem
+                    {
+                        Text = r.RestaurantName,
+                        Value = r.RestaurantId.ToString()
+                    }).ToList();
+
+                    // 預設區域選單為空
+                    ViewBag.RegionList = new List<SelectListItem>();
+
+                    // 取得目前登入使用者的 CustomerId
+                    var userIdClaim = User.FindFirst("UserId");
+
+                    if (userIdClaim == null)
+                    {
+                        ViewBag.OrderCustomerId = 14;
+                        HttpContext.Session.SetString("Order_CustomerId", "14");
+                        ViewBag.AllowedOrderTypes = new List<string> { "DineIn" }; // 未登入者只能內用
+                    }
+                    else
+                    {
+                        ViewBag.OrderCustomerId = int.Parse(userIdClaim.Value);
+                        HttpContext.Session.SetString("Order_CustomerId", userIdClaim.Value);
+                        ViewBag.AllowedOrderTypes = new List<string> { "TakeOut", "Delivery", "DineIn" }; // 登入者可選擇全部
+                    }
+
+                    return View(model);
+                }
             }
+
+            model.OrderCustomerId = Convert.ToInt32(HttpContext.Session.GetString("Order_CustomerId"));
 
             HttpContext.Session.SetString("Order_Name", model.OrderName);
             HttpContext.Session.SetString("Order_Phone", model.OrderPhone);

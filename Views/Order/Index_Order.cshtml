@@ -6,6 +6,28 @@
 
 <div class="container mt-5 ">
     <form asp-action="Index_Order" method="post" class="p-4 border bg-light needs-validation rounded" style="max-width: 500px; margin: auto;" novalidate>
+
+        @if (ViewData.ModelState["TakeoutOrderError"] != null)
+        {
+            <div class="error-message">
+                <label style="color:red">@ViewData.ModelState["TakeoutOrderError"].Errors[0].ErrorMessage</label>
+            </div>
+        }
+
+        @if (ViewData.ModelState["DeliveryOrderError"] != null)
+        {
+            <div class="error-message">
+                <label style="color:red">@ViewData.ModelState["DeliveryOrderError"].Errors[0].ErrorMessage</label>
+            </div>
+        }
+
+        @if (ViewData.ModelState["OrderRestaurantError"] != null)
+        {
+            <div class="error-message">
+                <label style="color:red">@ViewData.ModelState["OrderRestaurantError"].Errors[0].ErrorMessage</label>
+            </div>
+        }
+        
         <div class="d-flex align-items-center">
             @Html.HiddenFor(model => model.OrderCustomerId, new { name = "orderCustomerId" })
             <div class="mt-3 flex-grow-1 me-3">
@@ -22,7 +44,6 @@
                     </div>
                 }
             }
-
             @Html.ValidationMessageFor(model => model.OrderType, "", new { @class = "text-danger" })
         </div>
 
@@ -35,19 +56,19 @@
             <div class="mt-3">
                 <label>@Html.DisplayNameFor(model => model.OrderName)</label>
                 @Html.EditorFor(model => model.OrderName, new { htmlAttributes = new { @class = "form-control", id = "CustomerName" } })
-                @Html.ValidationMessageFor(model => model.OrderName, "", new { @class = "text-danger" })
+                @*@Html.ValidationMessageFor(model => model.OrderName, "", new { @class = "text-danger" })*@
             </div>
 
             <div class="mt-3">
                 <label>@Html.DisplayNameFor(model => model.OrderPhone)</label>
                 @Html.EditorFor(model => model.OrderPhone, new { htmlAttributes = new { @class = "form-control", id = "CustomerPhone" } })
-                @Html.ValidationMessageFor(model => model.OrderPhone, "", new { @class = "text-danger" })
+                @*@Html.ValidationMessageFor(model => model.OrderPhone, "", new { @class = "text-danger" })*@
             </div>
         </div>
         <div class="mt-3">
             <label>@Html.DisplayNameFor(model => model.OrderRestaurantId)</label>
             @Html.DropDownListFor(model => model.OrderRestaurantId, ViewBag.OrderRestaurantId as List<SelectListItem>, "請選擇餐廳", new { @class = "form-control", id = "OrderRestaurantId" })
-            @Html.ValidationMessageFor(model => model.OrderRestaurantId, "", new { @class = "text-danger" })
+            @*@Html.ValidationMessageFor(model => model.OrderRestaurantId, "", new { @class = "text-danger" })*@
         </div>
         <br />
         <label>@Html.DisplayNameFor(model => model.OrderAddress)</label>
@@ -58,7 +79,11 @@
             <div class="mt-3 flex-grow-1">
                 @Html.EditorFor(model => model.StreetAddress, new { htmlAttributes = new { @class = "form-control", id = "StreetAddress", placeholder = "請輸入訂餐地址" } })
             </div>
+            <br/>
+            @*@Html.ValidationMessageFor(model => model.StreetAddress, "", new { @class = "text-danger" })*@
         </div>
+
+        <br/>
         <label style="color:red">外送範圍僅限餐廳所在行政區</label>
         <br />
         <label style="color:red">內用需到櫃台結帳後，方開始備餐</label>
