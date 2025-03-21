@@ -17,7 +17,7 @@ public partial class OrderItemView
 
     public string? OrderItemMenuName { get; set; }
 
-    public decimal OrderItemUnitPrice { get; set; }
+    public int OrderItemUnitPrice { get; set; }
 
     public virtual MenuView OrderItemMenu { get; set; } = null!;
 
@@ -45,7 +45,7 @@ public partial class OrderSummaryView
     public int OrderCustomerId { get; set; }
 
     [NotMapped]
-    public decimal TotalAmount { get; set; }
+    public int TotalAmount { get; set; }
 
     [NotMapped]
     public List<OrderItemView> OrderItems { get; set; }

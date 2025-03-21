@@ -9,7 +9,7 @@ public partial class PaymentView
 
     public int PaymentOrderId { get; set; }
 
-    public decimal PaymentAmount { get; set; }
+    public int PaymentAmount { get; set; }
 
     public string PaymentMethod { get; set; } = null!;
 

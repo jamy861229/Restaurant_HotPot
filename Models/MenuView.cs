@@ -14,7 +14,7 @@ public partial class MenuView
 
     public string? MenuDescription { get; set; }
 
-    public decimal MenuPrice { get; set; }
+    public int MenuPrice { get; set; }
 
     public bool? MenuIsAvailable { get; set; }
 

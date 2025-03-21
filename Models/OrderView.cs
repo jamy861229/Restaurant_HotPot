@@ -17,7 +17,7 @@ public partial class OrderView
 
     public DateTime OrderDate { get; set; }
 
-    public decimal OrderTotalAmount { get; set; }
+    public int OrderTotalAmount { get; set; }
 
     [Required(ErrorMessage = "請選擇訂餐類型")]
     [Display(Name = "訂餐類型")]
@@ -54,7 +54,7 @@ public partial class OrderView
     public int OrderMenuId { get; set; }
 
     [NotMapped]
-    public decimal OrderMenuPrice { get; set; }
+    public int OrderMenuPrice { get; set; }
 
     public virtual CustomerView OrderCustomer { get; set; } = null!;
 

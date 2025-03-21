@@ -146,7 +146,7 @@ public partial class MyDbContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("Menu_Name");
             entity.Property(e => e.MenuPrice)
-                .HasColumnType("decimal(10, 2)")
+                .HasColumnType("int")
                 .HasColumnName("Menu_Price");
         });
 
@@ -161,7 +161,7 @@ public partial class MyDbContext : DbContext
                 .HasColumnName("Order_Date");
             entity.Property(e => e.OrderRestaurantId).HasColumnName("Order_RestaurantId");
             entity.Property(e => e.OrderTotalAmount)
-                .HasColumnType("decimal(10, 2)")
+                .HasColumnType("int")
                 .HasColumnName("Order_TotalAmount");
             entity.Property(e => e.OrderType)
                 .HasMaxLength(50)
@@ -198,7 +198,7 @@ public partial class MyDbContext : DbContext
             entity.Property(e => e.OrderItemQuantity).HasColumnName("OrderItem_Quantity");
             entity.Property(e => e.OrderItemMenuName).HasColumnName("OrderItem_MenuName");
             entity.Property(e => e.OrderItemUnitPrice)
-                .HasColumnType("decimal(10, 2)")
+                .HasColumnType("int")
                 .HasColumnName("OrderItem_UnitPrice");
 
             entity.HasOne(d => d.OrderItemMenu).WithMany(p => p.OrderItems)
@@ -218,7 +218,7 @@ public partial class MyDbContext : DbContext
 
             entity.Property(e => e.PaymentId).HasColumnName("Payment_Id");
             entity.Property(e => e.PaymentAmount)
-                .HasColumnType("decimal(10, 2)")
+                .HasColumnType("int")
                 .HasColumnName("Payment_Amount");
             entity.Property(e => e.PaymentDate)
                 .HasDefaultValueSql("(sysdatetime())")

@@ -174,7 +174,7 @@ namespace Restaurant.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Soup_Order(int[] menuIds, string[] menuNames, int[] quantities, decimal[] unitPrices)
+        public IActionResult Soup_Order(int[] menuIds, string[] menuNames, int[] quantities, int[] unitPrices)
         {
             var selectedItems = new List<OrderItemView>();
 
@@ -236,7 +236,7 @@ namespace Restaurant.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult StapleFood_Order(int[] menuIds, string[] menuNames, int[] quantities, decimal[] unitPrices, string action)
+        public IActionResult StapleFood_Order(int[] menuIds, string[] menuNames, int[] quantities, int[] unitPrices, string action)
         {
             var selectedItems = new List<OrderItemView>();
 
@@ -300,7 +300,7 @@ namespace Restaurant.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Dessert_Order(int[] menuIds, string[] menuNames, int[] quantities, decimal[] unitPrices, string action)
+        public IActionResult Dessert_Order(int[] menuIds, string[] menuNames, int[] quantities, int[] unitPrices, string action)
         {
             var selectedItems = new List<OrderItemView>();
 
@@ -348,7 +348,7 @@ namespace Restaurant.Controllers
             var desserts = string.IsNullOrEmpty(selectedDesserts) ? new List<OrderItemView>() : JsonConvert.DeserializeObject<List<OrderItemView>>(selectedDesserts);
 
             // 計算總金額
-            decimal totalAmount = soups.Sum(x => x.OrderItemUnitPrice * x.OrderItemQuantity) +
+            int totalAmount = soups.Sum(x => x.OrderItemUnitPrice * x.OrderItemQuantity) +
                                   stapleFoods.Sum(x => x.OrderItemUnitPrice * x.OrderItemQuantity) +
                                   desserts.Sum(x => x.OrderItemUnitPrice * x.OrderItemQuantity);
 
@@ -388,7 +388,7 @@ namespace Restaurant.Controllers
             var stapleFoods = string.IsNullOrEmpty(selectedStapleFoods) ? new List<OrderItemView>() : JsonConvert.DeserializeObject<List<OrderItemView>>(selectedStapleFoods);
             var desserts = string.IsNullOrEmpty(selectedDesserts) ? new List<OrderItemView>() : JsonConvert.DeserializeObject<List<OrderItemView>>(selectedDesserts);
 
-            decimal totalAmount = soups.Sum(x => x.OrderItemUnitPrice * x.OrderItemQuantity) +
+            int totalAmount = soups.Sum(x => x.OrderItemUnitPrice * x.OrderItemQuantity) +
                                   stapleFoods.Sum(x => x.OrderItemUnitPrice * x.OrderItemQuantity) +
                                   desserts.Sum(x => x.OrderItemUnitPrice * x.OrderItemQuantity);
 
