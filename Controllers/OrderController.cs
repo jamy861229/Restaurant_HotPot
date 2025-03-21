@@ -84,8 +84,8 @@ namespace Restaurant.Controllers
 
             if (userIdClaim == null)
             {
-                ViewBag.OrderCustomerId = 14;
-                HttpContext.Session.SetString("Order_CustomerId", "14");
+                ViewBag.OrderCustomerId = 20;
+                HttpContext.Session.SetString("Order_CustomerId", "20");
                 ViewBag.AllowedOrderTypes = new List<string> { "DineIn" }; // 未登入者只能內用
             }
             else
@@ -126,8 +126,8 @@ namespace Restaurant.Controllers
 
                 if (userIdClaim == null)
                 {
-                    ViewBag.OrderCustomerId = 14;
-                    HttpContext.Session.SetString("Order_CustomerId", "14");
+                    ViewBag.OrderCustomerId = 20;
+                    HttpContext.Session.SetString("Order_CustomerId", "20");
                     ViewBag.AllowedOrderTypes = new List<string> { "DineIn" }; // 未登入者只能內用
                 }
                 else
@@ -142,7 +142,7 @@ namespace Restaurant.Controllers
 
             if (model.OrderType == "DineIn")
             {
-                model.OrderCustomerId = 14;
+                model.OrderCustomerId = 20;
                 model.OrderName = "內用";
                 model.OrderPhone = "內用";
                 model.OrderAddress = "內用";
@@ -170,8 +170,8 @@ namespace Restaurant.Controllers
 
                     if (userIdClaim == null)
                     {
-                        ViewBag.OrderCustomerId = 14;
-                        HttpContext.Session.SetString("Order_CustomerId", "14");
+                        ViewBag.OrderCustomerId = 20;
+                        HttpContext.Session.SetString("Order_CustomerId", "20");
                         ViewBag.AllowedOrderTypes = new List<string> { "DineIn" }; // 未登入者只能內用
                     }
                     else
@@ -216,8 +216,8 @@ namespace Restaurant.Controllers
 
                     if (userIdClaim == null)
                     {
-                        ViewBag.OrderCustomerId = 14;
-                        HttpContext.Session.SetString("Order_CustomerId", "14");
+                        ViewBag.OrderCustomerId = 20;
+                        HttpContext.Session.SetString("Order_CustomerId", "20");
                         ViewBag.AllowedOrderTypes = new List<string> { "DineIn" }; // 未登入者只能內用
                     }
                     else
