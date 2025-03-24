@@ -62,8 +62,9 @@ public partial class OrderView
 
     public virtual RestaurantInfoView OrderRestaurant { get; set; } = null!;
 
-    public virtual ICollection<PaymentView> Payments { get; set; } = new List<PaymentView>();
-
     [NotMapped]
     public int SelectedQuantity { get; set; }
+
+    [NotMapped]
+    public string OrderStatus { get;  set; }
 }

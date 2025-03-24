@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using NuGet.Protocol;
+using PayPalCheckoutSdk.Core;
+using PayPalCheckoutSdk.Orders;
 using Restaurant.Models;
 using System.Runtime.InteropServices;
 using System.Security.Claims;
@@ -543,7 +545,113 @@ namespace Restaurant.Controllers
             HttpContext.Session.Remove("SelectedStapleFoods");
             HttpContext.Session.Remove("SelectedDesserts");
 
-            return RedirectToAction("Index_Order");
+            // 重導至 PayPal 付款
+            return RedirectToAction("PayWithPayPal",   orderId );
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> PayWithPayPal(int orderId)
+        {
+            // 從資料庫查詢訂單資訊
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                return NotFound(); // 如果找不到訂單，回傳 404
+            }
+
+            // 使用 PayPal 沙盒環境，使用 PayPal 開發者帳戶的 Client ID 和 Secret
+            var environment = new SandboxEnvironment("AZ9jQ9Z7TqTewgvuIHxexVcg5mBcgUPlBcnCBqr7YLz5JQAyT0jwRLSvbhFJXz4xf71CwmcqeeEfqYuV", "EBtTOQRuGxl6LFsYzlPrhFvvQNYWGKlrmfBOA1-vZ8pU3ynHf7j4LOkEWR0xfL0IAvRRDCCUkeESIleO");
+            var client = new PayPalHttpClient(environment);
+
+            // 建立 PayPal 付款請求
+            var paymentRequest = new OrdersCreateRequest();
+            paymentRequest.Prefer("return=representation");
+            paymentRequest.RequestBody(new OrderRequest
+            {
+                CheckoutPaymentIntent = "CAPTURE", // 設定付款意圖為 CAPTURE（即付款）
+                PurchaseUnits = new List<PurchaseUnitRequest>
+                {
+                    new PurchaseUnitRequest
+                    {
+                        AmountWithBreakdown = new AmountWithBreakdown
+                        {
+                            CurrencyCode = "TWD", // 設定貨幣為台幣
+                            Value = order.OrderTotalAmount.ToString() // 設定付款金額
+                        }
+                    }
+                },
+                ApplicationContext = new ApplicationContext
+                {
+                    // 設定付款成功和取消後的返回網址
+                    ReturnUrl = Url.Action("PayPalSuccess", "Order", new { orderId = order.OrderId }, Request.Scheme),
+                    CancelUrl = Url.Action("PayPalCancel", "Order", new { orderId = order.OrderId }, Request.Scheme)
+                }
+            });
+
+            // 發送請求到 PayPal 取得付款連結
+            var response = await client.Execute(paymentRequest);
+            var result = response.Result<Order>();
+
+            // 取得付款核准的 URL
+            var approvalLink = result.Links.FirstOrDefault(link => link.Rel.Equals("approve"))?.Href;
+
+            if (!string.IsNullOrEmpty(approvalLink))
+            {
+                return Redirect(approvalLink); // 將用戶導向 PayPal 付款頁面
+            }
+
+            return BadRequest("PayPal 付款初始化失敗"); // 付款初始化失敗時返回錯誤
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> PayPalSuccess(int orderId, string token, string PayerID)
+        {
+            // 查詢訂單資訊
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            // 設定 PayPal 沙盒環境
+            var environment = new SandboxEnvironment("AZ9jQ9Z7TqTewgvuIHxexVcg5mBcgUPlBcnCBqr7YLz5JQAyT0jwRLSvbhFJXz4xf71CwmcqeeEfqYuV", "EBtTOQRuGxl6LFsYzlPrhFvvQNYWGKlrmfBOA1-vZ8pU3ynHf7j4LOkEWR0xfL0IAvRRDCCUkeESIleO");
+            var client = new PayPalHttpClient(environment);
+
+            // 建立訂單完成請求
+            var request = new OrdersCaptureRequest(token);
+            request.RequestBody(new OrderActionRequest());
+
+            // 執行付款請求
+            var response = await client.Execute(request);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Created)
+            {
+                // 更新訂單狀態為已付款
+                order.OrderStatus = "已付款";
+                await _context.SaveChangesAsync();
+                return RedirectToAction("OrderComplete", new { orderId = order.OrderId }); // 跳轉到訂單完成頁面
+            }
+
+            return BadRequest("PayPal 付款失敗"); // 付款失敗時返回錯誤
+        }
+
+        [AllowAnonymous]
+        public IActionResult PayPalCancel(int orderId)
+        {
+            return RedirectToAction("PayPalCancel"); // 取消付款後返回相應頁面
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> OrderComplete(int orderId)
+        {
+            // 查詢訂單資訊
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return View(order); // 顯示訂單完成頁面
         }
 
     }

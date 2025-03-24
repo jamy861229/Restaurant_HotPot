@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "付款取消";
+}
+
+<div class="container mt-5 text-center">
+    <h2 class="text-warning">付款已取消！</h2>
+    <p>您已取消 PayPal 付款，訂單未完成。</p>
+
+    <div class="mt-4">
+        <a asp-action="Index_Order" class="btn btn-primary">返回首頁</a>
+        <a asp-action="Confirm_Order" class="btn btn-danger">重新付款</a>
+    </div>
+</div>
