@@ -186,6 +186,9 @@ public partial class MyDbContext : DbContext
                 .HasForeignKey(d => d.OrderRestaurantId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Orders__Order_Re__44FF419A");
+            entity.Property(e => e.OrderStatus)
+                .HasMaxLength(50)
+                .HasColumnName("Order_Status");
         });
 
         modelBuilder.Entity<OrderItemView>(entity =>
@@ -212,31 +215,6 @@ public partial class MyDbContext : DbContext
                 .HasConstraintName("FK__OrderItem__Order__48CFD27E");
         });
 
-        modelBuilder.Entity<PaymentView>(entity =>
-        {
-            entity.HasKey(e => e.PaymentId).HasName("PK__Payments__DA6C7FC1BEF711E6");
-
-            entity.Property(e => e.PaymentId).HasColumnName("Payment_Id");
-            entity.Property(e => e.PaymentAmount)
-                .HasColumnType("int")
-                .HasColumnName("Payment_Amount");
-            entity.Property(e => e.PaymentDate)
-                .HasDefaultValueSql("(sysdatetime())")
-                .HasColumnName("Payment_Date");
-            entity.Property(e => e.PaymentMethod)
-                .HasMaxLength(50)
-                .HasColumnName("Payment_Method");
-            entity.Property(e => e.PaymentOrderId).HasColumnName("Payment_OrderId");
-            entity.Property(e => e.PaymentStatus)
-                .HasMaxLength(50)
-                .HasDefaultValue("Pending")
-                .HasColumnName("Payment_Status");
-
-            entity.HasOne(d => d.PaymentOrder).WithMany(p => p.Payments)
-                .HasForeignKey(d => d.PaymentOrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Payments__Paymen__5441852A");
-        });
 
         modelBuilder.Entity<ReservationView>(entity =>
         {

@@ -107,7 +107,7 @@ namespace Restaurant.Controllers
         {
             HttpContext.Session.SetString("Order_Type", model.OrderType);
 
-            if (string.IsNullOrEmpty(Convert.ToString(model.OrderRestaurantId)) || Convert.ToString(model.OrderRestaurantId)=="0")
+            if (string.IsNullOrEmpty(Convert.ToString(model.OrderRestaurantId)) || Convert.ToString(model.OrderRestaurantId) == "0")
             {
                 ModelState.AddModelError("OrderRestaurantError", "!!!訂餐分店必需填寫!!!");
 
@@ -509,7 +509,8 @@ namespace Restaurant.Controllers
                 OrderPhone = orderPhone,
                 OrderAddress = orderAddress,
                 OrderDate = DateTime.Now,
-                OrderTotalAmount = totalAmount
+                OrderTotalAmount = totalAmount,
+                OrderStatus = "未付款"
             };
 
             // 儲存訂單至資料庫
@@ -546,7 +547,39 @@ namespace Restaurant.Controllers
             HttpContext.Session.Remove("SelectedDesserts");
 
             // 重導至 PayPal 付款
-            return RedirectToAction("PayWithPayPal",   orderId );
+            return RedirectToAction("SelectPayment", orderId);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> SelectPayment(int orderId)
+        {
+            // 從資料庫查詢訂單資訊
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                return NotFound(); // 如果找不到訂單，回傳 404
+            }
+
+            return View(order);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult SelectPayment(int orderId, int OrderPayment)
+        {
+            switch (OrderPayment)
+            {
+                case 0:
+                    // 重導至 PayPal 付款
+                    return RedirectToAction("PayWithPayPal", new { orderId = orderId });
+                case 1:
+                    // 重導至 PayOnSite 付款
+                    return RedirectToAction("PayOnSite", new { orderId = orderId });
+                default:
+                    // 重導至PayPalCancel
+                    return RedirectToAction("PayPalCancel", new { orderId = orderId });
+
+            }
         }
 
         [AllowAnonymous]
@@ -601,6 +634,18 @@ namespace Restaurant.Controllers
             }
 
             return BadRequest("PayPal 付款初始化失敗"); // 付款初始化失敗時返回錯誤
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> PayOnSite(int orderId)
+        {
+            // 查詢訂單資訊
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            return View(order); // 顯示訂單完成頁面
         }
 
         [AllowAnonymous]

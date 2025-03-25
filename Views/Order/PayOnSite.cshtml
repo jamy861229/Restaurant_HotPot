@@ -1,0 +1,23 @@
+﻿@model OrderView
+@{
+    ViewBag.Title = "訂單完成";
+}
+
+<div class="container mt-5 text-center">
+    <h2 class="text-success">接單成功！🎉</h2>
+    <p>感謝您的訂購，選擇現場支付者需到櫃台結帳後，方開始備餐<p>
+    <p>我們將盡快處理您的訂單。</p>
+
+    <div class="card p-4 shadow">
+        <h4>訂單資訊</h4>
+        <p><strong>訂單編號：</strong> @Model.OrderId</p>
+        <p><strong>訂購人：</strong> @Model.OrderName</p>
+        <p><strong>聯絡電話：</strong> @Model.OrderPhone</p>
+        <p><strong>外送地址：</strong> @Model.OrderAddress</p>
+        <p><strong>總金額：</strong> <span class="text-danger">NT$@Model.OrderTotalAmount</span></p>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Index_Order" class="btn btn-primary">返回首頁</a>
+    </div>
+</div>

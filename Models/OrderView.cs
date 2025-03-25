@@ -65,6 +65,9 @@ public partial class OrderView
     [NotMapped]
     public int SelectedQuantity { get; set; }
 
+    public string? OrderStatus { get;  set; }
+
     [NotMapped]
-    public string OrderStatus { get;  set; }
+    [Display(Name = "結帳方式")]
+    public string OrderPayment { get; set; }
 }

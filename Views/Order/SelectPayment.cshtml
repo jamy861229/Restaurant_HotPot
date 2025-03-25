@@ -1,0 +1,53 @@
+﻿@model Restaurant.Models.OrderView
+@{
+    ViewData["Title"] = "付款選擇";
+}
+
+<div class="container mt-5">
+    <form asp-action="SelectPayment" method="post" class="p-4 border bg-light needs-validation rounded" style="max-width: 500px; margin: auto;" novalidate>
+        @Html.HiddenFor(model => model.OrderCustomerId, new { name = "orderCustomerId" })
+        @Html.HiddenFor(model => model.OrderId, new { name = "orderId" })
+        @Html.HiddenFor(model => model.OrderType, new { id = "orderType", name = "orderType" })
+
+        <div class="mt-3 flex-grow-1 me-3">
+            @Html.DisplayNameFor(model => model.OrderPayment)
+            <div class="form-check">
+                @Html.RadioButtonFor(model => model.OrderPayment, 0, new { @class = "form-check-input", id = "paypal", name = "paymentMethod" })
+                <label class="form-check-label" for="paypal">PayPal</label>
+            </div>
+            <div class="form-check">
+                @Html.RadioButtonFor(model => model.OrderPayment, 1, new { @class = "form-check-input", id = "onSite", name = "paymentMethod" })
+                <label class="form-check-label" for="onSite">現場付款</label>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary">前往結帳</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function updatePaymentOptions() {
+            var orderType = document.getElementById("orderType").value.trim();
+            var paypal = document.getElementById("paypal");
+            var onSite = document.getElementById("onSite");
+
+            if (orderType === "Delivery" || orderType === "TakeOut") {
+                paypal.disabled = false;
+                paypal.checked = true; // 預設選擇 PayPal
+                onSite.disabled = true;
+                onSite.checked = false;
+            } else {
+                paypal.disabled = false;
+                onSite.disabled = false;
+            }
+        }
+
+        updatePaymentOptions(); // 初始化時執行
+
+        // 監聽 OrderType 變更 (如果 OrderType 可能動態變更)
+        document.getElementById("orderType").addEventListener("change", updatePaymentOptions);
+    });
+</script>
