@@ -16,7 +16,10 @@ public partial class MenuView
 
     public int MenuPrice { get; set; }
 
-    public bool? MenuIsAvailable { get; set; }
+    public bool MenuIsAvailable { get; set; }
+
+    [NotMapped]
+    public string? MenuAvailable { get; set; }
 
     public string? MenuImageUrl { get; set; }
 

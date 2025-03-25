@@ -246,16 +246,16 @@ namespace Restaurant.Controllers
         public async Task<IActionResult> Soup_Order()
         {
             var hotpotBases = await _context.Menus
-                                .Where(m => m.MenuCategory == "火鍋")
-                                .Select(m => new OrderView
-                                {
+                                 .Where(m => m.MenuCategory == "火鍋" && m.MenuIsAvailable == true) // `bit` 型態直接當布林值使用
+                                 .Select(m => new OrderView
+                                 {
                                     OrderMenuId = m.MenuId,
                                     OrderMenuName = m.MenuName,
                                     OrderMenuPrice = m.MenuPrice,
                                     OrderMenuImage = m.MenuImageUrl,
                                     OrderMenuDescription = m.MenuDescription
-                                })
-                                .ToListAsync();
+                                 })
+                                 .ToListAsync();
 
             // **從 Session 取得已選擇的資料**
             var selectedSoups = HttpContext.Session.GetString("SelectedSoups");
@@ -309,7 +309,7 @@ namespace Restaurant.Controllers
         public async Task<IActionResult> StapleFood_Order()
         {
             var staplefood = await _context.Menus
-                                .Where(m => m.MenuCategory == "附食")
+                                .Where(m => m.MenuCategory == "附食" && m.MenuIsAvailable == true)
                                 .Select(m => new OrderView
                                 {
                                     OrderMenuId = m.MenuId,
@@ -373,7 +373,7 @@ namespace Restaurant.Controllers
         public async Task<IActionResult> Dessert_Order()
         {
             var dessert = await _context.Menus
-                                .Where(m => m.MenuCategory == "甜點")
+                                .Where(m => m.MenuCategory == "甜點" && m.MenuIsAvailable == true)
                                 .Select(m => new OrderView
                                 {
                                     OrderMenuId = m.MenuId,
