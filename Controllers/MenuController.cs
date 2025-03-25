@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Restaurant.Models;
 
 namespace Restaurant.Controllers
@@ -8,29 +9,40 @@ namespace Restaurant.Controllers
     public class MenuController : Controller
     {
         private readonly ILogger<MenuController> _logger;
+        private readonly MyDbContext _context;
 
-        public MenuController(ILogger<MenuController> logger)
+        public MenuController(ILogger<MenuController> logger, MyDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         [AllowAnonymous]
-        public IActionResult Index_Musteat()
+        public async Task<IActionResult> Index_Musteat()
         {
-            return View();
+            var menus = await _context.Menus.ToListAsync();
+            return View(menus);
         }
 
         [AllowAnonymous]
-        public IActionResult Index1_Mealsincluded()
+        public async Task<IActionResult> Index1_Mealsincluded()
         {
-            return View();
+            var menus = await _context.Menus.ToListAsync();
+            return View(menus);
         }
 
         [AllowAnonymous]
-        public IActionResult Index2_Desserts()
+        public async Task<IActionResult> Index2_Desserts()
         {
-            return View();
+            var menus = await _context.Menus.ToListAsync();
+            return View(menus);
         }
+
+        //public async Task<IActionResult> Index3_Menuadmin()
+        //{
+        //    var menus = await _context.Menus.ToListAsync();
+        //    return View(menus);
+        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

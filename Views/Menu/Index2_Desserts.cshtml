@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<Restaurant.Models.MenuView>
+
+@{
     Layout = "_Layout";
     ViewData["Title"] = "菜單品鑑";
 }
@@ -19,7 +21,7 @@
 @* 巢狀導覽列 *@
 <div class="container mt-5">
     <div class="row">
-        <nav id="navbar-example3" class="navbar bg-light flex-column align-items-stretch p-3 h-auto col-md-2 col-lg-2 d-none d-md-block position-absolute">
+        <nav id="navbar-example3" class="navbar bg-light flex-column align-items-stretch p-2 h-auto col-md-1 col-lg-1 d-none d-md-block position-absolute">
             <a class="navbar-brand text-dark" href="#">甜點熟食</a>
             <nav class="nav nav-pills flex-column">
                 <a class="nav-link text-dark" href="#item1">甜點系列</a>
@@ -41,70 +43,89 @@
             <div data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-offset="10" tabindex="0">
                 <h3 class="card-title mb-3" id="item1">甜點系列</h3>
 
-                <div class="card mb-5 p-3 border" id="A1">
-                    <div id="ca1" class="flex-container">
-                        <a href="@Url.Action("Dessert_Order", "Order")" class="stretched-link"></a>
-                        <img src="~/images/古早味炸年糕.png" class="img-fluid rounded" style="width:400px; height:auto;" alt="古早味炸年糕">
-                        <div class="card-body">
-                            <h5 class="card-stitle">古早味炸年糕</h5>
-                            <p class="card-text">外酥內軟的炸年糕，微甜Q彈，帶有淡淡米香，每一口都喚起兒時記憶的傳統好味道！</p>
+                @* 古早味炸年糕 *@
+                @foreach (var menu in Model.Where(m => m.MenuId == 9))
+                {
+                    <div class="card mb-5 p-3 border" id="A1">
+                        <div id="ca1" class="flex-container">
+                            <a href="@Url.Action("Dessert_Order", "Order")" class="stretched-link"></a>
+                            <img src="@menu.MenuImageUrl" class="img-fluid rounded" style="width:400px; height:auto;" alt="@menu.MenuName">
+                            <div class="card-body">
+                                <h5 class="card-stitle">@menu.MenuName</h5>
+                                <p class="card-text">@menu.MenuDescription</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
+                <p></p>
+
+                @* 雲朵白糖粿 *@
+                @foreach (var menu in Model.Where(m => m.MenuId == 10))
+                {
+                    <div class="card mb-5 p-3 border" id="A2">
+                        <div id="ca2" class="flex-container">
+                            <a href="@Url.Action("Dessert_Order", "Order")" class="stretched-link"></a>
+                            <img src="@menu.MenuImageUrl" class="img-fluid rounded" style="width:400px; height:auto;" alt="@menu.MenuName">
+                            <div class="card-body flex-grow-1 position-relative">
+                                <h5 class="card-stitle">@menu.MenuName</h5>
+                                <p class="card-text">@menu.MenuDescription</p>
+                            </div>
+                        </div>
+                    </div>
+                }
 
                 <p></p>
 
-                <div class="card mb-5 p-3 border" id="A2">
-                    <div id="ca2" class="flex-container">
-                        <a href="@Url.Action("Dessert_Order", "Order")" class="stretched-link"></a>
-                        <img src="~/images/雲朵白糖粿.png" class="img-fluid rounded" style="width:400px; height:auto;" alt="雲朵白糖粿">
-                        <div class="card-body flex-grow-1 position-relative">
-                            <h5 class="card-stitle">雲朵白糖粿</h5>
-                            <p class="card-text">香酥外皮裹上細緻白糖，入口蓬鬆軟Q，甜而不膩，宛如雲朵般的幸福甜點！</p>
+                @* 草莓白糖粿 *@
+                @foreach (var menu in Model.Where(m => m.MenuId == 11))
+                {
+                    <div class="card mb-5 p-3 border" id="A3">
+                        <div id="ca3" class="flex-container">
+                            <a href="@Url.Action("Dessert_Order", "Order")" class="stretched-link"></a>
+                            <img src="@menu.MenuImageUrl" class="img-fluid rounded" style="width:400px; height:auto;" alt="@menu.MenuName">
+                            <div class="card-body flex-grow-1 position-relative">
+                                <h5 class="card-stitle">@menu.MenuName</h5>
+                                <p class="card-text">@menu.MenuDescription</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
 
                 <p></p>
 
-                <div class="card mb-5 p-3 border" id="A3">
-                    <div id="ca3" class="flex-container">
-                        <a href="@Url.Action("Dessert_Order", "Order")" class="stretched-link"></a>
-                        <img src="~/images/草莓白糖粿.jpg" class="img-fluid rounded" style="width:400px; height:auto;" alt="草莓白糖粿">
-                        <div class="card-body flex-grow-1 position-relative">
-                            <h5 class="card-stitle">草莓白糖粿</h5>
-                            <p class="card-text">外酥內Q的白糖粿，搭配酸甜多汁的草莓，每一口都是香甜與嚼勁的完美融合。</p>
+                @* 戀戀銀絲卷 *@
+                @foreach (var menu in Model.Where(m => m.MenuId == 14))
+                {
+                    <div class="card mb-5 p-3 border" id="A4">
+                        <div id="ca4" class="flex-container">
+                            <a href="@Url.Action("Dessert_Order", "Order")" class="stretched-link"></a>
+                            <img src="@menu.MenuImageUrl" class="img-fluid rounded" style="width:400px; height:auto;" alt="@menu.MenuName">
+                            <div class="card-body flex-grow-1 position-relative">
+                                <h5 class="card-stitle">@menu.MenuName</h5>
+                                <p class="card-text">@menu.MenuDescription</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <p></p>
-
-                <div class="card mb-5 p-3 border" id="A4">
-                    <div id="ca4" class="flex-container">
-                        <a href="@Url.Action("Dessert_Order", "Order")" class="stretched-link"></a>
-                        <img src="~/images/戀戀銀絲卷.jpg" class="img-fluid rounded" style="width:400px; height:auto;" alt="戀戀銀絲卷">
-                        <div class="card-body flex-grow-1 position-relative">
-                            <h5 class="card-stitle">戀戀銀絲卷</h5>
-                            <p class="card-text">外酥內軟的銀絲卷，撒上細緻糖粉，簡單卻令人回味無窮的經典美味。</p>
-                        </div>
-                    </div>
-                </div>
+                }
 
                 <p></p>
 
                 <h3 class="card-title mb-3" id="item2">熟食系列</h3>
 
-                <div class="card mb-5 p-3 border" id="B1">
-                    <div id="ca5" class="flex-container">
-                        <a href="@Url.Action("StapleFood_Order", "Order")" class="stretched-link"></a>
-                        <img src="~/images/麻辣豆腐.jpg" class="img-fluid rounded" style="width:400px; height:auto;" alt="麻辣豆腐">
-                        <div class="card-body flex-grow-1 position-relative">
-                            <h5 class="card-stitle">麻辣豆腐</h5>
-                            <p class="card-text">滑嫩豆腐浸泡濃郁麻辣湯汁，香麻帶勁，辣味層層堆疊，讓人一吃上癮。</p>
+                @* 麻辣豆腐 *@
+                @foreach (var menu in Model.Where(m => m.MenuId == 12))
+                {
+                    <div class="card mb-5 p-3 border" id="B1">
+                        <div id="ca5" class="flex-container">
+                            <a href="@Url.Action("StapleFood_Order", "Order")" class="stretched-link"></a>
+                            <img src="@menu.MenuImageUrl" class="img-fluid rounded" style="width:400px; height:auto;" alt="@menu.MenuName">
+                            <div class="card-body flex-grow-1 position-relative">
+                                <h5 class="card-stitle">@menu.MenuName</h5>
+                                <p class="card-text">@menu.MenuDescription</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     </div>
