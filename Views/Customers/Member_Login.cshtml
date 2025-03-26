@@ -92,6 +92,12 @@
 <br>
 
 <body style ="background-color:#DEDEBE ">
+	@if (TempData["Message"] != null)
+	{
+		<div class="alert alert-success" role="alert">
+			@TempData["Message"]
+		</div>
+	}
 
 	@if (Model == null)
 	{

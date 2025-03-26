@@ -45,7 +45,7 @@ namespace Restaurant.Services
                     From = new MailAddress(userName), // 寄件者
                     Subject = subject,
                     Body = body,
-                    IsBodyHtml = false // 若要寄送 HTML，可改成 true
+                    IsBodyHtml = true // 若要寄送 HTML，可改成 true
                 };
 
                 mailMessage.To.Add(toEmail);

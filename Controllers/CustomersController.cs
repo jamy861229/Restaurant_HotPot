@@ -604,13 +604,17 @@ namespace Restaurant.Controllers
             // 根據輸入的 Email 找出對應的客戶
             var customer = await _context.Customers
                 .FirstOrDefaultAsync(c => c.CustomerEmail == email);
-            // 為防資料探測，無論找不到或找到，都回傳相同訊息
-            ViewBag.Message = "若此信箱存在，系統已寄出重設密碼的連結。";
 
             if (customer == null)
             {
+                // 若找不到對應使用者，顯示錯誤訊息，提示先註冊
+                ViewBag.ErrorMessage = "此 Email 尚未註冊，請先進行註冊。";
                 return View();
             }
+
+            // 找到使用者時，顯示提示已寄出連結
+            ViewBag.SuccessMessage = "系統已寄出重設密碼的連結。";
+
 
             // 產生 token (以 GUID 為例)
             string token = Guid.NewGuid().ToString();
@@ -630,8 +634,52 @@ namespace Restaurant.Controllers
 
             // 產生重設密碼連結 (請根據你路由設定調整)
             var resetLink = Url.Action("ResetPassword", "Customers", new { token = token }, Request.Scheme);
-            var subject = "重設密碼通知";
-            var body = $"請點擊以下連結重設密碼：{resetLink}";
+            var subject = "【拾鍋時光】重設密碼通知";
+            var body = $@"
+                        <html>
+                        <head>
+                            <meta charset='utf-8'>
+                            <title>重設密碼通知</title>
+                        </head>
+                        <body style='font-family: Microsoft JhengHei, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;'>
+                            <table width='100%' border='0' cellspacing='0' cellpadding='0' style='max-width:600px; margin:auto; background-color:#ffffff;'>
+                                <tr style='background-color:#BA2B2B; color:#ffffff;'>
+                                    <td style='padding: 20px; text-align:center; font-size:24px; font-weight:bold;'>
+                                        拾鍋時光
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 20px;'>
+                                        <p style='font-size:16px; margin-bottom:1em;'>
+                                            親愛的顧客您好，<br><br>
+                                            感謝您選擇「<strong>拾鍋時光</strong>」！我們已收到您重設密碼的請求。<br>
+                                            若您確定要重設密碼，請於 1 小時內點擊下方按鈕：
+                                        </p>
+                                        <p style='text-align:center; margin-bottom:2em;'>
+                                            <a href='{resetLink}' 
+                                               style='display:inline-block; background-color:#BA2B2B; color:#ffffff; 
+                                                      padding:10px 20px; text-decoration:none; border-radius:4px; font-weight:bold;'>
+                                               立即重設密碼
+                                            </a>
+                                        </p>
+                                        <p style='font-size:16px; margin-bottom:1em;'>
+                                            如果您並未提出此申請，或懷疑他人盜用您的帳號，請忽略本信件或聯繫我們。
+                                        </p>
+                                        <p style='font-size:16px; margin-bottom:1em;'>
+                                            祝您用餐愉快！<br>
+                                            拾鍋時光 敬上
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr style='background-color:#FAFAFA;'>
+                                    <td style='padding: 15px; font-size:12px; color:#666; text-align:center;'>
+                                        © 2023 拾鍋時光. All rights reserved.
+                                    </td>
+                                </tr>
+                            </table>
+                        </body>
+                        </html>
+                        ";
 
             try
             {
@@ -657,7 +705,7 @@ namespace Restaurant.Controllers
             }
 
             var resetToken = await _context.PasswordResetTokens
-                .Include(rt => rt.Customers) // 注意: 若實體是 CustomerView，請改成 rt.Customer
+                .Include(rt => rt.Customers) // 若實體是 CustomerView，請改成 rt.Customer
                 .FirstOrDefaultAsync(rt => rt.Token == token && !rt.IsUsed);
 
             if (resetToken == null || resetToken.ExpiryTime < DateTime.UtcNow)
@@ -675,16 +723,27 @@ namespace Restaurant.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ResetPassword(string token, string newPassword)
+        public async Task<IActionResult> ResetPassword(string token, string newPassword, string confirmPassword)
         {
-            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(newPassword))
+            // 檢查所有參數是否都有填寫
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword))
             {
-                ViewBag.Error = "參數錯誤。";
+                ViewBag.Error = "請輸入完整資料。";
+                ViewBag.Token = token;  // 保留 token
                 return View();
             }
 
+            // 檢查新密碼與確認密碼是否一致
+            if (newPassword != confirmPassword)
+            {
+                ViewBag.Error = "新密碼與確認密碼不一致，請重新輸入。";
+                ViewBag.Token = token;
+                return View();
+            }
+
+            // 取得 Token 資料 (這邊假設你的導覽屬性命名為 Customer)
             var resetToken = await _context.PasswordResetTokens
-                .Include(rt => rt.Customers) // 注意: 若實體是 CustomerView，請改成 rt.Customer
+                .Include(rt => rt.Customers) // 若實體是 CustomerView，請調整為 rt.Customer
                 .FirstOrDefaultAsync(rt => rt.Token == token && !rt.IsUsed);
 
             if (resetToken == null || resetToken.ExpiryTime < DateTime.UtcNow)
@@ -693,7 +752,7 @@ namespace Restaurant.Controllers
                 return View("ForgotPassword");
             }
 
-            // 更新客戶密碼 (這裡進行哈希處理)
+            // 更新密碼 (使用哈希處理)
             var customer = resetToken.Customers;
             customer.CustomerPassword = _passwordHasher.HashPassword(null, newPassword);
 
