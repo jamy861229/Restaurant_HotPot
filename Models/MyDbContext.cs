@@ -149,6 +149,9 @@ public partial class MyDbContext : DbContext
             entity.Property(e => e.MenuPrice)
                 .HasColumnType("int")
                 .HasColumnName("Menu_Price");
+            entity.Property(e => e.MenuCategoryId)
+                .HasMaxLength(8)
+                .HasColumnName("Menu_CategoryId");
         });
 
         modelBuilder.Entity<OrderView>(entity =>
