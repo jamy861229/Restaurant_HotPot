@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Models;
+using Restaurant.Services;
 //using Umbraco.Core.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -72,6 +73,8 @@ builder.Services.AddAuthorization(options =>
         .RequireAuthenticatedUser()
         .Build();
 });
+// 註冊 EmailService 至 DI 容器（這是必要的，才能用建構式注入）
+builder.Services.AddTransient<EmailService>();
 
 var app = builder.Build();
 

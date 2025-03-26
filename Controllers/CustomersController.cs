@@ -24,6 +24,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Restaurant.Dto;
 using Microsoft.DotNet.Scaffolding.Shared.Project;
+using Restaurant.Services;
 
 
 
@@ -40,14 +41,20 @@ namespace Restaurant.Controllers
         private readonly ILogger<CustomersController> _logger;
         private readonly MyDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly EmailService _mailService; // 新增這行
         private readonly PasswordHasher<string> _passwordHasher = new PasswordHasher<string>();  // 哈希        
 
-        public CustomersController(ILogger<CustomersController> logger, MyDbContext context,
-            IHttpContextAccessor httpContextAccessor)
+        public CustomersController(
+          ILogger<CustomersController> logger,
+          MyDbContext context,
+          IHttpContextAccessor httpContextAccessor,
+          EmailService mailService  // <-- 從 DI 注入 EmailService
+      )
         {
             _logger = logger;
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _mailService = mailService; // <-- 將注入的實例指定給欄位
         }
 
         #region 註冊
@@ -571,6 +578,135 @@ namespace Restaurant.Controllers
         {
             return "未登入";
         }
+
+        #region 忘記密碼 / 重設密碼
+
+        // GET: /Customers/ForgotPassword
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        // POST: /Customers/ForgotPassword
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ViewBag.Message = "請輸入有效的 Email。";
+                return View();
+            }
+
+            // 根據輸入的 Email 找出對應的客戶
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.CustomerEmail == email);
+            // 為防資料探測，無論找不到或找到，都回傳相同訊息
+            ViewBag.Message = "若此信箱存在，系統已寄出重設密碼的連結。";
+
+            if (customer == null)
+            {
+                return View();
+            }
+
+            // 產生 token (以 GUID 為例)
+            string token = Guid.NewGuid().ToString();
+
+            // 建立 PasswordResetToken 紀錄
+            var resetToken = new PasswordResetToken
+            {
+                CustomerId = customer.CustomerId,
+                Token = token,
+                ExpiryTime = DateTime.UtcNow.AddHours(1), // token 有效 1 小時
+                IsUsed = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.PasswordResetTokens.Add(resetToken);
+            await _context.SaveChangesAsync();
+
+            // 產生重設密碼連結 (請根據你路由設定調整)
+            var resetLink = Url.Action("ResetPassword", "Customers", new { token = token }, Request.Scheme);
+            var subject = "重設密碼通知";
+            var body = $"請點擊以下連結重設密碼：{resetLink}";
+
+            try
+            {
+                await _mailService.SendEmailAsync(email, subject, body);
+                _logger.LogInformation("寄信成功");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "寄信失敗");
+                ViewBag.Error = "寄送信件時發生錯誤：" + ex.Message;
+            }
+
+            return View();
+        }
+        // GET: /Customers/ResetPassword?token=xxxx
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Member_Login");
+            }
+
+            var resetToken = await _context.PasswordResetTokens
+                .Include(rt => rt.Customers) // 注意: 若實體是 CustomerView，請改成 rt.Customer
+                .FirstOrDefaultAsync(rt => rt.Token == token && !rt.IsUsed);
+
+            if (resetToken == null || resetToken.ExpiryTime < DateTime.UtcNow)
+            {
+                ViewBag.Error = "Token 無效或已過期，請重新申請。";
+                return View("ForgotPassword");
+            }
+
+            // 傳遞 token 至 View（以 hidden field 帶入 POST）
+            ViewBag.Token = token;
+            return View();
+        }
+
+        // POST: /Customers/ResetPassword
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(string token, string newPassword)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(newPassword))
+            {
+                ViewBag.Error = "參數錯誤。";
+                return View();
+            }
+
+            var resetToken = await _context.PasswordResetTokens
+                .Include(rt => rt.Customers) // 注意: 若實體是 CustomerView，請改成 rt.Customer
+                .FirstOrDefaultAsync(rt => rt.Token == token && !rt.IsUsed);
+
+            if (resetToken == null || resetToken.ExpiryTime < DateTime.UtcNow)
+            {
+                ViewBag.Error = "Token 無效或已過期，請重新申請。";
+                return View("ForgotPassword");
+            }
+
+            // 更新客戶密碼 (這裡進行哈希處理)
+            var customer = resetToken.Customers;
+            customer.CustomerPassword = _passwordHasher.HashPassword(null, newPassword);
+
+            // 標記 token 已使用
+            resetToken.IsUsed = true;
+
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "密碼重設成功，請使用新密碼登入。";
+            return RedirectToAction("Member_Login");
+        }
+
+        #endregion
 
     }
 

@@ -18,6 +18,7 @@ public partial class MyDbContext : DbContext
     public virtual DbSet<HomepageView> Carousels { get; set; }
 
     public virtual DbSet<CustomerView> Customers { get; set; }
+    public virtual DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
     public virtual DbSet<CustomerFeedbackView> CustomerFeedbacks { get; set; }
 

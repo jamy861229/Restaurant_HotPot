@@ -126,14 +126,14 @@
 		</div>
 	</div>
 
-					@*忘記密碼*@
+					@*忘記密碼連結*@  
 	<div class="d-flex justify-content-end mb-3">
-		<a href="#" class="forgot-password" >忘記密碼?</a>		
-	</div>
+						<a asp-action="ForgotPassword" asp-controller="Customers" class="forgot-password">忘記密碼?</a>
+					</div>
 					@if (!string.IsNullOrEmpty(ViewBag.Error))
 					{
-													<div >@ViewBag.Error</div>
-					}	
+						<div>@ViewBag.Error</div>
+					}
 
 					@*註冊登入*@
 	<div class="d-flex justify-content-between">
