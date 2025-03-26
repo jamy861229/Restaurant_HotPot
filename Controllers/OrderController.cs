@@ -683,7 +683,7 @@ namespace Restaurant.Controllers
         [AllowAnonymous]
         public IActionResult PayPalCancel(int orderId)
         {
-            return RedirectToAction("PayPalCancel"); // 取消付款後返回相應頁面
+            return View(); // 取消付款後返回相應頁面
         }
 
         [AllowAnonymous]
