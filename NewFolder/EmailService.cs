@@ -33,19 +33,19 @@ namespace Restaurant.Services
             // 建立 SmtpClient
             using (var smtpClient = new SmtpClient(host, port))
             {
-                // 不使用預設憑證
                 smtpClient.UseDefaultCredentials = false;
-                // 設定自己的憑證 (帳號/密碼)
                 smtpClient.Credentials = new NetworkCredential(userName, password);
-                // 啟用或停用 SSL / TLS
                 smtpClient.EnableSsl = enableSsl;
+
+                // 建立包含顯示名稱的寄件者地址
+                var fromAddress = new MailAddress(userName, "拾鍋時光");
 
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress(userName), // 寄件者
+                    From = fromAddress,
                     Subject = subject,
                     Body = body,
-                    IsBodyHtml = true // 若要寄送 HTML，可改成 true
+                    IsBodyHtml = true
                 };
 
                 mailMessage.To.Add(toEmail);
@@ -56,7 +56,6 @@ namespace Restaurant.Services
                 }
                 catch (Exception ex)
                 {
-                    // 這裡可做錯誤處理或記錄 Log
                     throw new Exception("寄信失敗：" + ex.Message, ex);
                 }
             }
