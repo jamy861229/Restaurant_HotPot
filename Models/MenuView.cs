@@ -8,6 +8,8 @@ public partial class MenuView
 {
     public int MenuId { get; set; }
 
+    public int MenuCategoryId { get; set; }
+
     public string MenuCategory { get; set; } = null!;
 
     public string MenuName { get; set; } = null!;
