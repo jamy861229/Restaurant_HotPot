@@ -33,3 +33,19 @@ body {
 .myfont {
     font-family: 'jf-openhuninn-2.1';
 }
+
+
+/*響應式*/
+@media (max-width: 1440px) {
+    .RWDnbs {
+        font-size: 19pt;
+    }
+}
+@media (max-width: 1200px) {
+
+
+    .RWDnbs {
+        font-size: 16pt;
+    }
+
+}

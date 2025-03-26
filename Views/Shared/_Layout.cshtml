@@ -25,36 +25,38 @@
 
     
 </head>
-<body>
-    <header class="myfont fs-4">
-        <!--myfont = 自設字體
-            ps/ms = bs語法：左側外內距
+<body >
+    <header class="myfont fs-3">
+        <!--myfont = 自設字體。
+            RWDnbs = 自設導覽列響應式設定（調整字大小，漢堡選單前有一段差分）；
+            ps/ms = bs語法：左側內外距。
             text-nowrap = bs語法：即使被壓縮也不換行。
-            fs = bs語法：試試看效果太小調整到fs-4，太大調整到fs-4）。
+            fs = bs語法：預設字大小。
+            xl/md = bs語法：大螢幕跟中等螢幕寬度。
         -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand ps-3" href="#"><img style="width:150px" src="~/images/LogoIMG.png"></a>
+                <a class="navbar-brand ps-3" href="@Url.Action("Index", "Homepage")"><img style="width:150px" src="~/images/LogoIMG.png"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item text-nowrap ps-5">
+                        <li class="nav-item text-nowrap RWDnbs px-xxl-5 px-xl-4 ps-md-3">
                             <a class="nav-link active" href="@Url.Action("Index", "Homepage")">最新消息</a></li>
-                        <li class="nav-item text-nowrap ps-5"><a class="nav-link" href="@Url.Action("StoreInformation", "StoreInformation")">門市資訊</a></li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle ps-5" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">菜單品鑑</a>
+                        <li class="nav-item text-nowrap RWDnbs px-xxl-5 px-xl-4 px-md-3"><a class="nav-link" href="@Url.Action("StoreInformation", "StoreInformation")">門市資訊</a></li>
+                        <li class="nav-item dropdown RWDnbs px-xxl-5 px-xl-4 px-md-3">
+                            <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">菜單品鑑</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item ps-5" href="@Url.Action("Index_Musteat", "Menu")">老饕必吃</a></li>
-                                <li><a class="dropdown-item ps-5" href="@Url.Action("Index1_Mealsincluded", "Menu")">精選附食</a></li>
-                                <li><a class="dropdown-item ps-5" href="@Url.Action("Index2_Desserts", "Menu")">甜點熟食</a></li>
+                                <li><a class="dropdown-item ps-3 ps-xl-5" href="@Url.Action("Index_Musteat", "Menu")">老饕必吃</a></li>
+                                <li><a class="dropdown-item ps-3 ps-xl-5" href="@Url.Action("Index1_Mealsincluded", "Menu")">精選附食</a></li>
+                                <li><a class="dropdown-item ps-3 ps-xl-5" href="@Url.Action("Index2_Desserts", "Menu")">甜點熟食</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item ps-5" href="@Url.Action("Index_Order", "Order")">訂餐</a></li>
+                                <li><a class="dropdown-item ps-3 ps-xl-5" href="@Url.Action("Index_Order", "Order")">訂餐</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item"><a class="nav-link ps-5 text-nowrap" href="@Url.Action("Member_Login", "Customers")">會員專區</a></li>
-                        <li class="nav-item"><a class="nav-link ps-5 text-nowrap" href="@Url.Action("Create_CustomerFeedback", "CustomerFeedback")">聯絡我們</a></li>
+                        <li class="nav-item RWDnbs"><a class="nav-link text-nowrap px-xxl-5 px-xl-4 px-md-3" href="@Url.Action("Member_Login", "Customers")">會員專區</a></li>
+                        <li class="nav-item RWDnbs"><a class="nav-link text-nowrap px-xxl-5 px-xl-4 px-md-3" href="@Url.Action("Create_CustomerFeedback", "CustomerFeedback")">聯絡我們</a></li>
                     </ul>
 
                     <!-- 把人頭(MemberHead)跟登入合併 -->
@@ -62,13 +64,14 @@
  
                         @if (User.Identity.IsAuthenticated)   // layout 需加入這段
                         {
-                                <span class=  "navber-text me-3"> 歡迎, @User.Identity.Name</span>
-                                <button type="submit" class="btn btn-outline-danger" >登出</button>
+                            <span class="navber-text me-3  ms-3" style="font-size: 16pt;"> 歡迎, @User.Identity.Name</span>
+                            <button type="submit" class="btn btn-outline-danger">登出</button>
                         }
                         else
                         {
-                            <a class="btn btn-outline-success" href="~/Customers/Member_Login">
-                                <img style="width:50%" src="~/images/MemberHead.png">登入</a>
+                            <a class="btn btn-outline-success ms-3" href="~/Customers/Member_Login">
+                                <img style="width:30px" src="~/images/MemberHead.png">登入
+                            </a>
                         } 
                     </form>
                 </div>
