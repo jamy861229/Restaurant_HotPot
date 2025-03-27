@@ -122,6 +122,7 @@ namespace Restaurant.Controllers
             return RedirectToAction("Soup_Order");
         }
 
+        [AllowAnonymous]
         private bool ValidateOrder(OrderView model)
         {
             if (string.IsNullOrEmpty(model.OrderType))
@@ -155,6 +156,7 @@ namespace Restaurant.Controllers
             return true;
         }
 
+        [AllowAnonymous]
         private async Task PopulateViewData()
         {
             var restaurantList = await _context.RestaurantInfos.ToListAsync();
@@ -168,17 +170,20 @@ namespace Restaurant.Controllers
             ViewBag.AllowedOrderTypes = GetAllowedOrderTypes();
         }
 
+        [AllowAnonymous]
         private int GetOrderCustomerId()
         {
             var userIdClaim = User.FindFirst("UserId");
             return userIdClaim != null ? int.Parse(userIdClaim.Value) : 20;
         }
 
+        [AllowAnonymous]
         private List<string> GetAllowedOrderTypes()
         {
             return User.Identity.IsAuthenticated ? new List<string> { "TakeOut", "Delivery", "DineIn" } : new List<string> { "DineIn" };
         }
 
+        [AllowAnonymous]
         private void SetOrderDetails(OrderView model)
         {
             switch (model.OrderType)
@@ -198,6 +203,7 @@ namespace Restaurant.Controllers
             HttpContext.Session.SetString("Order_Address", model.OrderAddress);
         }
 
+        [AllowAnonymous]
         private string GetFormattedDeliveryAddress(OrderView model)
         {
             var regionAddress = GetRegionByRestaurant(model.OrderRestaurantId);
