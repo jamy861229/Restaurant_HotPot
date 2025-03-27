@@ -26,10 +26,10 @@ public class CustomerFeedbackView
     public DateTime? FeedbackDateTime { get; set; }
 
     [Required(ErrorMessage = "請選擇分店")]
-    [Display(Name = "用餐門市")]
+    [Display(Name = "用餐分店")]
     public int FeedbackDiningLocationId { get; set; }
 
-    [Display(Name = "用餐門市")]
+    [Display(Name = "用餐分店")]
     public string? FeedbackDiningLocation { get; set; }
 
     
@@ -48,11 +48,11 @@ public class CustomerFeedbackView
 
     [Required(ErrorMessage = "請輸入電子郵件")]
     [EmailAddress(ErrorMessage = "請輸入有效的電子郵件地址")]
-    [Display(Name = "Email")]
+    [Display(Name = "電子郵件")]
     public string? FeedbackEmail { get; set; }
 
     [Required(ErrorMessage = "請輸入您的意見")]
-    [Display(Name = "問題建議")]
+    [Display(Name = "意見回饋")]
     public string? FeedbackContent { get; set; }
 
     [Display(Name = "店家回復內容")]
