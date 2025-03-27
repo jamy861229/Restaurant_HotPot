@@ -7,6 +7,13 @@
 <div class="container mt-5 ">
     <form asp-action="Index_Order" method="post" class="p-4 border bg-light needs-validation rounded" style="max-width: 500px; margin: auto;" novalidate>
 
+        @if (ViewData.ModelState["OrderTypeError"] != null)
+        {
+            <div class="error-message">
+                <label style="color:red">@ViewData.ModelState["OrderTypeError"].Errors[0].ErrorMessage</label>
+            </div>
+        }
+
         @if (ViewData.ModelState["TakeoutOrderError"] != null)
         {
             <div class="error-message">
@@ -86,7 +93,7 @@
         <br/>
         <label style="color:red">外送範圍僅限餐廳所在行政區</label>
         <br />
-        <label style="color:red">內用需到櫃台結帳後，方開始備餐</label>
+        <label style="color:red">選擇現場付款者需到櫃台結帳後，方開始備餐</label>
         <br />
         <label style="color:red">如需外帶外送者請登入會員後再點餐</label>
         <br />
