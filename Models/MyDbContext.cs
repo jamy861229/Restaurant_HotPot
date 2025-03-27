@@ -118,6 +118,12 @@ public partial class MyDbContext : DbContext
             entity.Property(e => e.FeedbackTime)
                 .HasMaxLength(20)
                 .HasColumnName("Feedback_Time");
+            entity.Property(e => e.FeedbackMenuName)
+                .HasMaxLength(10)
+                .HasColumnName("Feedback_MenuName");
+            entity.Property(e => e.FeedbackReply)
+                .HasMaxLength(255)
+                .HasColumnName("Feedback_Reply");
             entity.HasOne(d => d.FeedbackDiningLocationNavigation).WithMany(p => p.CustomerFeedbacks)
                 .HasForeignKey(d => d.FeedbackDiningLocationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

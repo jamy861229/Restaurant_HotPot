@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Restaurant.Models.CustomerFeedbackView>
+<link rel="stylesheet" href="~/css/Order.css" asp-append-version="true" />
+@{
+    ViewBag.Title = "回覆顧客意見";
+}
+<div class="container mt-5">
+    <form method="post" class="p-4 border rounded bg-light needs-validation" action="@Url.Action("Index_ReplyFeedback")">
+        <div>
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>顧客回復編號</th>
+                            <th>顧客姓名</th>
+                            <th>顧客性別</th>
+                            <th>顧客電話</th>
+                            <th>顧客電子郵件</th>
+                            <th>顧客用餐時段</th>
+                            <th>顧客用餐分店</th>
+                            <th>顧客用餐品項</th>
+                            <th>顧客評論內容</th>
+                            <th>顧客留言時間</th>
+                            <th>店家回復內容</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.FeedbackId</td>
+                                <td>@item.FeedbackName</td>
+                                <td>@item.FeedbackGender</td>
+                                <td>@item.FeedbackPhone</td>
+                                <td>@item.FeedbackEmail</td>
+                                <td>@item.FeedbackDateTime></td>
+                                <td>@item.FeedbackDiningLocation</td>
+                                <td>@item.FeedbackMenuName</td>
+                                <td>@item.FeedbackContent</td>
+                                <td>@item.FeedbackTime</td>
+                                <td>@item.FeedbackReply</td>
+                                <td><a asp-action="Edit_ReplyFeedback" asp-route-feedbackId="@item?.FeedbackId">回復</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>

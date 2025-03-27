@@ -39,7 +39,6 @@ public class CustomerFeedbackView
     public int? FeedbackMenuId { get; set; }
 
     [Display(Name = "用餐品項")]
-    [NotMapped]
     public string? FeedbackMenuName { get; set; }
 
     [Required(ErrorMessage = "請輸入手機號碼")]
@@ -55,6 +54,9 @@ public class CustomerFeedbackView
     [Required(ErrorMessage = "請輸入您的意見")]
     [Display(Name = "問題建議")]
     public string? FeedbackContent { get; set; }
+
+    [Display(Name = "店家回復內容")]
+    public string? FeedbackReply { get; set; }
 
     [Display(Name = "填寫時間")]
     public DateTime? FeedbackTime { get; set; }

@@ -1,0 +1,39 @@
+﻿@model CustomerFeedbackView
+<link rel="stylesheet" href="~/css/Order.css" asp-append-version="true" />
+@{
+    ViewBag.Title = "店家回復顧客內容";
+}
+<div class="container mt-5">
+    <form asp-action="Edit_ReplyFeedback" method="post" class="p-4 border bg-light rounded shadow-lg" style="max-width: 500px; margin: auto;" novalidate>
+        <h4 class="text-center mb-4">店家回復顧客內容</h4>
+        <input type="hidden" asp-for="FeedbackId" />
+        <div class="mb-3">
+            <label asp-for="FeedbackName" class="form-label"></label>:
+            @Html.DisplayFor(model => model.FeedbackName, new { @class = "form-control" })
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="FeedbackDiningLocation" class="form-label"></label>:
+            @Html.DisplayFor(model => model.FeedbackDiningLocation, new { @class = "form-control" })
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="FeedbackMenuName" class="form-label"></label>:
+            @Html.DisplayFor(model => model.FeedbackMenuName, new { @class = "form-control" })
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="FeedbackContent" class="form-label"></label>:
+            @Html.DisplayFor(model => model.FeedbackContent, new { @class = "form-control"})
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="FeedbackReply" class="form-label"></label>
+            @Html.TextAreaFor(model => model.FeedbackReply, new { @class = "form-control", rows = "3", placeholder = "回覆內容" })
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary w-100">儲存</button>
+        </div>
+    </form>
+</div>
