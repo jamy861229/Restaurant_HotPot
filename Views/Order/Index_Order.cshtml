@@ -34,7 +34,7 @@
                 <label style="color:red">@ViewData.ModelState["OrderRestaurantError"].Errors[0].ErrorMessage</label>
             </div>
         }
-        
+
         <div class="d-flex align-items-center">
             @Html.HiddenFor(model => model.OrderCustomerId, new { name = "orderCustomerId" })
             <div class="mt-3 flex-grow-1 me-3">
@@ -86,11 +86,11 @@
             <div class="mt-3 flex-grow-1">
                 @Html.EditorFor(model => model.StreetAddress, new { htmlAttributes = new { @class = "form-control", id = "StreetAddress", placeholder = "請輸入訂餐地址" } })
             </div>
-            <br/>
+            <br />
             @*@Html.ValidationMessageFor(model => model.StreetAddress, "", new { @class = "text-danger" })*@
         </div>
 
-        <br/>
+        <br />
         <label style="color:red">外送範圍僅限餐廳所在行政區</label>
         <br />
         <label style="color:red">選擇現場付款者需到櫃台結帳後，方開始備餐</label>
@@ -107,6 +107,12 @@
     <script>
         $(document).ready(function () {
             // 當網頁載入完成後執行此函式
+
+        var isLoggedIn = @Json.Serialize(User.Identity.IsAuthenticated); // 檢查用戶是否登入
+
+        if (!isLoggedIn) {
+            $("#fetchData").prop("disabled", true); // 禁用 checkbox
+        }
 
             $("#fetchData").change(function () {
                 // 監聽 id 為 fetchData 的元素（例如 checkbox）變更事件
