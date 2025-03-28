@@ -2,11 +2,39 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewBag.Title = "首頁";
 }
 
 <link rel="stylesheet" href="~/css/Css_Homepage.css" asp-append-version="true" />
-<!--<script src="~/js/Responsive_Homepage.js"></script> -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 加載中（js最後尾） -->
+<div id="loading" style="background-color:white;">
+    <div class="spinner"><img class="an1" style="width:150px" src="~/images/Logo.png"></div>
+</div>
+
+<!-- 推播消息 -->
+<div class="modal fade" id="mModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title myfont" id="exampleModalLabel">推播消息</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="~/images/Homepage_news_1.png" class="imgstyle1">
+            </div>
+            <div class="modal-footer"> 
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckIndeterminate">
+                <label class="form-check-label  myfont" for="flexCheckIndeterminate">
+                    不要再出現這個消息
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/welcome_Homepage.js"></script>
 
 
 <!-- 根據資料庫中的日期、是否開啟以及優先序（非id）來抓取資料庫位置進行圖片輪播 
@@ -115,17 +143,32 @@
     <div>
         <p style="font-size: 22pt; margin-top: 150px; margin-bottom:5%; letter-spacing:0.4em;"><b>最新消息</b></p>
     </div>
+    <!-- 切換按鈕（js最後尾）  -->
+    <button id="switchToFirstCarousel" style="background-color:beige;border:none;color:black; width:150px;height:50px;">優惠內容</button>
+    <button id="switchToSecondCarousel" style="background-color:blanchedalmond;border:none;color:black; width:150px;height:40px;  transform: translateY(5px);">營業公告</button>
+    
+   
+    <!-- 大於1000px時顯示 -->
+    <div class="d-none d-lg-block">
+    </div>
+
+    <!-- 小於1000px時顯示 -->
+    <div class="d-block d-lg-none">
+
+    </div>
+
+    <!-- 第一組卡片列（switchToFirstCarousel/NewsSlide1） -->
     <div style="background-color:beige;">
-        <div id="NewsSlide1" class="carousel carousel-dark  slide">
+        <div id="NewsSlide1" class="carousel slide">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <!-- 第一個卡片列 -->
-                    <div class="row row-cols-1 row-cols-md-2 g-4  ms-4  me-4" id="NewsCardList">
+                   
+                    <div class="row row-cols-1 row-cols-md-2 g-4 ms-4 me-4" id="NewsCardList">
                         <div class="col pt-4 pb-4 ">
                             <div class="card" data-bs-toggle="modal" data-bs-target="#NewsALL1" id="NewsCard">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <img class="imgstyle1" src="~/images/Homepage_news_1.jpg" alt="...">
+                                        <img class="imgstyle1" src="~/images/Homepage_news_1.png" alt="...">
                                     </div>
                                     <div class="col-md-6 ">
                                         <div class="card-body card-text">
@@ -162,14 +205,14 @@
                             <div class="card" data-bs-toggle="modal" data-bs-target="#NewsALL3" id="NewsCard">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <img class="imgstyle1" src="~/images/Homepage_news_3.jpg" alt="...">
+                                        <img class="imgstyle1" src="~/images/Homepage_news_3.png" alt="...">
                                     </div>
                                     <div class="col-md-6 ">
 
                                         <div class="card-body card-text">
                                             <h5 class="card-title">拾鍋時光歡迎新會員</h5>
                                             <p><small class="text-muted">02/18/2025</small></p>
-                                            <p>加入會員，可更方便使用官網的訂餐等功能。詳情請點會員專區。 </p>
+                                            <p>右上角或會員專區註冊加入會員，可使用官網的外送、外帶等便捷功能。</p>
                                             <p>詳情請見會員專區。</p>
                                         </div>
                                     </div>
@@ -198,6 +241,166 @@
 
                     </div>
                 </div>
+                <!-- 第二個卡片列 -->
+                <div class="carousel-item">
+
+                    <div class="row row-cols-1 row-cols-md-2 g-4  ms-4  me-4" id="NewsCardList">
+                        <div class="col pt-4 pb-4 ">
+                            <div class="card" data-bs-toggle="modal" data-bs-target="#NewsALL1" id="NewsCard">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <img class="imgstyle1" src="~/images/Homepage_news_1.png" alt="...">
+                                    </div>
+                                    <div class="col-md-6 ">
+                                        <div class="card-body card-text">
+                                            <h5 class="card-title">獨享生日禮</h5>
+                                            <p><small class="text-muted">04/13/2025</small></p>
+                                            <p>當月生日壽星來店可以享用各式好禮，需出示證件給門市同仁確認。</p>
+                                            <p>（使用詳情依門市而定） </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col pt-4 pb-4 ">
+                            <div class="card " data-bs-toggle="modal" data-bs-target="#NewsALL2" id="NewsCard">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <img class="imgstyle1" src="~/images/Homepage_news_2.png" alt="...">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card-body card-text">
+                                            <h5 class="card-title">打卡即贈小點心</h5>
+                                            <p><small class="text-muted">02/19/2025</small></p>
+                                            <p>拾鍋時光招牌點心新上市期間，打卡、按讚即贈送「拾鍋時光招牌小點心」一份。</p>
+                                            <p>（詳情依門市而定）</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row row-cols-1 row-cols-md-2 g-4  ms-4  me-4" id="NewsCardList">
+                        <div class="col pt-4 pb-4 ">
+                            <div class="card" data-bs-toggle="modal" data-bs-target="#NewsALL3" id="NewsCard">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <img class="imgstyle1" src="~/images/Homepage_news_3.png" alt="...">
+                                    </div>
+                                    <div class="col-md-6 ">
+
+                                        <div class="card-body card-text">
+                                            <h5 class="card-title">拾鍋時光歡迎新會員</h5>
+                                            <p><small class="text-muted">02/18/2025</small></p>
+                                            <p>右上角或會員專區註冊加入會員，可使用官網的外送、外帶等便捷功能。</p>
+                                            <p>詳情請見會員專區。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col pt-4 pb-4 ">
+                            <div class="card" data-bs-toggle="modal" data-bs-target="#NewsALL4" id="NewsCard">
+                                <div class="row">
+                                    <div class="col-md-6 ">
+                                        <img class="imgstyle1" src="~/images/Homepage_news_4.png" alt="...">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card-body card-text">
+                                            <h5 class="card-title">營業日期變更</h5>
+                                            <p><small class="text-muted">02/15/2025</small></p>
+                                            <p>所有分店將於2025年4月8日，停止營業至2025年4月9日。</p>
+                                            <p>開業時間若有變動將再另行通知。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            @*position-relative 跟 position-absolute後，調整按鈕樣式位址*@
+            <div>
+                <button class="carousel-control-prev position-absolute top-50 start-0 translate-middle" style="background-color:#AFAE85;height:80px;width:50px;" type="button" data-bs-target="#NewsSlide1" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+            
+                <button class="carousel-control-next position-absolute top-50 start-100 translate-middle" style="background-color:#AFAE85;height:80px;width:50px;" type="button" data-bs-target="#NewsSlide1" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- 第二組卡片列（switchToSecondCarousel/NewsSlide2） -->
+    <div style="background-color:blanchedalmond">
+        <div id="NewsSlide2" style="display:none;" class="carousel slide">
+            <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="row row-cols-1 row-cols-md-2 g-4  ms-4  me-4" id="NewsCardList">
+                            <div class="col  pt-4 pb-4">
+                                <div class="card2 " id="NewsCard" style="padding-top:20% ">
+                                    <div class="front size img-fluid">
+                                        <img class="imgstyle1" style="max-width:400px;height:auto;" src="~/images/Homepage_date_1.png" alt="...">
+                                    </div>
+                                    <div class="back size" style="background-color:white;max-width:500px;height:auto;">
+                                        <div class="card-body card-text">
+                                            <h5 class="card-title">營業日期變更</h5>
+                                            <p>所有分店將於2025年3月3日，停止營業至2025年3月5日。開業時間若有變動將再另行通知。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col pt-4 pb-4 ">
+                                <div class="card2 " id="NewsCard" style="padding-top:20% ">
+                                    <div class="front size img-fluid">
+                                        <img class="imgstyle1" style="max-width:400px;height:auto;" src="~/images/Homepage_date_2.png" alt="...">
+                                    </div>
+                                    <div class="back size" style="background-color:white;max-width:500px;height:auto;">
+                                        <div class="card-body card-text">
+                                            <h5 class="card-title">營業日期變更</h5>
+                                            <p>所有分店將於2025年3月3日，停止營業至2025年3月5日。開業時間若有變動將再另行通知。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col  pt-4 pb-4">
+                                <div class="card2 " id="NewsCard" style="padding-top:20%;padding-bottom:60%">
+                                    <div class="front size img-fluid">
+                                        <img class="imgstyle1" style="max-width:400px;height:auto;" src="~/images/Homepage_date_3.png" alt="...">
+                                    </div>
+                                    <div class="back size">
+                                        <div class="card-body card-text" style="background-color:white">
+                                            <h5 class="card-title">營業日期變更</h5>
+                                            <p>所有分店將於2025年3月3日，停止營業至2025年3月5日。開業時間若有變動將再另行通知。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col pt-4 pb-4 ">
+                                <div class="card2 " id="NewsCard" style="padding-top:20%;padding-bottom:60%">
+                                    <div class="front size img-fluid">
+                                        <img class="imgstyle1" style="max-width:400px;height:auto;" src="~/images/Homepage_date_4.png" alt="...">
+                                    </div>
+                                    <div class="back size">
+                                        <div class="card-body card-text " style="background-color:white">
+                                            <h5 class="card-title">營業日期變更</h5>
+                                            <p>所有分店將於2025年3月3日，停止營業至2025年3月5日。開業時間若有變動將再另行通知。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 <!-- 第二個卡片列 -->
                 <div class="carousel-item">
                     <div class="row row-cols-1 row-cols-md-2 g-4  ms-4  me-4" id="NewsCardList">
@@ -260,20 +463,24 @@
                     </div>
                 </div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#NewsSlide1" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#NewsSlide1" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+
+            @*position-relative 跟 position-absolute後，調整按鈕樣式位址*@
+            <div>
+                <button class="carousel-control-prev position-absolute top-50 start-0 translate-middle" style="background-color:#AFAE85;height:80px;width:50px;" type="button" data-bs-target="#NewsSlide2" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+
+                <button class="carousel-control-next position-absolute top-50 start-100 translate-middle" style="background-color:#AFAE85;height:80px;width:50px;" type="button" data-bs-target="#NewsSlide2" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
         </div>
     </div>
 
 
-
-            <!-- 測試彈窗 -->
+            <!-- 彈窗 -->
 
             <div class="modal fade" id="NewsALL1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -284,21 +491,20 @@
                         </div>
                         <div class="modal-body">
                             <div class="wmiddle">
-                                <img style="width:50%" src="~/images/Homepage_news_1.jpg" alt="...">
+                                <img style="width:50%" src="~/images/Homepage_news_1.png" alt="...">
                             </div>
                             <p class="wmiddle">
 
                                 <br />
-                                凡當月壽星至萬客什鍋用餐即可兌換好禮6選1：<br />
+                                當月壽星至拾鍋時光用餐，即可選下列副食免費贈：<br />
+                                <br />（使用詳情依各門市而定。）<br />
+                                    ◼經典雞滷飯<br />
+                                    ◼蝦滷飯<br />
+                                    ◼麻辣豆腐<br />
+                                    ◼香辣肉燥拌麵<br />
+                                    ◼銷魂舒肥雞肉飯<br />
                                 <br />
-                                ◼高麗菜<br />
-                                ◼雪紋梅花豬<br />
-                                ◼滑嫩巴沙魚<br />
-                                ◼鮮脆水蓮菜<br />
-                                ◼雲朵白糖粿<br />
-                                ◼古早味炸年糕<br />
-                                <br />
-                                *出示證件給門市同仁<br />                                                                     .
+                                （需出示證件給門市同仁確認）<br />                                                                     .
                             </p>
                             <div class="wmiddle">
                                 <button type="button" class="btn btn-secondary" style="width:150px" data-bs-dismiss="modal" aria-label="Close">關閉</button>
@@ -322,14 +528,15 @@
                             <p class="wmiddle">
 
                                 <br />
-                                ｜麻油炸蛋｜<br />
-                                炸到黃金透亮又帶點麻油清香，焦香四溢，口齒留香<br />
-                                <br />
-                                ◼【萬客首創 獨家吃法】<br />
-                                搭配獨家特調胡椒鹽，可直接食用香酥鹹香<br />
-                                浸入沸騰的火鍋湯頭中3-5秒，在熱湯中輕輕吸附湯頭的鮮美<br />
-                                <br />
-                                “用心烹調的態度 勾起味蕾的美食生活”<br />                                                                     .
+                        拾鍋時光招牌點心 【雲朵白糖粿】新上市<br/>
+                               <br/>
+                                ＼軟呼軟呼新甜點／<br/>
+                                        香甜暖綿如同白雲一般的口感，歡迎體驗<br/>
+                                        <br/>
+
+                                    搭配有機自製花生粉的香甜白糖粿<br/>
+                              <br />
+                                    期間，打卡、按讚即贈送「拾鍋時光招牌小點心」一份。<br/>                                                                     .
                             </p>
                             <div class="wmiddle">
                                 <button type="button" class="btn btn-secondary" style="width:150px" data-bs-dismiss="modal" aria-label="Close">關閉</button>
@@ -348,7 +555,7 @@
                         </div>
                         <div class="modal-body">
                             <div class="wmiddle">
-                                <img style="width:50%" src="~/images/Homepage_news_5.jpg" alt="...">
+                                <img style="width:50%" src="~/images/Homepage_news_3.png" alt="...">
                             </div>
                             <p class="wmiddle">
 
@@ -372,7 +579,6 @@
                     </div>
                 </div>
             </div>
-       
 
             <div class="modal fade" id="NewsALL4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -412,3 +618,28 @@
 
 
 <div style ="height: 100px;"></div>
+<script>
+    // 加載中（sessionStorage只有在進入網頁時加載一次）
+        $(document).ready(function () {
+        if (!sessionStorage.getItem('loadingShown')) {
+            $('#loading').delay(1000).fadeOut(2000);
+
+            sessionStorage.setItem('loadingShown', 'true');
+        } else {
+            $('#loading').fadeOut(0);
+        }
+    });
+    //輪播圖切換
+
+    //顯示第一組輪播圖
+    document.getElementById('switchToFirstCarousel').addEventListener('click', function() {
+        document.getElementById('NewsSlide1').style.display = 'block';
+        document.getElementById('NewsSlide2').style.display = 'none';
+    });
+
+    //顯示第二組輪播圖
+    document.getElementById('switchToSecondCarousel').addEventListener('click', function() {
+        document.getElementById('NewsSlide1').style.display = 'none';
+        document.getElementById('NewsSlide2').style.display = 'block';
+    });
+</script>
