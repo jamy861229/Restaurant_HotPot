@@ -1,0 +1,86 @@
+﻿@model Restaurant.Models.MenuView
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "菜單維護";
+}
+<link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" />
+
+<h2>新增菜單</h2>
+
+@using (Html.BeginForm("Index4_MenuCreate", "Menu", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @* 類別id *@
+        <div class="form-group">
+            <label class="control-label">類別</label>
+            <div class="form-check">
+                @Html.RadioButtonFor(model => model.MenuCategoryId, "1", new { @class = "form-check-input", id = "hotpot" })
+                <label class="form-check-label" for="MenuCategoryId">火鍋</label>
+            </div>
+            <div class="form-check">
+                @Html.RadioButtonFor(model => model.MenuCategoryId, "2", new { @class = "form-check-input", id = "Food" })
+                <label class="form-check-label" for="MenuCategoryId">附食</label>
+            </div>
+            <div class="form-check">
+                @Html.RadioButtonFor(model => model.MenuCategoryId, "3", new { @class = "form-check-input", id = "dessert" })
+                <label class="form-check-label" for="MenuCategoryId">甜點</label>
+            </div>
+            @Html.ValidationMessageFor(model => model.MenuCategoryId, "", new { @class = "text-danger" })
+        </div>
+
+        @* 名稱 *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.MenuName, new { @class = "control-label" })
+            @Html.EditorFor(model => model.MenuName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.MenuName, "", new { @class = "text-danger" })
+        </div>
+
+        @* 描述 *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.MenuDescription, new { @class = "control-label" })
+            @Html.TextAreaFor(model => model.MenuDescription, new { @class = "form-control", rows = 3 })
+            @Html.ValidationMessageFor(model => model.MenuDescription, "", new { @class = "text-danger" })
+        </div>
+
+        @* 價格 *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.MenuPrice, new { @class = "control-label" })
+            @Html.EditorFor(model => model.MenuPrice, new { htmlAttributes = new { @class = "form-control", type = "number", step = "0.01" } })
+            @Html.ValidationMessageFor(model => model.MenuPrice, "", new { @class = "text-danger" })
+        </div>
+
+        @* 狀態 *@
+        <div class="form-group">
+            <label class="control-label">狀態</label>
+            <div class="form-check">
+                @Html.RadioButtonFor(model => model.MenuIsAvailable, true,
+                         new { @class = "form-check-input", id = "availableTrue" })
+                <label class="form-check-label" for="availableTrue">可用</label>
+            </div>
+            <div class="form-check">
+                @Html.RadioButtonFor(model => model.MenuIsAvailable, false,
+                         new { @class = "form-check-input", id = "availableFalse" })
+                <label class="form-check-label" for="availableFalse">不可用</label>
+            </div>
+            @Html.ValidationMessageFor(model => model.MenuIsAvailable, "", new { @class = "text-danger" })
+        </div>
+
+        @* 圖片 *@
+        <div class="form-group">
+            @Html.LabelFor(model => model.MenuImageUrl, new { @class = "control-label" })
+            @Html.EditorFor(model => model.MenuImageUrl, new { htmlAttributes = new { @class = "form-control", type = "text" } })
+            @Html.ValidationMessageFor(model => model.MenuImageUrl, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-success">儲存菜單</button>
+            @Html.ActionLink("返回列表", "Index3_MenuRead", "Menu", null, new { @class = "btn btn-secondary ms-2" })
+        </div>
+    </div>
+}

@@ -42,7 +42,8 @@
     display: none;
     position: sticky;
     bottom: 70px;
-    left: 10px;
+    left: 5px;
+    right: 20px;
     z-index: 99;
     border: none;
     outline: none;
@@ -54,6 +55,33 @@
     font-size: 14px;
 }
 
-#upBtn:hover {
-    background-color: #CDCD9A;
+    #upBtn:hover {
+        background-color: #CDCD9A;
+    }
+
+.table {
+    border-collapse: collapse;
+    width: 100%; /*讓表格佔滿容器*/
+    max-width: 1200px; /*可選，設定最大寬度*/
+    margin: 0 auto; /*讓表格置中*/
+    border: 1px solid black;
+}
+
+th {
+    border: 1px solid black;
+    vertical-align: middle;
+    font-size: 18px;
+    min-width: 100px;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px;
+}
+
+td {
+    border: 1px solid black;
+    padding: 20px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 18px;
 }

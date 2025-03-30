@@ -24,89 +24,30 @@
         <nav id="navbar-example3" class="navbar bg-light flex-column align-items-stretch p-2 h-auto col-md-1 col-lg-1 d-none d-md-block position-absolute">
             <a class="navbar-brand text-dark" href="#">精選附食</a>
             <nav class="nav nav-pills flex-column">
-                <a class="nav-link text-dark" href="#item1">飯飯系列</a>
-                <nav class="nav nav-pills flex-column">
-                    <a class="nav-link ms-3 my-1 text-dark" href="#A1">經典雞滷飯</a>
-                    <a class="nav-link ms-3 my-1 text-dark" href="#A2">蝦滷飯</a>
-                    <a class="nav-link ms-3 my-1 text-dark" href="#A3">銷魂舒肥雞肉飯</a>
-                </nav>
-                <a class="nav-link text-dark" href="#item2">麵麵系列</a>
-                <nav class="nav nav-pills flex-column">
-                    <a class="nav-link ms-3 my-1 text-dark" href="#B1">香辣肉燥拌麵</a>
-                </nav>
+                @foreach (var menu in Model.Where(m => m.MenuCategoryId == 2))
+                {
+                    <a class="nav-link ms-3 my-1 text-dark" href="#@($"A{menu.MenuId}")">@menu.MenuName</a>
+                }
             </nav>
         </nav>
 
         @* 頁面內容 *@
         <div class="col-md-9 offset-md-3">
             <div data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-offset="10" tabindex="0">
-                <h3 class="card-title mb-3" id="item1">飯飯系列</h3>
 
-                @* 經典雞滷飯 *@
-                @foreach (var menu in Model.Where(m => m.MenuId == 6))
+                @foreach (var menu in Model.Where(m => m.MenuCategoryId == 2))
                 {
-                    <div class="card mb-5 p-3 border" id="A1">
-                        <div id="ca1" class="flex-container">
+                    <div class="card mb-5 p-3 border" id="@($"A{menu.MenuId}")">
+                        <div class="flex-container">
                             <a href="@Url.Action("StapleFood_Order", "Order")" class="stretched-link"></a>
                             <img src="@menu.MenuImageUrl" class="img-fluid rounded" style="width:400px; height:auto;" alt="@menu.MenuName">
                             <div class="card-body">
-                                <h5 class="card-stitle">@menu.MenuName</h5>
+                                <h5 class="card-stitle ">@menu.MenuName</h5>
                                 <p class="card-text">@menu.MenuDescription</p>
                             </div>
                         </div>
                     </div>
-                }
-                <p></p>
-
-                @* 蝦滷飯 *@
-                @foreach (var menu in Model.Where(m => m.MenuId == 7))
-                {
-                    <div class="card mb-5 p-3 border" id="A2">
-                        <div id="ca2" class="flex-container">
-                            <a href="@Url.Action("StapleFood_Order", "Order")" class="stretched-link"></a>
-                            <img src="@menu.MenuImageUrl" class="img-fluid rounded" style="width:400px; height:auto;" alt="@menu.MenuName">
-                            <div class="card-body">
-                                <h5 class="card-stitle">@menu.MenuName</h5>
-                                <p class="card-text">@menu.MenuDescription</p>
-                            </div>
-                        </div>
-                    </div>
-                }
-
-                <p></p>
-
-                @* 銷魂舒肥雞肉飯 *@
-                @foreach (var menu in Model.Where(m => m.MenuId == 13))
-                {
-                    <div class="card mb-5 p-3 border" id="A3">
-                        <div id="ca3" class="flex-container">
-                            <a href="@Url.Action("StapleFood_Order", "Order")" class="stretched-link"></a>
-                            <img src="@menu.MenuImageUrl" class="img-fluid rounded" style="width:400px; height:auto;" alt="@menu.MenuName">
-                            <div class="card-body">
-                                <h5 class="card-stitle">@menu.MenuName</h5>
-                                <p class="card-text">@menu.MenuDescription</p>
-                            </div>
-                        </div>
-                    </div>
-                }
-
-                <p></p>
-
-                <h3 class="card-title mb-3" id="item2">麵麵系列</h3>
-
-                @* 香辣肉燥拌麵 *@
-                @foreach (var menu in Model.Where(m => m.MenuId == 8))
-                {
-                    <div class="card mb-5 p-3 border" id="B1">
-                        <div id="ca4" class="flex-container">
-                            <a href="@Url.Action("StapleFood_Order", "Order")" class="stretched-link"></a>
-                            <img src="@menu.MenuImageUrl" class="img-fluid rounded" style="width:400px; height:auto;" alt="@menu.MenuName">
-                            <div class="card-body">
-                                <h5 class="card-stitle">@menu.MenuName</h5>
-                                <p class="card-text">@menu.MenuDescription</p>
-                            </div>
-                        </div>
-                    </div>
+                    <p></p>
                 }
             </div>
         </div>

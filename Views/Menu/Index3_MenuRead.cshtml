@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Restaurant.Models.MenuView>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "菜單維護";
+}
+<link rel="stylesheet" href="~/css/Menu.css" asp-append-version="true" />
+
+<div class="col-md-12 mt-5"></div>
+<h2>菜單維護</h2>
+<p>
+    @Html.ActionLink("新增菜單", "Index4_MenuCreate", "Menu", null, new { @class = "btn btn-primary" })
+</p>
+
+<table class="table text-center border">
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.MenuId)</th>
+        <th>@Html.DisplayNameFor(model => model.MenuCategory)</th>
+        <th>@Html.DisplayNameFor(model => model.MenuName)</th>
+        <th>@Html.DisplayNameFor(model => model.MenuDescription)</th>
+        <th>@Html.DisplayNameFor(model => model.MenuPrice)</th>
+        <th>@Html.DisplayNameFor(model => model.MenuIsAvailable)</th>
+        <th>@Html.DisplayNameFor(model => model.MenuImageUrl)</th>
+        <th>功能</th>
+    </tr>
+
+    @foreach (var menu in Model.OrderBy(e => e.MenuId))
+    {
+        <tr>
+            <td>@menu.MenuId</td>
+            <td>@(menu.MenuCategory)</td>
+            <td>@menu.MenuName</td>
+            <td>@menu.MenuDescription</td>
+            <td>@menu.MenuPrice.ToString("C0")</td>
+            <td>@(menu.MenuIsAvailable ? "可用" : "不可用")</td>
+            <td>
+                <img src="@menu.MenuImageUrl" alt="菜單圖片" style="max-width: 100px; display: block; margin-bottom: 5px;" />
+                <span>@menu.MenuImageUrl</span>
+            </td>
+            <td>
+                @Html.ActionLink("修改", "Index5_MenuEdit", "Menu", new { id = menu.MenuId }, new { @class = "btn btn-warning btn-sm" })
+
+            </td>
+        </tr>
+    }
+</table>
+
+<button onclick="topFunction()" id="upBtn" class="bi bi-arrow-up">TOP</button>
+
+<script>
+        let mybutton = document.getElementById("upBtn");
+
+       window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+        }
+        else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+</script>
