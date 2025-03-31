@@ -108,6 +108,43 @@
     opacity: 1;
 }
 
+/*淡入（遞進）*/
+.anF1 {
+    opacity: 0;
+    animation: fade 0.5s linear 0s;
+    animation-iteration-count: 1;
+    animation-delay: 0s;
+    opacity: 1;
+    animation-fill-mode: forwards;
+}
+
+.anF2 {
+    opacity: 0;
+    animation: fade 1s linear 0s;
+    animation-iteration-count: 1;
+    animation-delay: 0.5s;
+    opacity: 1;
+    animation-fill-mode: forwards;
+}
+
+.anF3 {
+    opacity: 0;
+    animation: fade 1s linear 0s;
+    animation-iteration-count: 1;
+    animation-delay: 1s;
+    opacity: 1;
+    animation-fill-mode: forwards;
+}
+
+.anF4 {
+    opacity: 0;
+    animation: fade 1s linear 0s;
+    animation-iteration-count: 1;
+    animation-delay: 1.5s;
+    opacity: 1;
+    animation-fill-mode: forwards;
+}
+
 @keyframes fade {
     from {
         opacity: 0;
@@ -117,3 +154,61 @@
         opacity: 1;
     }
 }
+
+.anLI1 {
+    animation: leftIn 0.5s linear 0s;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+}
+
+.anLI2 {
+    animation: leftIn 0.5s linear 0s;
+    animation-delay: 0.5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.anRI1 {
+    animation: rightIn 0.5s linear 0s;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+}
+
+.anRI2 {
+    animation: rightIn 0.5s linear 0s;
+    animation-delay: 0.5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+/* 淡入 */
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* 左右入 */
+@keyframes rightIn {
+    from {
+        transform: translate3d(100%, 0, 0);
+    }
+
+    to {
+        transform: none;
+    }
+}
+
+@keyframes leftIn {
+    from {
+        transform: translate3d(-100%, 0, 0);
+    }
+
+    to {
+        transform: none;
+    }
+}
+
